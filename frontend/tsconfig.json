@@ -1,0 +1,21 @@
+{
+	"extends": "../configs/tsconfig.base.json",
+	"compilerOptions": {
+		"jsx": "react-jsx",
+		"lib": ["DOM", "DOM.Iterable", "ESNext"],
+		"outDir": "./dist",
+		"baseUrl": "./src",
+		"paths": {
+			"@components/*": ["components/*"],
+			"@pages/*": ["pages/*"],
+			"@hooks/*": ["hooks/*"],
+			"@services/*": ["services/*"],
+			"@utils/*": ["utils/*"],
+			"@types/*": ["types/*"],
+			"@styles/*": ["styles/*"],
+			"@assets/*": ["assets/*"]
+		}
+	},
+	"include": ["src/**/*"],
+	"exclude": ["node_modules", "dist"]
+}
