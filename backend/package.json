@@ -4,9 +4,9 @@
 	"description": "RESTful API backend for the CESIZEN project. Built with Express.js and Node.js, featuring MongoDB database integration, authentication middleware, and comprehensive endpoints to support all frontend operations.",
 	"main": "server.ts",
 	"scripts": {
+		"start": "node --no-warnings --loader=../aliases.mjs node_modules/ts-node/dist/bin.js -r tsconfig-paths/register api/src/server.ts",
+		"dev": "nodemon --exec \"node --no-warnings --loader=../aliases.mjs node_modules/ts-node/dist/bin.js -r tsconfig-paths/register api/src/server.ts\"",
 		"test": "cross-env NODE_ENV=test jest",
-		"dev": "nodemon --exec ts-node -r tsconfig-paths/register api/src/server.ts",
-		"start": "node dist/server.js",
 		"lint": "eslint ./**/*.ts",
 		"lint:fix": "eslint . --ext .ts --fix"
 	},

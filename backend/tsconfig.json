@@ -1,12 +1,15 @@
 {
-	"extends": "../configs/tsconfig.base.json",
+	"extends": "../tsconfig.base.json",
 	"compilerOptions": {
 		"module": "NodeNext",
 		"moduleResolution": "NodeNext",
+		"target": "ESNext",
+		"esModuleInterop": true,
 		"outDir": "./dist",
 		"baseUrl": ".",
 		"paths": {
 			"@api/*": ["api/*"],
+			"@src/*": ["api/src/*"],
 			"@controllers/*": ["api/src/controllers/*"],
 			"@middlewares/*": ["api/src/middlewares/*"],
 			"@models/*": ["api/src/models/*"],
