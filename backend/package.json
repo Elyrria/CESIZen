@@ -8,7 +8,8 @@
 		"dev": "nodemon --exec \"node --no-warnings --loader=../aliases.mjs node_modules/ts-node/dist/bin.js -r tsconfig-paths/register api/src/server.ts\"",
 		"test": "cross-env NODE_ENV=test jest",
 		"lint": "eslint ./**/*.ts",
-		"lint:fix": "eslint . --ext .ts --fix"
+		"lint:fix": "eslint . --ext .ts --fix",
+		"format": "prettier --write ."
 	},
 	"repository": {
 		"type": "git",
