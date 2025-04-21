@@ -1,31 +1,52 @@
-// aliases.mjs
+/**
+ * aliases.mjs
+ *
+ * This module provides a custom Node.js module resolution hook that enables
+ * the use of path aliases in your project. It allows you to use shorthand import
+ * paths instead of relative paths, making your code more maintainable.
+ */
 import { pathToFileURL } from "url"
 
-// Définissez vos alias ici
-export const resolve = (specifier, context, nextResolve) => {
-	const aliases = {
-		"@api/": "./api/",
-		"@src/": "./api/src/",
-		"@controllers/": "./api/src/controllers/",
-		"@middlewares/": "./api/src/middlewares/",
-		"@models/": "./api/src/models/",
-		"@routes/": "./api/src/routes/",
-		"@utils/": "./api/src/utils/",
-		"@configs/": "./configs/",
-		"@types/": "./types/",
-	}
+/**
+ * A mapping of alias prefixes to their corresponding file paths.
+ * Each key is an alias that will be replaced with its corresponding path value.
+ */
+const aliases = {
+	"@api/": "./api/",
+	"@src/": "./api/src/",
+	"@controllers/": "./api/src/controllers/",
+	"@middlewares/": "./api/src/middlewares/",
+	"@models/": "./api/src/models/",
+	"@routes/": "./api/src/routes/",
+	"@utils/": "./api/src/utils/",
+	"@logs/": "./api/src/logs/",
+	"@core/": "./api/src/core/",
+	"@server/": "./api/src/server/",
+	"@configs/": "./configs/",
+	"@types/": "./types/",
+}
 
-	// Vérifie si le spécificateur commence par un alias
+/**
+ * Custom module resolution function that implements the Node.js ESM loader hook.
+ * Transforms import specifiers that begin with defined aliases into their full paths.
+ *
+ * @param {string} specifier - The import specifier being resolved (e.g., '@api/some-module')
+ * @param {Object} context - The context information provided by Node.js
+ * @param {Function} nextResolve - The next resolve function in the resolution chain
+ * @returns {Promise<{url: string, ...}>} The result of calling nextResolve with the transformed specifier
+ */
+export const resolve = (specifier, context, nextResolve) => {
+	// Check if the specifier starts with an alias
 	for (const [alias, path] of Object.entries(aliases)) {
 		if (specifier.startsWith(alias)) {
-			// Remplace l'alias par son chemin
+			// Replace the alias with its corresponding path
 			const newPath = specifier.replace(alias, path)
-			// Convertit le chemin en URL file://
+			// Convert the path to a file:// URL
 			const resolvedSpecifier = pathToFileURL(newPath).href
 			return nextResolve(resolvedSpecifier, context)
 		}
 	}
 
-	// Si ce n'est pas un alias, passe au résolveur suivant
+	// If not an alias, pass to the next resolver
 	return nextResolve(specifier, context)
 }
