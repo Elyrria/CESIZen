@@ -9,12 +9,15 @@
 		"baseUrl": ".",
 		"paths": {
 			"@api/*": ["api/*"],
+			"@server/*": ["api/src/server/*"],
 			"@src/*": ["api/src/*"],
 			"@controllers/*": ["api/src/controllers/*"],
 			"@middlewares/*": ["api/src/middlewares/*"],
 			"@models/*": ["api/src/models/*"],
 			"@routes/*": ["api/src/routes/*"],
 			"@utils/*": ["api/src/utils/*"],
+			"@logs/*": ["api/src/logs/*"],
+			"@core/*": ["api/src/core/*"],
 			"@configs/*": ["configs/*"],
 			"@types/*": ["types/*"]
 		}
