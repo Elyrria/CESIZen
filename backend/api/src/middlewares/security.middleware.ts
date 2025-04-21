@@ -1,9 +1,9 @@
+import { mongoSanitizerMiddleware } from "@sanitizers/mongo.sanitizer.ts"
+import { xssSanitizerMiddleware } from "@sanitizers/xss.sanitizer.ts"
 import type { Request, Response, NextFunction } from "express"
-import mongoSanitize from "express-mongo-sanitize"
 import rateLimit from "express-rate-limit"
 import express from "express"
 import helmet from "helmet"
-import xss from "xss-clean"
 import hpp from "hpp"
 
 /**
@@ -50,28 +50,27 @@ export const setupSecurityMiddleware = (app: express.Application): void => {
 		windowMs: 15 * 60 * 1000, // 15 minutes
 		max: 100, // limit each IP to 100 requests per windowMs
 		standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-		legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+		legacyHeaders: false,
 		message: "Too many requests from this IP, please try again after 15 minutes",
+		keyGenerator: (req) => {
+			// Version plus sûre qui gère tous les cas
+			const ip =
+				req.ip ||
+				(req.headers["x-forwarded-for"] as string) ||
+				req.socket.remoteAddress ||
+				"127.0.0.1"
+
+			// Si l'IP est une liste (comme dans x-forwarded-for), prenez la première
+			return (Array.isArray(ip) ? ip[0] : ip).split(",")[0].trim()
+		},
 	})
 
 	// Apply rate limiting to all API routes
 	app.use("/api/", apiLimiter)
 
-	// // Data sanitization against NoSQL query injection
-	// app.use(
-	// 	mongoSanitize({
-	// 		onSanitize: ({ req, key }) => {
-	// 			console.warn(
-	// 				`Cette requête contient une valeur MongoDB dangereuse pour la clé '${key}'.`
-	// 			)
-	// 		},
-	// 		dryRun: false, // Mettez true pour tester sans bloquer
-	// 	})
-	// )
-
+	app.use(mongoSanitizerMiddleware)
 	// Data sanitization against XSS
-	app.use(xss())
-
+	app.use(xssSanitizerMiddleware)
 	// Prevent parameter pollution
 	app.use(hpp())
 }
