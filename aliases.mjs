@@ -14,6 +14,7 @@ import { pathToFileURL } from "url"
 const aliases = {
 	"@api/": "./api/",
 	"@src/": "./api/src/",
+	"@sanitizers/": "./api/src/middlewares/sanitizers/",
 	"@controllers/": "./api/src/controllers/",
 	"@middlewares/": "./api/src/middlewares/",
 	"@models/": "./api/src/models/",
