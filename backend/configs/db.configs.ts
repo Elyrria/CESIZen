@@ -1,5 +1,5 @@
 // src/configs/db.ts
-import { MONGO_URI } from "@configs/configs.ts"
+import { MONGO_URI } from "@configs/global.configs.ts"
 import { logger } from "@logs/logger.ts"
 import mongoose from "mongoose"
 import chalk from "chalk"
