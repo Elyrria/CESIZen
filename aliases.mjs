@@ -17,6 +17,9 @@ const aliases = {
 	"@sanitizers/": "./api/src/middlewares/sanitizers/",
 	"@controllers/": "./api/src/controllers/",
 	"@middlewares/": "./api/src/middlewares/",
+	"@validator/": "./api/src/middlewares/validator/",
+	"@succesHandler/": "./api/src/handlerResponse/succesHandler/",
+	"@errorHandler/": "./api/src/handlerResponse/errorHandler/",
 	"@doc/": "./api/doc/",
 	"@models/": "./api/src/models/",
 	"@routes/": "./api/src/routes/",
@@ -25,7 +28,7 @@ const aliases = {
 	"@core/": "./api/src/core/",
 	"@server/": "./api/src/server/",
 	"@configs/": "./configs/",
-	"@types/": "./types/",
+	"@types/": "./api/types/",
 }
 
 /**
