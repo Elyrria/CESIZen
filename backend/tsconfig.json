@@ -14,6 +14,7 @@
 			"@controllers/*": ["api/src/controllers/*"],
 			"@middlewares/*": ["api/src/middlewares/*"],
 			"@sanitizers/*": ["api/src/middlewares/sanitizers/*"],
+			"@doc/*": ["api/doc//*"],
 			"@models/*": ["api/src/models/*"],
 			"@routes/*": ["api/src/routes/*"],
 			"@utils/*": ["api/src/utils/*"],

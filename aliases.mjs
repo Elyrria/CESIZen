@@ -17,6 +17,7 @@ const aliases = {
 	"@sanitizers/": "./api/src/middlewares/sanitizers/",
 	"@controllers/": "./api/src/controllers/",
 	"@middlewares/": "./api/src/middlewares/",
+	"@doc/": "./api/doc/",
 	"@models/": "./api/src/models/",
 	"@routes/": "./api/src/routes/",
 	"@utils/": "./api/src/utils/",
