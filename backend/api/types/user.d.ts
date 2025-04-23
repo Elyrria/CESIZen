@@ -21,7 +21,7 @@ export interface IUser {
     /** Account last update date */
     updatedAt?: Date;
     /** Account last update date */
-    active: Boolean;
+    active?: Boolean;
 }
 
 /**

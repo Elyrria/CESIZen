@@ -1,3 +1,4 @@
+import type {IUser, Iuser} from "@api/types/user.d.ts"
 // Types for error constants
 export interface IErrorInfo {
 	code: string
@@ -9,10 +10,26 @@ export interface IErrorInfo {
 interface ErrorDataItem {
 	code?: string
 	location?: string
-	msg?: string
+	message?: string
 	path?: string
 	type?: string
 	errors?: unknown
 }
 
 type ErrorData = ErrorDataItem | ErrorDataItem[]
+
+//  Interface for success response information
+export interface ISuccessInfo {
+	code: string
+	message: string
+	statusCode: number
+}
+
+/**
+ * Interface for success response data
+ */
+export interface ISuccessResponseData {
+	code: string
+	message: string
+	data?: IUser
+}
