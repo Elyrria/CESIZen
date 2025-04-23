@@ -2,23 +2,10 @@
  * @swagger
  * components:
  *   schemas:
- *     Tokens:
- *       type: object
- *       properties:
- *         accessToken:
- *           type: string
- *           description: JWT token for API authentication
- *         refreshToken:
- *           type: string
- *           description: Token to get a new accessToken when it expires
- *
  *     UserResponse:
  *       type: object
  *       properties:
- *         id:
- *           type: string
- *           description: Auto-generated user ID
- *         lastName:
+ *         name:
  *           type: string
  *           description: User's last name
  *         firstName:
@@ -28,21 +15,21 @@
  *           type: string
  *           format: email
  *           description: User's email address
- *         createdAt:
- *           type: string
- *           format: date-time
- *           description: User creation timestamp
  *         birthDate:
  *           type: string
  *           format: date
  *           description: User's birth date
+ *         role:
+ *           type: string
+ *           description: User's role in the system
+ *           enum: [user, admin]
  *
  *     CreateUserRequest:
  *       type: object
  *       required:
  *         - email
  *         - password
- *         - lastName
+ *         - name
  *         - firstName
  *         - birthDate
  *       properties:
@@ -53,7 +40,7 @@
  *           type: string
  *           format: password
  *           minLength: 8
- *         lastName:
+ *         name:
  *           type: string
  *         firstName:
  *           type: string
@@ -61,18 +48,56 @@
  *           type: string
  *           format: date
  *
- *     CreateUserResponse:
+ *     CreateUserSuccessResponse:
  *       allOf:
- *         - $ref: '#/components/schemas/ApiResponse'
+ *         - $ref: '#/components/schemas/ApiSuccessResponse'
  *         - type: object
  *           properties:
+ *             code:
+ *               example: userCreated
  *             message:
- *               example: User successfully created
+ *               example: User created successfully
  *             data:
+ *               $ref: '#/components/schemas/UserResponse'
+ *
+ *     ValidationErrorResponse:
+ *       allOf:
+ *         - $ref: '#/components/schemas/ApiErrorResponse'
+ *         - type: object
+ *           properties:
+ *             error:
  *               type: object
  *               properties:
- *                 tokens:
- *                   $ref: '#/components/schemas/Tokens'
- *                 user:
- *                   $ref: '#/components/schemas/UserResponse'
+ *                 code:
+ *                   example: missingInfo
+ *                 message:
+ *                   example: Validation failed
+ *                 location:
+ *                   example: body
+ *                 errors:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       field:
+ *                         type: string
+ *                         example: password
+ *                       message:
+ *                         type: string
+ *                         example: The password must contain at least one uppercase letter, one lowercase letter, one number, and one special character in @ $ ! % * ? &
+ *                       location:
+ *                         type: string
+ *                         example: body
+ *     ConflictErrorResponse:
+ *       allOf:
+ *         - $ref: '#/components/schemas/ApiErrorResponse'
+ *         - type: object
+ *           properties:
+ *             error:
+ *               type: object
+ *               properties:
+ *                 code:
+ *                   example: unableToCreateUser
+ *                 message:
+ *                   example: Unable to create an account with the provided information
  */
