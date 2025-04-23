@@ -1,6 +1,8 @@
+import { validationErrorHandler } from "@validator/validationError.validator.ts"
+import { createUserValidationRules } from "@validator/user.validator.ts"
+import createUser from "@controllers/index.ts"
 import { Router } from "express"
-import {createUserValidationRules} from "@validator/user.validator.ts"
-const router = Router()
+const createUseRouter = Router()
 
 /**
  * @swagger
@@ -20,30 +22,36 @@ const router = Router()
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/CreateUserResponse'
+ *               $ref: '#/components/schemas/CreateUserSuccessResponse'
  *       400:
- *         description: Invalid data
+ *         description: Validation failed
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/ApiError'
- *               example:
- *                 error:
- *                   msg: "Validation failed"
- *                   location: "request body"
- *                   errors:
- *                     - param: "email"
- *                       msg: "Must be a valid email address"
+ *               $ref: '#/components/schemas/ValidationErrorResponse'
+ *       409:
+ *         description: User already exists
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ConflictErrorResponse'
  *       500:
  *         description: Server error
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/ApiError'
- *               example:
- *                 error:
- *                   msg: "An internal server error occurred"
+ *               allOf:
+ *                 - $ref: '#/components/schemas/ApiErrorResponse'
+ *                 - type: object
+ *                   properties:
+ *                     error:
+ *                       type: object
+ *                       properties:
+ *                         code:
+ *                           example: serverError
+ *                         message:
+ *                           example: An internal server error occurred
  */
-router.post("/v1/users/create", createUserValidationRules)
+createUseRouter.post("/create", createUserValidationRules, validationErrorHandler, createUser)
 
-export default router
+export default createUseRouter
