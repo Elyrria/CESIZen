@@ -29,17 +29,17 @@ export interface IUser {
  * Contains various ID formats that might be received in requests
  * These are filtered out in the controller for security purposes
  */
-export interface IUserReqBodyRequest extends UserInterface {
-    /** Standard ID format */
-    id?: string;
-    /** Alternative user ID format */
-    userId?: string;
-    /** UUID format */
-    uuid?: string;
-    /** MongoDB-style ID format */
-    _id?: string;
-    /** New password (for password change requests) */
-    newPassword?: string;
+export interface IUserReqBodyRequest extends IUser {
+	/** Standard ID format */
+	id?: string
+	/** Alternative user ID format */
+	userId?: string
+	/** UUID format */
+	uuid?: string
+	/** MongoDB-style ID format */
+	_id?: string
+	/** New password (for password change requests) */
+	newPassword?: string
 }
 
 /**

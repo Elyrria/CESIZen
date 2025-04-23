@@ -5,3 +5,14 @@ export interface IErrorInfo {
 	statusCode: number
 	location?: string
 }
+
+interface ErrorDataItem {
+	code?: string
+	location?: string
+	msg?: string
+	path?: string
+	type?: string
+	errors?: unknown
+}
+
+type ErrorData = ErrorDataItem | ErrorDataItem[]
