@@ -18,7 +18,7 @@ const aliases = {
 	"@controllers/": "./api/src/controllers/",
 	"@middlewares/": "./api/src/middlewares/",
 	"@validator/": "./api/src/middlewares/validator/",
-	"@succesHandler/": "./api/src/handlerResponse/succesHandler/",
+	"@successHandler/": "./api/src/handlerResponse/successHandler/",
 	"@errorHandler/": "./api/src/handlerResponse/errorHandler/",
 	"@doc/": "./api/doc/",
 	"@models/": "./api/src/models/",
