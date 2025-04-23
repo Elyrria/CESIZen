@@ -1,27 +1,9 @@
+import { addUniqueValidationMiddleware } from "@models/utils/middleware.ts"
 import { USER_MESSAGE } from "@errorHandler/configs.errorHandler.ts"
-import mongoose, { Document, Schema } from "mongoose"
 import { FIELD, CONFIG_FIELD } from "@configs/fields.configs.ts"
-import type { IUser } from "@api/types/user.js"
-import { ROLES, ROLE_HIERARCHY } from "@configs/role.configs.ts"
-
-/**
- * Extends the IUser interface with Mongoose Document properties
- */
-interface IUserDocument extends IUser, Document {}
-
-/**
- * Custom interface for MongoDB error handling
- */
-interface MongoError extends Error {
-	code?: number
-	keyPattern?: Record<string, any>
-}
-
-/**
- * Type definition for Mongoose middleware next function
- */
-type NextFunction = (err?: Error | null) => void
-
+import type { IUserDocument } from "@api/types/user.d.ts"
+import { ROLE_HIERARCHY } from "@configs/role.configs.ts"
+import { Schema } from "mongoose"
 /**
  * User schema definition
  * Contains validation rules, indexes and data structure for user documents
@@ -107,7 +89,6 @@ const userSchema = new Schema<IUserDocument>(
 		toObject: { virtuals: true }, // Includes virtual properties when converting to objects
 	}
 )
-
 /**
  * Virtual property that combines firstName and lastName
  * Not stored in the database but calculated on demand
@@ -115,52 +96,12 @@ const userSchema = new Schema<IUserDocument>(
 userSchema.virtual("fullName").get(function () {
 	return `${this.firstName} ${this.name}`
 })
-
 /**
  * Optimize query performance with additional indexes
  */
 userSchema.index({ role: 1 })
 userSchema.index({ createdAt: -1 })
 
-/**
- * Middleware to handle unique constraint violations during document creation
- * Transforms MongoDB error code 11000 into a user-friendly error message
- */
-userSchema.post("save", function (error: MongoError, _doc: IUserDocument, next: NextFunction) {
-	if ((error.name === "MongoError" || error.name === "MongoServerError") && error.code === 11000) {
-		// Safe check to avoid undefined errors
-		const field =
-			error.keyPattern && Object.keys(error.keyPattern).length > 0
-				? Object.keys(error.keyPattern)[0]
-				: "field"
-		next(new Error(`The ${field} already exists`))
-	} else {
-		next(error)
-	}
-})
+addUniqueValidationMiddleware(userSchema)
 
-/**
- * Middleware to handle unique constraint violations during document updates
- * Works similarly to the save middleware but for update operations
- */
-userSchema.post(
-	["findOneAndUpdate", "updateOne", "updateMany"],
-	function (error: MongoError, _doc: any, next: NextFunction) {
-		if ((error.name === "MongoError" || error.name === "MongoServerError") && error.code === 11000) {
-			const field =
-				error.keyPattern && Object.keys(error.keyPattern).length > 0
-					? Object.keys(error.keyPattern)[0]
-					: "field"
-			next(new Error(`The ${field} already exists`))
-		} else {
-			next(error)
-		}
-	}
-)
-
-/**
- * Create and export the User model
- */
-const User = mongoose.model<IUserDocument>("User", userSchema)
-
-export default User
+export default userSchema

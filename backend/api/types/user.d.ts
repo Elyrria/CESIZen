@@ -41,3 +41,8 @@ export interface IUserReqBodyRequest extends UserInterface {
     /** New password (for password change requests) */
     newPassword?: string;
 }
+
+/**
+ * Extends the IUser interface with Mongoose Document properties
+ */
+export interface IUserDocument extends IUser, Document {}
