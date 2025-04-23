@@ -1,5 +1,5 @@
 import { Router } from "express"
-
+import {createUserValidationRules} from "@validator/user.validator.ts"
 const router = Router()
 
 /**
@@ -44,9 +44,6 @@ const router = Router()
  *                 error:
  *                   msg: "An internal server error occurred"
  */
-router.post("/v1/users/create", (req, res) => {
-	res.set("Cache-Control", "no-store")
-	res.status(200).json({ message: "API fonctionne correctement" })
-})
+router.post("/v1/users/create", createUserValidationRules)
 
 export default router
