@@ -14,8 +14,13 @@ import { pathToFileURL } from "url"
 const aliases = {
 	"@api/": "./api/",
 	"@src/": "./api/src/",
+	"@sanitizers/": "./api/src/middlewares/sanitizers/",
 	"@controllers/": "./api/src/controllers/",
 	"@middlewares/": "./api/src/middlewares/",
+	"@validator/": "./api/src/middlewares/validator/",
+	"@succesHandler/": "./api/src/handlerResponse/succesHandler/",
+	"@errorHandler/": "./api/src/handlerResponse/errorHandler/",
+	"@doc/": "./api/doc/",
 	"@models/": "./api/src/models/",
 	"@routes/": "./api/src/routes/",
 	"@utils/": "./api/src/utils/",
@@ -23,7 +28,7 @@ const aliases = {
 	"@core/": "./api/src/core/",
 	"@server/": "./api/src/server/",
 	"@configs/": "./configs/",
-	"@types/": "./types/",
+	"@types/": "./api/types/",
 }
 
 /**

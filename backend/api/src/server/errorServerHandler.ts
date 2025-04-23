@@ -1,4 +1,5 @@
 import http from "http"
+import chalk from "chalk"
 /**
  * Handles HTTP server errors
  */
@@ -8,7 +9,7 @@ export function errorServerHandler(error: NodeJS.ErrnoException, server: http.Se
 	}
 
 	const address = server.address()
-	const bind = typeof address === "string" ? `pipe ${address}` : `port ${port}`
+	const bind = typeof address === "string" ? `pipe ${address}` : `Port ${chalk.red(port)}`
 
 	switch (error.code) {
 		case "EACCES":

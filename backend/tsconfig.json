@@ -13,13 +13,18 @@
 			"@src/*": ["api/src/*"],
 			"@controllers/*": ["api/src/controllers/*"],
 			"@middlewares/*": ["api/src/middlewares/*"],
+			"@validator/*": ["api/src/middlewares/validator/*"],
+			"@sanitizers/*": ["api/src/middlewares/sanitizers/*"],
+			"@succesHandler/*": ["api/src/handlerResponse/succesHandler/*"],
+			"@errorHandler/*": ["api/src/handlerResponse/errorHandler/*"],
+			"@doc/*": ["api/doc//*"],
 			"@models/*": ["api/src/models/*"],
 			"@routes/*": ["api/src/routes/*"],
 			"@utils/*": ["api/src/utils/*"],
 			"@logs/*": ["api/src/logs/*"],
 			"@core/*": ["api/src/core/*"],
 			"@configs/*": ["configs/*"],
-			"@types/*": ["types/*"]
+			"@types/*": ["api/types/*"]
 		}
 	},
 	"include": ["./**/*.ts"],

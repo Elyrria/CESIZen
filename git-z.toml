@@ -58,6 +58,7 @@ list = [
     "MI:RefreshToken",
     "MI:Activity",
     "S:Configs",
+    "S:Security",
     "S:Back",
     "S:BDD",
     "S:Front",
