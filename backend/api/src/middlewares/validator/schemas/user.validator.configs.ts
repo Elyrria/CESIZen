@@ -1,10 +1,10 @@
 import { USER_MESSAGE } from "@errorHandler/configs.errorHandler.ts"
-import { CONFIG_FIELD, FIELD } from "@configs/fields.configs.ts"
+import { CONFIG_FIELD, FIELD, SPECIAL_CHARS } from "@configs/fields.configs.ts"
 import { body } from "express-validator"
 // Regular expression for validating password (at least one uppercase, one lowercase, one number, one special character, 8-50 characters)
 
 const passwordRegex = new RegExp(
-	`^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{${CONFIG_FIELD.LENGTH.PASSWORD.MIN},${CONFIG_FIELD.LENGTH.PASSWORD.MAX}}$`
+	`^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[${SPECIAL_CHARS}])[A-Za-z\\d${SPECIAL_CHARS}]{${CONFIG_FIELD.LENGTH.PASSWORD.MIN},${CONFIG_FIELD.LENGTH.PASSWORD.MAX}}$`
 )
 
 /**

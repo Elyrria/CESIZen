@@ -1,5 +1,5 @@
 // src/core/app.ts
-import { setupSecurityMiddleware } from "@middlewares/security.middleware.ts"
+import { setupSecurityMiddleware } from "@api/src/middlewares/security/security.middleware.ts"
 import { swaggerOptions, swaggerUiOptions } from "@doc/swagger.configs.ts"
 import { morganMiddleware, errorLogger } from "@logs/logger.ts"
 import userRouter from "@routes/user/user.routes.ts"
