@@ -114,7 +114,6 @@ morgan.token("level", (req: Request, res: Response): string => {
 })
 morgan.token("statusColor", (_req: Request, res: Response): string => {
 	const status = res.statusCode
-	console.log(status)
 	if (status >= 500) return chalk.red(status.toString())
 	if (status >= 400) return chalk.yellow(status.toString())
 	if (status >= 300) return chalk.cyan(status.toString())
