@@ -1,5 +1,5 @@
 import { ROLE_HIERARCHY, ROLES } from "@configs/role.configs.ts"
-import type { Role } from "../../types/roles.d.ts"
+import type { Role } from "@api/types/roles.d.ts"
 
 export const isValidRole = (role: string): boolean => {
 	return Object.values(ROLES).includes(role as Role)

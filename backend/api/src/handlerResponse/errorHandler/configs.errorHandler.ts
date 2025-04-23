@@ -1,4 +1,4 @@
-import type { ErrorInfo } from "../../../types/handlerResponse.d.ts"
+import type { IErrorInfo } from "@api/types/handlerResponse.d.ts"
 // Namespace for field-related constants
 import { FIELD } from "@configs/fields.configs.ts"
 
@@ -77,7 +77,7 @@ export const TOKEN_MESSAGE = {
 /**
  * Complete mapping of errors with their associated information
  */
-export const ERROR_MAPPING: Record<string, ErrorInfo> = {
+export const ERROR_MAPPING: Record<string, IErrorInfo> = {
 	[ERROR_CODE.INVALID_ROLE]: {
 		code: ERROR_CODE.INVALID_ROLE,
 		message: `Invalid ${FIELD.ROLE}`,
