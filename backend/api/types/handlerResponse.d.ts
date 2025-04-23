@@ -1,5 +1,5 @@
 // Types for error constants
-export interface ErrorInfo {
+export interface IErrorInfo {
 	code: string
 	message: string
 	statusCode: number
