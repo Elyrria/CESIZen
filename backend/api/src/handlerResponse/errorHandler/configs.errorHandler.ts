@@ -1,6 +1,6 @@
 import type { IErrorInfo } from "@api/types/handlerResponse.d.ts"
 // Namespace for field-related constants
-import { FIELD } from "@configs/fields.configs.ts"
+import { FIELD, SPECIAL_CHARS_DISPLAY } from "@configs/fields.configs.ts"
 
 // Namespace for error codes
 export const ERROR_CODE = {
@@ -51,7 +51,7 @@ export const USER_MESSAGE = {
 
 	required: (type: string): string => `The ${type} is required`,
 
-	passwordRequirements: `The ${FIELD.PASSWORD} must contain at least one uppercase letter, one lowercase letter, one number, and one special character`,
+	passwordRequirements: `The ${FIELD.PASSWORD} must contain at least one uppercase letter, one lowercase letter, one number, and one special character in ${SPECIAL_CHARS_DISPLAY}`,
 
 	length: (type: string, min: number, max: number): string =>
 		`The ${type} must contain between ${min} and ${max} characters`,

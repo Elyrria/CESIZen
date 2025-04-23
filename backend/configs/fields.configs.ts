@@ -12,6 +12,10 @@ export const FIELD = {
 	INFORMATION: "information",
 }
 
+export const SPECIAL_CHARS = "@$!%*?&"
+
+export const SPECIAL_CHARS_DISPLAY = SPECIAL_CHARS.split("").join(" ")
+
 /**
  * Configuration constants for validations and settings
  */

@@ -37,7 +37,7 @@ export const errorHandler = (res: Response, errorCode: string, customMessage?: s
 	// Create the error response data
 	const errorData: ErrorData = {
 		code: errorInfo.code,
-		msg: customMessage || errorInfo.message,
+		message: customMessage || errorInfo.message,
 	}
 
 	// Add location if it exists
