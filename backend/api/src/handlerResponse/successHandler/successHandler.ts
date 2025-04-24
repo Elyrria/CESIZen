@@ -1,6 +1,6 @@
 import { SUCCESS_MAPPING } from "@api/src/handlerResponse/successHandler/configs.successHandler.ts"
 import type { ISuccessInfo, ISuccessResponseData } from "@api/types/handlerResponse.d.ts"
-import type { IUserDisplay } from "@api/types/user.d.ts"
+import type {IData} from "@api/types/data.d.ts"
 import type { Response } from "express"
 
 /**
@@ -64,7 +64,7 @@ export const successResponse = (successData: ISuccessResponseData) => {
  * @param {string} [customMessage] - Optional custom success message.
  * @returns {Response} - The Express response with appropriate status code and success message.
  */
-export const successHandler = (res: Response, successCode: string, data?: any, customMessage?: string): Response => {
+export const successHandler = (res: Response, successCode: string, data?: IData, customMessage?: string): Response => {
 	// Get success information from the mapping
 	const successInfo = customMessage ? createSuccessInfo(successCode, customMessage) : getSuccessInfo(successCode)
 
@@ -92,7 +92,7 @@ export const successHandler = (res: Response, successCode: string, data?: any, c
  * @param {string} [customMessage] - Optional custom success message
  * @returns {Response} - The Express response
  */
-export const createdHandler = (res: Response, successCode: string, data: IUserDisplay, customMessage?: string): Response => {
+export const createdHandler = (res: Response, successCode: string, data: IData, customMessage?: string): Response => {
 	return successHandler(res, successCode, data, customMessage)
 }
 
@@ -105,7 +105,7 @@ export const createdHandler = (res: Response, successCode: string, data: IUserDi
  * @param {string} [customMessage] - Optional custom success message
  * @returns {Response} - The Express response
  */
-export const okHandler = (res: Response, successCode: string, data: any, customMessage?: string): Response => {
+export const okHandler = (res: Response, successCode: string, data: IData, customMessage?: string): Response => {
 	return successHandler(res, successCode, data, customMessage)
 }
 
@@ -118,7 +118,7 @@ export const okHandler = (res: Response, successCode: string, data: any, customM
  * @param {string} [customMessage] - Optional custom success message
  * @returns {Response} - The Express response
  */
-export const updatedHandler = (res: Response, successCode: string, data: any, customMessage?: string): Response => {
+export const updatedHandler = (res: Response, successCode: string, data: IData, customMessage?: string): Response => {
 	return successHandler(res, successCode, data, customMessage)
 }
 
@@ -131,6 +131,6 @@ export const updatedHandler = (res: Response, successCode: string, data: any, cu
  * @param {string} [customMessage] - Optional custom success message
  * @returns {Response} - The Express response
  */
-export const deletedHandler = (res: Response, successCode: string, data?: any, customMessage?: string): Response => {
+export const deletedHandler = (res: Response, successCode: string, data?: IData, customMessage?: string): Response => {
 	return successHandler(res, successCode, data, customMessage)
 }

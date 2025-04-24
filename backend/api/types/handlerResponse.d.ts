@@ -1,4 +1,4 @@
-import type {IUser, Iuser} from "@api/types/user.d.ts"
+import type {IData} from "@api/types/data.d.ts"
 // Types for error constants
 export interface IErrorInfo {
 	code: string
@@ -31,5 +31,5 @@ export interface ISuccessInfo {
 export interface ISuccessResponseData {
 	code: string
 	message: string
-	data?: IUser
+	data?: IData
 }

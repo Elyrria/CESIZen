@@ -1,4 +1,4 @@
-import type { Role } from "./roles.d.ts"
+import type { Role } from "@api/types/roles.d.ts"
 
 /**
  * Base interface for a user
@@ -29,7 +29,7 @@ export type IUserCreate = Pick<IUser, "email" | "password" | "name" | "firstName
 
 export type IUserUpdate = Partial<Omit<IUser, "createdAt" | "updatedAt">>
 
-export type IUserDisplay = Omit<IUser, "password"> & { _id: string | Types.ObjectId }
+export type IUserDisplay = Omit<IUser, "password"> & { id: string | Types.ObjectId }
 
 // export interface IUserDataCrypto {
 // 	email: string
