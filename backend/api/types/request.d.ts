@@ -1,11 +1,12 @@
 import { Request } from "express"
 import {IUser} from "@api/types/user.d.ts"
+import {IRefreshToken} from "@api/types/tokens.d.ts"
 
 declare global {
 	namespace Express {
 		interface Request {
 			sanitizedQuery: any
-			sanitizedBody: IUser
+			sanitizedBody: IUser | IRefreshToken | null
 			sanitizedParams: any
 			queryPolluted: any
 			rateLimit?: {
