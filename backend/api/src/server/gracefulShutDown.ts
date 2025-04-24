@@ -49,7 +49,7 @@ const gracefullyShutdown = (server: http.Server): void => {
 			mongoose.connection
 				.close(false)
 				.then(() => {
-					logger.warn(chalk.yellow("MongoDB connection closed"))
+					logger.warn(chalk.green("MongoDB") + " connection closed 🤐")
 					process.exit(0)
 				})
 				.catch((err) => {

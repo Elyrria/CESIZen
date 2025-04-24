@@ -8,5 +8,17 @@ const getEnv = (key: string, defaultValue?: string): string => {
 	return value
 }
 
-export const MONGO_URI = getEnv("MONGO_URI")
-export const PORT_BACKEND = getEnv("PORT_BACKEND", "3000")
+export const CONFIGS = {
+	ENCRYPTION: {
+		KEY: getEnv("ENCRYPTION_KEY") || "",
+	},
+	IV: {
+		KEY: getEnv("IV_LENGTH"),
+	},
+	URI: {
+		KEY: getEnv("MONGO_URI"),
+	},
+	PORT: {
+		KEY: getEnv("PORT_BACKEND", "3000"),
+	},
+}

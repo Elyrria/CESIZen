@@ -1,12 +1,12 @@
 // src/configs/db.ts
-import { MONGO_URI } from "@configs/global.configs.ts"
+import { CONFIGS } from "@configs/global.configs.ts"
 import { logger } from "@logs/logger.ts"
 import mongoose from "mongoose"
 import chalk from "chalk"
 
 export const setupMongoConnection = async (): Promise<void> => {
 	try {
-		await mongoose.connect(MONGO_URI)
+		await mongoose.connect(CONFIGS.URI.KEY)
 		logger.info(`Connexion à ${chalk.green("MongoDB")} réussie ✅`)
 
 		mongoose.connection.on("error", (err) => {
@@ -14,7 +14,7 @@ export const setupMongoConnection = async (): Promise<void> => {
 		})
 
 		mongoose.connection.on("disconnected", () => {
-			logger.warn("MongoDB disconnected")
+			logger.warn(chalk.green("MongoDB") + " disconnected ‼️")
 		})
 	} catch (error) {
 		logger.error(`Connexion à ${chalk.green("MongoDB")} échouée ❌`, error)
