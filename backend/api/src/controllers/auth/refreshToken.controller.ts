@@ -1,8 +1,9 @@
 import { errorHandler, handleUnexpectedError } from "@errorHandler/errorHandler.ts"
-import type { IRefreshToken } from "@models/RefreshToken/RefreshToken.interface.ts"
 import { SUCCESS_MESSAGE } from "@successHandler/configs.successHandler.ts"
+import type { IRefreshTokenDocument } from "@api/types/tokens.d.ts"
 import { ERROR_CODE } from "@errorHandler/configs.errorHandler.ts"
 import { successHandler } from "@successHandler/successHandler.ts"
+import { decryptData } from "@utils/crypto.ts"
 import { generateAccesToken } from "@utils/generateTokens.ts"
 import type { IDecodedToken } from "@api/types/tokens.d.ts"
 import { CONFIGS } from "@configs/global.configs.ts"
@@ -23,11 +24,20 @@ import jwt from "jsonwebtoken"
  */
 export const refreshToken = async (req: Request, res: Response): Promise<void> => {
 	try {
-		const refreshToken: string = req.body.refreshToken
+		if (!req.sanitizedBody) {
+			errorHandler(res, ERROR_CODE.SERVER)
+			return
+		}
 
+		const tokenData: Pick<IRefreshTokenDocument, "refreshToken"> = req.sanitizedBody as Pick<
+			IRefreshTokenDocument,
+			"refreshToken"
+		>
+		const refreshToken = tokenData.refreshToken
 		// Check if the refresh token is provided
 		if (!refreshToken) {
 			errorHandler(res, ERROR_CODE.INVALID_TOKEN)
+
 			return
 		}
 
@@ -37,9 +47,12 @@ export const refreshToken = async (req: Request, res: Response): Promise<void> =
 			errorHandler(res, ERROR_CODE.SERVER)
 			return
 		}
-
+		// Get User-Agent
+		const userAgent = req.headers["user-agent"] || "unknown"
 		// Find the stored refresh token in the database
-		const storedToken: IRefreshToken | null = await RefreshToken.findOne({ refreshToken: refreshToken })
+		const storedToken: IRefreshTokenDocument | null = await RefreshToken.findOne({
+			refreshToken: refreshToken,
+		})
 		if (!storedToken) {
 			errorHandler(res, ERROR_CODE.INVALID_TOKEN)
 			return
@@ -56,11 +69,16 @@ export const refreshToken = async (req: Request, res: Response): Promise<void> =
 			return
 		}
 
-		const currentUserAgent = req.headers["user-agent"]
+		/**
+		 * List of field names that need to be decrypted
+		 */
+		const ENCRYPTED_FIELDS = ["userAgent", "ipAddress"]
 
-		if (storedToken.userAgent && storedToken.userAgent !== currentUserAgent) {
+		const decryptUserAgent = decryptData(storedToken, ENCRYPTED_FIELDS)
+
+		if (decryptUserAgent.userAgent && decryptUserAgent.userAgent !== userAgent) {
 			//Log potential security concern
-			console.warn(`User agent mismatch for token: ${storedToken._id}`)
+			console.warn(`User agent mismatch for token: ${decryptUserAgent._id}`)
 			storedToken.revokeToken()
 			await storedToken.save()
 			errorHandler(res, ERROR_CODE.INVALID_TOKEN, "Security validation failed")
