@@ -1,11 +1,12 @@
+import { generateAccesToken, generateRefreshToken } from "@utils/generateTokens.ts"
 import { errorHandler, handleUnexpectedError } from "@errorHandler/errorHandler.ts"
 import { validateRequiredUserFields } from "@utils/validateRequiredFields.ts"
 import { SUCCESS_CODE } from "@successHandler/configs.successHandler.ts"
+import { processUserData, decryptUserData } from "@utils/crypto.ts"
 import { ERROR_CODE } from "@errorHandler/configs.errorHandler.ts"
 import { createdHandler } from "@successHandler/successHandler.ts"
 import type { IUserReqBodyRequest } from "@api/types/user.d.ts"
 import { deleteObjectIds } from "@utils/idCleaner.ts"
-import { processUserData, decryptUserData } from "@utils/crypto.ts"
 import type { Request, Response } from "express"
 import { User } from "@models/index.ts"
 
@@ -45,10 +46,40 @@ const createUser = async (req: Request, res: Response): Promise<void> => {
 			errorHandler(res, ERROR_CODE.SERVER)
 			return
 		}
-		const { password, _id,  ...userWithoutPassword } = savedUser.toObject()
+		const { password, _id, ...userWithoutPassword } = savedUser.toObject()
 		const decryptedUserResponse = decryptUserData(userWithoutPassword)
 
-		createdHandler(res, SUCCESS_CODE.USER_CREATED, decryptedUserResponse)
+		// Generate an access token for the new user
+		let accessToken: string | undefined = undefined
+
+		try {
+			accessToken = generateAccesToken({
+				id: decryptedUserResponse.id,
+				role: decryptedUserResponse.role,
+			})
+		} catch (error: any) {
+			errorHandler(res, ERROR_CODE.SERVER, error.message, error)
+			return
+		}
+		// Generate a refresh token for the new user
+		let refreshToken: string | undefined = undefined
+		try {
+			refreshToken = await generateRefreshToken({
+				id: decryptedUserResponse.id,
+				role: decryptedUserResponse.role,
+			})
+		} catch (error: any) {
+			errorHandler(res, ERROR_CODE.SERVER, error.message, error)
+			return
+		}
+		if (!refreshToken || !accessToken) {
+			errorHandler(res, ERROR_CODE.SERVER)
+			return
+		}
+		createdHandler(res, SUCCESS_CODE.USER_CREATED, {
+			user: decryptedUserResponse,
+			tokens: { accessToken, refreshToken },
+		})
 		return
 	} catch (error) {
 		// Handle unexpected errors
