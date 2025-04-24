@@ -2,10 +2,10 @@ import { generateAccesToken, generateRefreshToken } from "@utils/generateTokens.
 import { errorHandler, handleUnexpectedError } from "@errorHandler/errorHandler.ts"
 import { validateRequiredUserFields } from "@utils/validateRequiredFields.ts"
 import { SUCCESS_CODE } from "@successHandler/configs.successHandler.ts"
-import { processUserData, decryptUserData } from "@utils/crypto.ts"
+import type { IUser, IUserReqBodyRequest } from "@api/types/user.d.ts"
 import { ERROR_CODE } from "@errorHandler/configs.errorHandler.ts"
 import { createdHandler } from "@successHandler/successHandler.ts"
-import type { IUserReqBodyRequest } from "@api/types/user.d.ts"
+import { processUserData, decryptData } from "@utils/crypto.ts"
 import { deleteObjectIds } from "@utils/idCleaner.ts"
 import type { Request, Response } from "express"
 import { User } from "@models/index.ts"
@@ -23,7 +23,7 @@ import { User } from "@models/index.ts"
 const createUser = async (req: Request, res: Response): Promise<void> => {
 	try {
 		// Extract user details from the request body
-		const userObject: IUserReqBodyRequest = req.sanitizedBody
+		const userObject: IUserReqBodyRequest = req.sanitizedBody as IUser
 		// Remove any user IDs from the request body for security reasons
 		const cleanUserObject = deleteObjectIds(userObject)
 		// Validate the presence of required fields in the request body
@@ -47,7 +47,13 @@ const createUser = async (req: Request, res: Response): Promise<void> => {
 			return
 		}
 		const { password, _id, ...userWithoutPassword } = savedUser.toObject()
-		const decryptedUserResponse = decryptUserData(userWithoutPassword)
+
+		/**
+		 * List of field names that need to be decrypted
+		 */
+		const ENCRYPTED_FIELDS = ["name", "firstName", "birthDate"]
+
+		const decryptedUserResponse = decryptData(userWithoutPassword, ENCRYPTED_FIELDS)
 
 		// Generate an access token for the new user
 		let accessToken: string | undefined = undefined
@@ -64,10 +70,13 @@ const createUser = async (req: Request, res: Response): Promise<void> => {
 		// Generate a refresh token for the new user
 		let refreshToken: string | undefined = undefined
 		try {
-			refreshToken = await generateRefreshToken({
-				id: decryptedUserResponse.id,
-				role: decryptedUserResponse.role,
-			})
+			refreshToken = await generateRefreshToken(
+				{
+					id: decryptedUserResponse.id,
+					role: decryptedUserResponse.role,
+				},
+				req
+			)
 		} catch (error: any) {
 			errorHandler(res, ERROR_CODE.SERVER, error.message, error)
 			return
