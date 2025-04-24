@@ -1,10 +1,10 @@
-import type { IRefreshToken } from "@models/RefreshToken/RefreshToken.interface.ts"
 import { addUniqueValidationMiddleware } from "@models/utils/middleware.ts"
 import { TOKEN_MESSAGE } from "@errorHandler/configs.errorHandler.ts"
+import type { IRefreshTokenDocument } from "@api/types/tokens.d.ts"
 import { CONFIG_FIELD } from "@configs/fields.configs.ts"
 import mongoose, { Schema } from "mongoose"
 
-const refreshTokenSchema: Schema<IRefreshToken> = new mongoose.Schema(
+const refreshTokenSchema: Schema<IRefreshTokenDocument> = new mongoose.Schema(
 	{
 		refreshToken: {
 			type: String,
