@@ -1,9 +1,10 @@
 import type { IRefreshToken } from "@models/RefreshToken/RefreshToken.interface.ts"
+import { addUniqueValidationMiddleware } from "@models/utils/middleware.ts"
 import { TOKEN_MESSAGE } from "@errorHandler/configs.errorHandler.ts"
 import { CONFIG_FIELD } from "@configs/fields.configs.ts"
 import mongoose, { Schema } from "mongoose"
 
-export const refreshTokenSchema: Schema<IRefreshToken> = new mongoose.Schema(
+const refreshTokenSchema: Schema<IRefreshToken> = new mongoose.Schema(
 	{
 		refreshToken: {
 			type: String,
@@ -71,3 +72,7 @@ refreshTokenSchema.statics.findValid = function (userId: mongoose.Types.ObjectId
 		expiresAt: { $gt: new Date() },
 	})
 }
+
+addUniqueValidationMiddleware(refreshTokenSchema)
+
+export default refreshTokenSchema
