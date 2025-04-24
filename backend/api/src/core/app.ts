@@ -1,10 +1,10 @@
 // src/core/app.ts
 import { setupSecurityMiddleware } from "@api/src/middlewares/security/security.middleware.ts"
+import refreshTokenRouter from "@routes/refreshToken/refreshToken.route.ts"
 import { swaggerOptions, swaggerUiOptions } from "@doc/swagger.configs.ts"
 import { morganMiddleware, errorLogger } from "@logs/logger.ts"
 import userRouter from "@routes/user/user.routes.ts"
 import { setupMongoConnection } from "@configs/db.configs.ts"
-import type { Request, Response } from "express"
 import swaggerUi from "swagger-ui-express"
 import swaggerJsdoc from "swagger-jsdoc"
 import express from "express"
@@ -30,7 +30,7 @@ app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec, swaggerUiOpti
 // Global error handler middleware
 app.use(errorLogger)
 // Register API routes
-app.use("/api", userRouter)
+app.use("/api", userRouter, refreshTokenRouter)
 
 // /**
 //  * Endpoint pour tester le middleware de sanitisation MongoDB
