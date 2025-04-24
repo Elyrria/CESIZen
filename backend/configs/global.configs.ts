@@ -21,4 +21,7 @@ export const CONFIGS = {
 	PORT: {
 		KEY: getEnv("PORT_BACKEND", "3000"),
 	},
+	TOKEN_SECRET: {
+		KEY: getEnv("TOKEN_SECRET"),
+	},
 }
