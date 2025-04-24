@@ -1,6 +1,6 @@
 import { SUCCESS_MAPPING } from "@api/src/handlerResponse/successHandler/configs.successHandler.ts"
 import type { ISuccessInfo, ISuccessResponseData } from "@api/types/handlerResponse.d.ts"
-import type { IUser } from "@api/types/user.d.ts"
+import type { IUserDisplay } from "@api/types/user.d.ts"
 import type { Response } from "express"
 
 /**
@@ -88,11 +88,11 @@ export const successHandler = (res: Response, successCode: string, data?: any, c
  *
  * @param {Response} res - The Express response object
  * @param {string} successCode - The success code for creation events
- * @param {IUser} data - The created resource data
+ * @param {IUserDisplay} data - The created resource data
  * @param {string} [customMessage] - Optional custom success message
  * @returns {Response} - The Express response
  */
-export const createdHandler = (res: Response, successCode: string, data: IUser, customMessage?: string): Response => {
+export const createdHandler = (res: Response, successCode: string, data: IUserDisplay, customMessage?: string): Response => {
 	return successHandler(res, successCode, data, customMessage)
 }
 
