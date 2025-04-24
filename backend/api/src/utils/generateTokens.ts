@@ -1,6 +1,6 @@
 import type { IUserToken } from "@api/types/tokens.d.ts"
-import {CONFIGS} from "@configs/global.configs.ts"
-// import RefreshToken from "../models/RefreshToken.ts"
+import { CONFIGS } from "@configs/global.configs.ts"
+import { RefreshToken } from "@models/index.ts"
 import jwt from "jsonwebtoken"
 
 /**
@@ -44,7 +44,7 @@ export const generateRefreshToken = async (user: IUserToken): Promise<string | u
 
 	const refreshToken = jwt.sign({ userId: user.id, role: user.role }, secretKey, { expiresIn: "7d" })
 
-	// await RefreshToken.create({ refreshToken: refreshToken, userId: user._id })
+	await RefreshToken.create({ refreshToken: refreshToken, userId: user.id })
 
 	return refreshToken
 }
