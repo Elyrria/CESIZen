@@ -1,9 +1,11 @@
 import { CONFIGS } from "@configs/global.configs.ts"
 import type { IUserCreate, IUserDisplay } from "@api/types/user.d.ts"
+import type { IRefreshTokenCreate } from "@api/types/tokens.d.ts"
 import { ROLE_HIERARCHY } from "@configs/role.configs.ts"
-import { User } from "@models/index.ts"
+import { RefreshToken, User } from "@models/index.ts"
 import bcrypt from "bcrypt"
 import crypto from "crypto"
+
 /**
  * Encrypts a value in a reversible way
  */
@@ -43,9 +45,9 @@ export function decrypt(text: string): string {
 
 export async function processUserData(userData: IUserCreate) {
 	// Encrypt sensitive data
-	const encryptedName = encrypt(userData.name)
-	const encryptedFirstName = encrypt(userData.firstName)
-	const encryptedBirthDate = encrypt(userData.birthDate)
+	const encryptedName: string = encrypt(userData.name)
+	const encryptedFirstName: string = encrypt(userData.firstName)
+	const encryptedBirthDate: string = encrypt(userData.birthDate)
 	// Hash the password (no reversible encryption for passwords!)
 	const hashedPassword = await bcrypt.hash(userData.password, 10)
 	// Store this data in the database
@@ -64,17 +66,25 @@ export async function processUserData(userData: IUserCreate) {
 	return user
 }
 
-/**
- * List of field names that need to be decrypted
- */
-const ENCRYPTED_FIELDS = ["name", "firstName", "birthDate"]
+export async function processRefreshToken(refreshTokenData: IRefreshTokenCreate): Promise<IRefreshTokenCreate> {
+	const encryptedIp: string = encrypt(refreshTokenData.ipAddress)
+	const encryptedUserAgent: string = encrypt(refreshTokenData.userAgent)
+	const refreshToken = new RefreshToken({
+		refreshToken: refreshTokenData.refreshToken,
+		userId: refreshTokenData.userId,
+		ipAddress: encryptedIp,
+		userAgent: encryptedUserAgent,
+	})
+
+	return refreshToken
+}
 
 /**
  * Decrypts specified fields in a user object
  * @param {Record<string, any>} userData - The user data object with encrypted fields
  * @returns {Record<string, any>} - A new object with decrypted fields
  */
-export function decryptUserData(userData: Record<string, any>): IUserDisplay {
+export function decryptData(userData: Record<string, any>, ENCRYPTED_FIELDS: string[]): any {
 	// Create a copy of the original object to avoid modifying it
 	const decryptedUser = { ...userData }
 
