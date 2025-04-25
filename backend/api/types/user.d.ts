@@ -1,10 +1,10 @@
 import type { Role } from "@api/types/roles.d.ts"
-
+import type { ObjectId } from "mongoose"
 /**
  * Base interface for a user
  */
 export interface IUser {
-	_id?: mongoose.Schema.Types.ObjectId
+	_id?: ObjectId
 	/** User's unique email */
 	email: string
 	/** User's hashed password */
@@ -30,7 +30,7 @@ export type IUserCreate = Pick<IUser, "email" | "password" | "name" | "firstName
 
 export type IUserUpdate = Partial<Omit<IUser, "createdAt" | "updatedAt">>
 
-export type IUserDisplay = Omit<IUser, "password"> & { id: string | Types.ObjectId }
+export type IUserDisplay = Omit<IUser, "password"> & { id: string | ObjectId }
 
 // export interface IUserDataCrypto {
 // 	email: string
@@ -48,13 +48,13 @@ export type IUserDisplay = Omit<IUser, "password"> & { id: string | Types.Object
  */
 export interface IUserReqBodyRequest extends IUser {
 	/** Standard ID format */
-	id?: string
+	id?: ObjectId
 	/** Alternative user ID format */
 	userId?: string
 	/** UUID format */
 	uuid?: string
 	/** MongoDB-style ID format */
-	_id?: string
+	_id?: ObjectId
 	/** New password (for password change requests) */
 	newPassword?: string
 }

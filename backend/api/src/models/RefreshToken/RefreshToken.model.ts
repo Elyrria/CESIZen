@@ -1,7 +1,7 @@
-import type { IRefreshToken } from "@models/RefreshToken/RefreshToken.interface.ts"
 import refreshTokenSchema from "@models/RefreshToken/RefreshToken.schema.ts"
+import type { IRefreshTokenDocument } from "@api/types/tokens.d.ts"
 import mongoose from "mongoose"
 
-const RefreshToken = mongoose.model<IRefreshToken>("RefreshToken", refreshTokenSchema)
+const RefreshToken = mongoose.model<IRefreshTokenDocument>("RefreshToken", refreshTokenSchema)
 
 export default RefreshToken

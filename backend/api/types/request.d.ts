@@ -1,13 +1,13 @@
 import { Request } from "express"
-import {IUser} from "@api/types/user.d.ts"
+import { IUser } from "@api/types/user.d.ts"
 import { IRefreshTokenRequest } from "@api/types/tokens.d.ts"
 
 declare global {
 	namespace Express {
 		interface Request {
-			sanitizedQuery: any
+			sanitizedQuery: IUser | IRefreshTokenRequest | null
 			sanitizedBody: IUser | IRefreshTokenRequest | null
-			sanitizedParams: any
+			sanitizedParams: IUser | IRefreshTokenRequest | null
 			queryPolluted: any
 			rateLimit?: {
 				limit: number
@@ -21,3 +21,5 @@ declare global {
 		}
 	}
 }
+
+export type TSanitizedKeys = "sanitizedBody" | "sanitizedQuery" | "sanitizedParams"

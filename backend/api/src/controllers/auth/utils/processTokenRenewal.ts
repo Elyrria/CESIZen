@@ -8,6 +8,7 @@ import { errorHandler } from "@errorHandler/errorHandler.ts"
 import type { IUserDocument } from "@api/types/user.d.ts"
 import { User } from "@models/index.ts"
 import type { Response } from "express"
+import type { ObjectId } from "mongoose"
 import jwt from "jsonwebtoken"
 
 /**
@@ -16,7 +17,7 @@ import jwt from "jsonwebtoken"
 export async function processTokenRenewal(
 	res: Response,
 	refreshToken: string,
-	requestUserId: string,
+	requestUserId: ObjectId,
 	secretKey: string,
 	storedToken: IRefreshTokenDocument
 ): Promise<void> {
@@ -32,9 +33,9 @@ export async function processTokenRenewal(
 		errorHandler(res, ERROR_CODE.MIS_MATCH)
 		return
 	}
-	
+
 	// Validate user ID matches
-	if (!decoded.userId || user._id.toString() !== requestUserId) {
+	if (!decoded.userId || user._id !== requestUserId) {
 		await revokeToken(storedToken)
 		errorHandler(res, ERROR_CODE.MIS_MATCH)
 		return

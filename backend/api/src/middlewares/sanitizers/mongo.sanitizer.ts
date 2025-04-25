@@ -386,17 +386,6 @@ export const mongoSanitizerMiddleware = (req: Request, _res: Response, next: Nex
 	if (securityChanges.length > 0) {
 		logSecurityEvent("Potential NoSQL injection attempt", req, securityChanges)
 	}
-
+	console.log(securityChanges)
 	next()
-}
-
-// Extend Express Request type definition
-declare global {
-	namespace Express {
-		interface Request {
-			getSanitizedQuery(): any
-			getSanitizedBody(): any
-			getSanitizedParams(): any
-		}
-	}
 }

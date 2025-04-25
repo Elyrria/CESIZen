@@ -1,13 +1,13 @@
 import { type IUser } from "@api/types/user.d.ts"
 import { type Role } from "@configs/role.configs.ts"
-import mongoose, { Document } from "mongoose"
+import type { Document, ObjectId } from "mongoose"
 
 export interface IAccessToken {
 	accessToken: string
 }
 export interface IRefreshToken {
 	refreshToken: string
-	userId: mongoose.Schema.Types.ObjectId
+	userId: ObjectId
 	userAgent: string
 	ipAddress: string
 	isRevoked: boolean
@@ -26,15 +26,15 @@ export interface IRefreshTokenDocument extends Document, IRefreshToken {
 export interface ITokens extends IAccessToken, Pick<IRefreshToken, "refreshToken"> {}
 
 export type IRefreshTokenCreate = Pick<IRefreshToken, "ipAddress" | "userAgent" | "refreshToken"> & {
-	userId: string
+	userId:ObjectId
 }
 export type IRefreshTokenRequest = Pick<IRefreshToken, "refreshToken"> & Pick<IRefreshTokenCreate, "userId">
 
 export interface IDecodedToken {
-	userId: string
+	userId: ObjectId
 	role: Role
 }
 
 export interface IUserToken extends Pick<IUser, "role"> {
-	id: string
+	id: ObjectId
 }
