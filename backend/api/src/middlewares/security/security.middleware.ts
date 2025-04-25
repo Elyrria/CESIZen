@@ -1,3 +1,4 @@
+import { useSanitizedData } from "@middlewares/security/useSanitizedData.middleware.ts"
 import { mongoSanitizerMiddleware } from "@sanitizers/mongo.sanitizer.ts"
 import { xssSanitizerMiddleware } from "@sanitizers/xss.sanitizer.ts"
 import type { Request, Response, NextFunction } from "express"
@@ -18,7 +19,7 @@ export const setupSecurityMiddleware = (app: express.Application): void => {
 	app.use(express.urlencoded({ extended: true, limit: "10kb" }))
 
 	// CORS middleware to allow cross-origin requests
-	app.use((req: Request, res: Response, next: NextFunction) => {
+	app.use((_req: Request, res: Response, next: NextFunction) => {
 		res.setHeader("Access-Control-Allow-Origin", "*") // Allows access to the API from any origin
 		res.setHeader(
 			"Access-Control-Allow-Headers",
@@ -73,4 +74,6 @@ export const setupSecurityMiddleware = (app: express.Application): void => {
 	app.use(xssSanitizerMiddleware)
 	// Prevent parameter pollution
 	app.use(hpp())
+
+	app.use(useSanitizedData)
 }
