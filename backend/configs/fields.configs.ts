@@ -14,7 +14,7 @@ export const FIELD = {
 	USER_ID: "userId",
 }
 
-export const SPECIAL_CHARS = "@$!%*?&"
+export const SPECIAL_CHARS = "@!%*?&"
 
 export const SPECIAL_CHARS_DISPLAY = SPECIAL_CHARS.split("").join(" ")
 
