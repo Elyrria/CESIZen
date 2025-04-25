@@ -4,6 +4,7 @@ import type { Role } from "@api/types/roles.d.ts"
  * Base interface for a user
  */
 export interface IUser {
+	_id?: mongoose.Schema.Types.ObjectId
 	/** User's unique email */
 	email: string
 	/** User's hashed password */

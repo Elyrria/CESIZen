@@ -22,11 +22,13 @@ export interface IRefreshTokenDocument extends Document, IRefreshToken {
 	revokeToken(): void
 }
 
+
 export interface ITokens extends IAccessToken, Pick<IRefreshToken, "refreshToken"> {}
 
 export type IRefreshTokenCreate = Pick<IRefreshToken, "ipAddress" | "userAgent" | "refreshToken"> & {
 	userId: string
 }
+export type IRefreshTokenRequest = Pick<IRefreshToken, "refreshToken"> & Pick<IRefreshTokenCreate, "userId">
 
 export interface IDecodedToken {
 	userId: string
