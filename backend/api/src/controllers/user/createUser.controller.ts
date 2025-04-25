@@ -23,7 +23,7 @@ import { User } from "@models/index.ts"
 const createUser = async (req: Request, res: Response): Promise<void> => {
 	try {
 		// Extract user details from the request body
-		const userObject: IUserReqBodyRequest = req.sanitizedBody as IUser
+		const userObject: IUserReqBodyRequest = req.body as IUser
 		// Remove any user IDs from the request body for security reasons
 		const cleanUserObject = deleteObjectIds(userObject)
 		// Validate the presence of required fields in the request body

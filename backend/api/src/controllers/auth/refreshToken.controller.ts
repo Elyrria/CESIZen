@@ -19,14 +19,8 @@ import type { Request, Response } from "express"
  */
 export const refreshToken = async (req: Request, res: Response): Promise<void> => {
 	try {
-		// Validate request body
-		if (!req.sanitizedBody) {
-			errorHandler(res, ERROR_CODE.SERVER)
-			return
-		}
 	
-
-		const tokenData: IRefreshTokenRequest = req.sanitizedBody as IRefreshTokenRequest
+		const tokenData: IRefreshTokenRequest = req.body as IRefreshTokenRequest
 		const { refreshToken, userId } = tokenData
 
 		// Validate refresh token is provided
