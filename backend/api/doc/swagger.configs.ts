@@ -50,6 +50,9 @@ const swaggerOptions = {
 		path.join(__dirname, "./**/*.ts"), // Schema definitions in docs folder
 		path.join(__dirname, "../src/routes/**/*.ts"), // Route definitions
 	],
+	defaultModelsExpandDepth: 4,
+	defaultModelExpandDepth: 4,
+	displayRequestDuration: true,
 }
 
 // UI configuration
@@ -57,6 +60,8 @@ const swaggerUiOptions = {
 	explorer: true,
 	customCss: ".swagger-ui .topbar { display: none }",
 	customSiteTitle: "Your API Documentation",
+	docExpansion: "list",
+	deepLinking: true,
 }
 
 export { swaggerOptions, swaggerUiOptions }
