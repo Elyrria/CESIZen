@@ -1,6 +1,13 @@
 import { TOKEN_MESSAGE } from "@errorHandler/configs.errorHandler.ts"
 import { FIELD } from "@configs/fields.configs.ts"
 import { body } from "express-validator"
+import { Types } from "mongoose"
+/**
+ * Helper function to validate if a string is a valid MongoDB ObjectID
+ * @param value String to validate
+ * @returns Boolean indicating if the string is a valid MongoDB ObjectID
+ */
+const isValidObjectId = (value: string) => Types.ObjectId.isValid(value)
 /**
  * Validation rule for the 'refreshToken' field in the request body.
  * Ensures that the refresh token is a string and applies necessary sanitization.
@@ -23,8 +30,21 @@ export const VALIDATOR = {
 		 */
 		REFRESH_TOKEN: () => [
 			body(FIELD.REFRESH_TOKEN)
+				.exists()
+				.withMessage(TOKEN_MESSAGE.cannotBeEmpty(FIELD.REFRESH_TOKEN))
 				.isString()
 				.withMessage(TOKEN_MESSAGE.mustBeString(FIELD.REFRESH_TOKEN))
+				.escape()
+				.trim(),
+		],
+		USER_ID: () => [
+			body(FIELD.USER_ID)
+				.exists()
+				.withMessage(TOKEN_MESSAGE.cannotBeEmpty(FIELD.REFRESH_TOKEN))
+				.isString()
+				.withMessage(TOKEN_MESSAGE.mustBeString(FIELD.REFRESH_TOKEN))
+				.custom(isValidObjectId)
+				.withMessage(TOKEN_MESSAGE.invalidFormat(FIELD.REFRESH_TOKEN))
 				.escape()
 				.trim(),
 		],
