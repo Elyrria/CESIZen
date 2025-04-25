@@ -15,16 +15,19 @@ export const ERROR_CODE = {
 	// Authentication errors
 	UNAUTHORIZED: "unauthorized",
 	INSUFFICIENT_ACCESS: "insufficientAccess",
+	SECURITY_VALIDATION: "securityValidation",
 
 	// Token-related errors
 	INVALID_TOKEN: "invalidToken",
 	EXPIRED_TOKEN: "expiredToken",
+	REVOKED_TOKEN: "revokedToken",
 	SIGN_TOKEN: "signatureInvalid",
 	REFRESH_TOKEN_REQUIRED: "refreshTokenRequired",
 
 	// User-related errors
 	USER_NOT_FOUND: "userNotFound",
 	UNABLE_CREATE_USER: "unableToCreateUser",
+	MIS_MATCH: "userMisMatch",
 
 	// Role-related errors
 	INVALID_ROLE: "invalidRole",
@@ -43,6 +46,7 @@ export const ERROR_MESSAGE = {
 	INVALID_CREDENTIALS: "Incorrect username/password!",
 	SERVER_ERROR: "Server error",
 	EXPIRED_TOKEN: "Token expired",
+	REVOKED_TOKEN:"Token has been revoked",
 }
 
 // Message generator functions for users
@@ -70,8 +74,9 @@ export const USER_MESSAGE = {
 // Message generator functions for tokens
 export const TOKEN_MESSAGE = {
 	mustBeString: (type: string): string => `The ${type} must be a string`,
-
+	invalidFormat: (type: string): string => `The ${type} must be a valid format: MongoDB ObjectID`,
 	refreshTokenRequired: "The refresh token is required",
+	cannotBeEmpty: USER_MESSAGE.cannotBeEmpty
 }
 
 /**
@@ -135,6 +140,11 @@ export const ERROR_MAPPING: Record<string, IErrorInfo> = {
 		message: "Invalid token",
 		statusCode: 401,
 	},
+	[ERROR_CODE.SECURITY_VALIDATION]: {
+		code: ERROR_CODE.SECURITY_VALIDATION,
+		message: "Security validation failed",
+		statusCode: 401,
+	},
 	[ERROR_CODE.MALFORMED]: {
 		code: ERROR_CODE.MALFORMED,
 		message: "Invalid token format",
@@ -148,6 +158,11 @@ export const ERROR_MAPPING: Record<string, IErrorInfo> = {
 	[ERROR_CODE.EXPIRED_TOKEN]: {
 		code: ERROR_CODE.EXPIRED_TOKEN,
 		message: ERROR_MESSAGE.EXPIRED_TOKEN,
+		statusCode: 401,
+	},
+	[ERROR_CODE.REVOKED_TOKEN]: {
+		code: ERROR_CODE.REVOKED_TOKEN,
+		message: ERROR_MESSAGE.REVOKED_TOKEN,
 		statusCode: 401,
 	},
 	[ERROR_CODE.INCORRECT_PASSWORD]: {
@@ -174,6 +189,11 @@ export const ERROR_MAPPING: Record<string, IErrorInfo> = {
 	[ERROR_CODE.UNABLE_CREATE_USER]: {
 		code: ERROR_CODE.UNABLE_CREATE_USER,
 		message: "Unable to create an account with the provided information",
+		statusCode: 409,
+	},
+	[ERROR_CODE.MIS_MATCH]: {
+		code: ERROR_CODE.MIS_MATCH,
+		message: "User identity mismatch",
 		statusCode: 409,
 	},
 	[ERROR_CODE.SERVER]: {

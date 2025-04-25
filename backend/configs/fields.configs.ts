@@ -10,7 +10,8 @@ export const FIELD = {
 	TITLE: "title",
 	AUTHOR: "author",
 	INFORMATION: "information",
-	REFRESH_TOKEN: "refreshToken"
+	REFRESH_TOKEN: "refreshToken",
+	USER_ID: "userId",
 }
 
 export const SPECIAL_CHARS = "@$!%*?&"
