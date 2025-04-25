@@ -148,22 +148,22 @@ export const ERROR_MAPPING: Record<string, IErrorInfo> = {
 	[ERROR_CODE.MALFORMED]: {
 		code: ERROR_CODE.MALFORMED,
 		message: "Invalid token format",
-		statusCode: 401,
+		statusCode: 403,
 	},
 	[ERROR_CODE.SIGN_TOKEN]: {
 		code: ERROR_CODE.SIGN_TOKEN,
 		message: "Invalid token signature",
-		statusCode: 401,
+		statusCode: 403,
 	},
 	[ERROR_CODE.EXPIRED_TOKEN]: {
 		code: ERROR_CODE.EXPIRED_TOKEN,
 		message: ERROR_MESSAGE.EXPIRED_TOKEN,
-		statusCode: 401,
+		statusCode: 403,
 	},
 	[ERROR_CODE.REVOKED_TOKEN]: {
 		code: ERROR_CODE.REVOKED_TOKEN,
 		message: ERROR_MESSAGE.REVOKED_TOKEN,
-		statusCode: 401,
+		statusCode: 403,
 	},
 	[ERROR_CODE.INCORRECT_PASSWORD]: {
 		code: ERROR_CODE.INCORRECT_PASSWORD,

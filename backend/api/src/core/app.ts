@@ -30,7 +30,8 @@ app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec, swaggerUiOpti
 // Global error handler middleware
 app.use(errorLogger)
 // Register API routes
-app.use("/api", userRouter, refreshTokenRouter)
+app.use("/api", userRouter)
+app.use("/api", refreshTokenRouter)
 
 // /**
 //  * Endpoint pour tester le middleware de sanitisation MongoDB
