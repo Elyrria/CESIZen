@@ -1,4 +1,4 @@
-import { generateAccesToken, generateRefreshToken } from "@utils/generateTokens.ts"
+import { generateAccesToken, generateRefreshToken } from "@controllers/auth/utils/generateTokens.ts"
 import { errorHandler, handleUnexpectedError } from "@errorHandler/errorHandler.ts"
 import { validateRequiredUserFields } from "@utils/validateRequiredFields.ts"
 import { SUCCESS_CODE } from "@successHandler/configs.successHandler.ts"
