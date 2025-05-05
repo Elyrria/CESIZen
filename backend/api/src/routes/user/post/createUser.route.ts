@@ -6,7 +6,7 @@ const createUseRouter = Router()
 
 /**
  * @swagger
- * /api/v1/users/create-user:
+ * /api/v1/users/create:
  *   post:
  *     summary: Creates a new user account
  *     tags: [Users]
@@ -19,6 +19,7 @@ const createUseRouter = Router()
  *           example:
  *             email: "johndoe@gmail.com"
  *             password: "Password1!"
+ *             role: "user"
  *             name: "Doe"
  *             firstName: "John"
  *             birthDate: "1994-06-14"
@@ -40,8 +41,8 @@ const createUseRouter = Router()
  *                     user:
  *                       email: "johndoe@gmail.com"
  *                       name: "Doe"
- *                       firstName: "John"
  *                       role: "user"
+ *                       firstName: "John"
  *                       birthDate: "1994-06-14"
  *                       active: true
  *                       createdAt: "2025-04-25T07:23:42.991Z"

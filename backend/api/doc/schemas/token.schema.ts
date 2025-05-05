@@ -89,7 +89,7 @@
  *                     example: userId
  *                   message:
  *                     type: string
- *                     example: The refreshToken must be a valid format: MongoDB ObjectID
+ *                     example: "The refreshToken must be a valid format: MongoDB ObjectID"
  *                   location:
  *                     type: string
  *                     example: body

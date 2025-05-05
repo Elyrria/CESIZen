@@ -37,7 +37,6 @@ const createUser = async (req: Request, res: Response): Promise<void> => {
 			errorHandler(res, ERROR_CODE.UNABLE_CREATE_USER)
 			return
 		}
-
 		// Create a new user instance with the hashed password
 		const newUser = await processUserData(cleanUserObject)
 		// Save the new user to the database
