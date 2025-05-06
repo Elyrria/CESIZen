@@ -25,3 +25,23 @@ export const CONFIGS = {
 		KEY: getEnv("TOKEN_SECRET"),
 	},
 }
+
+const CRYPTO_CONFIG = {
+	development: {
+		algorithm: getEnv("CRYPTO_DEV"),
+		keyLength: parseInt(getEnv("KEY_LENGTH_DEV")),
+	},
+	test: {
+		algorithm: getEnv("CRYPTO_TEST"),
+		keyLength: parseInt(getEnv("KEY_LENGTH_TEST")),
+	},
+	production: {
+		algorithm: getEnv("CRYPTO_PROD"),
+		keyLength: parseInt(getEnv("KEY_LENGTH_PROD")),
+	},
+}
+
+type Environment = "development" | "production"
+const ENV = (process.env.NODE_ENV || "development") as Environment
+console.log(`Environment: ${ENV}`)
+export const CRYPTO = CRYPTO_CONFIG[ENV]

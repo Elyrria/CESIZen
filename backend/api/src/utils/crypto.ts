@@ -3,7 +3,7 @@ import { dateToString, stringToDate } from "@utils/dateConverter.ts"
 import type { IRefreshTokenCreate } from "@api/types/tokens.d.ts"
 import { ROLE_HIERARCHY } from "@configs/role.configs.ts"
 import { RefreshToken, User } from "@models/index.ts"
-import { CONFIGS } from "@configs/global.configs.ts"
+import { CONFIGS, CRYPTO } from "@configs/global.configs.ts"
 import { FIELD } from "@configs/fields.configs.ts"
 import bcrypt from "bcrypt"
 import crypto from "crypto"
@@ -13,15 +13,16 @@ import crypto from "crypto"
  */
 
 const ENCRYPTION_KEY = Buffer.from(CONFIGS.ENCRYPTION.KEY, "hex")
-if (ENCRYPTION_KEY.length !== 32) {
-	throw new Error("Invalid encryption key length. Must be 32 bytes for AES-256.")
+console.log(CRYPTO)
+if (ENCRYPTION_KEY.length !== CRYPTO.keyLength) {
+	throw new Error(`Invalid encryption key length. Must be ${CRYPTO.keyLength} bytes for ${CRYPTO.algorithm}.`)
 }
 
-function encrypt(data: string): string {
+export function encrypt(data: string): string {
 	// Generate a random IV
 	const iv = crypto.randomBytes(Number(CONFIGS.IV.KEY))
 	// Create the cipher
-	const cipher = crypto.createCipheriv("aes-256-cbc", Buffer.from(ENCRYPTION_KEY), iv)
+	const cipher = crypto.createCipheriv(CRYPTO.algorithm, Buffer.from(ENCRYPTION_KEY), iv)
 	// Encrypt the data
 	let encrypted = cipher.update(data, "utf8", "hex")
 	encrypted += cipher.final("hex")
@@ -37,7 +38,7 @@ export function decrypt(data: string): string {
 	const iv = Buffer.from(parts[0], "hex")
 	const encryptedData = parts[1]
 	// Create the decipher
-	const decipher = crypto.createDecipheriv("aes-256-cbc", Buffer.from(ENCRYPTION_KEY), iv)
+	const decipher = crypto.createDecipheriv(CRYPTO.algorithm, Buffer.from(ENCRYPTION_KEY), iv)
 	// Decrypt the data
 	let decrypted = decipher.update(encryptedData, "hex", "utf8")
 	decrypted += decipher.final("utf8")
