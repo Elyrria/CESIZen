@@ -8,7 +8,7 @@ import { logSecurityEvent } from "@logs/logger.ts"
  * @param {string} str - String to sanitize
  * @returns {object} - Sanitized string and detection info
  */
-const sanitizeString = (str: string): { result: string; changed: boolean } => {
+export const sanitizeString = (str: string): { result: string; changed: boolean } => {
   if (typeof str !== 'string') return { result: str, changed: false };
   
   const sanitized = xss(str);
@@ -24,7 +24,7 @@ const sanitizeString = (str: string): { result: string; changed: boolean } => {
  * @param {string} path - Current path in the object (for logging)
  * @returns {object} - Sanitized copy of the object with detection info
  */
-const deepXssSanitize = (obj: any, path = ''): { result: any; changes: string[] } => {
+export const deepXssSanitize = (obj: any, path = ''): { result: any; changes: string[] } => {
   const changes: string[] = [];
   
   if (typeof obj !== 'object' || obj === null) {
