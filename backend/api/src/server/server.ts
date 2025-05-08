@@ -13,9 +13,6 @@ import http from "http"
 export function createServer(app: express.Application, portValue: string): http.Server {
 	// Normalize the port
 	const port = normalize(String(portValue))
-	if (port === false) {
-		throw new Error(`Invalid port value provided : ${port}`)
-	}
 	// Configure the port in the application
 	app.set("port", port)
 	// Create the server
