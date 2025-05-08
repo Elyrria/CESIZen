@@ -16,18 +16,14 @@ setupSecurityMiddleware(app)
 
 if (process.env.NODE_ENV !== "test") {
 	app.use(morganMiddleware) // For request logging
-}
-
-// Connection to MongoDB
-if (process.env.NODE_ENV !== "test") {
 	setupMongoConnection()
+	// Generate Swagger specification
+	const swaggerSpec = swaggerJsdoc(swaggerOptions)
+	// Setup Swagger UI
+	app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec, swaggerUiOptions))
+	// Global error handler middleware
 }
 
-// Generate Swagger specification
-const swaggerSpec = swaggerJsdoc(swaggerOptions)
-// Setup Swagger UI
-app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec, swaggerUiOptions))
-// Global error handler middleware
 app.use(errorLogger)
 // Register API routes
 app.use("/api", userRouter)
