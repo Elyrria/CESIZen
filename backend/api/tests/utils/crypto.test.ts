@@ -6,6 +6,10 @@ import type { ObjectId } from "mongoose"
 import mongoose from "mongoose"
 import bcrypt from "bcrypt"
 
+jest.mock("bcrypt", () => ({
+	hash: jest.fn().mockResolvedValue("hashed_password"),
+}))
+
 describe("encrypt", () => {
 	// Test for basic encryption
 	it("should encrypt a simple string correctly", () => {
@@ -58,10 +62,7 @@ describe("decrypt", () => {
 })
 
 describe("processUserData", () => {
-	// Mock implementations
-	jest.mock("bcrypt", () => ({
-		hash: jest.fn().mockResolvedValue("hashed_password"),
-	}))
+	jest.clearAllMocks()
 
 	jest.mock("@models/index.ts", () => ({
 		User: jest.fn().mockImplementation((data) => data),
@@ -100,7 +101,7 @@ describe("processUserData", () => {
 
 describe("processRefreshToken", () => {
 	// Mock implementations
-	jest.mock("@models/i", () => ({
+	jest.mock("@models/index.ts", () => ({
 		RefreshToken: jest.fn().mockImplementation((data) => data),
 	}))
 
@@ -125,7 +126,7 @@ describe("processRefreshToken", () => {
 
 		// Token and userId should remain unencrypted
 		expect(result.refreshToken).toBe(tokenData.refreshToken)
-		expect(result.userId).toBe(tokenData.userId)
+		expect(result.userId.toString()).toBe(tokenData.userId.toString())
 	})
 
 	// Test for MongoDB ID validation
