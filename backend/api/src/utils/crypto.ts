@@ -5,6 +5,7 @@ import { ROLE_HIERARCHY } from "@configs/role.configs.ts"
 import { RefreshToken, User } from "@models/index.ts"
 import { CONFIGS, CRYPTO } from "@configs/global.configs.ts"
 import { FIELD } from "@configs/fields.configs.ts"
+import mongoose from "mongoose"
 import bcrypt from "bcrypt"
 import crypto from "crypto"
 
@@ -70,6 +71,11 @@ export async function processUserData(userData: IUserCreate) {
 }
 
 export async function processRefreshToken(refreshTokenData: IRefreshTokenCreate): Promise<IRefreshTokenCreate> {
+	
+	if (!mongoose.Types.ObjectId.isValid(refreshTokenData.userId)) {
+		throw new Error("Invalid MongoDB ID format")
+	}
+	
 	const encryptedIp: string = encrypt(refreshTokenData.ipAddress)
 	const encryptedUserAgent: string = encrypt(refreshTokenData.userAgent)
 	const refreshToken = new RefreshToken({
