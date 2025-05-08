@@ -44,7 +44,7 @@ const MONGO_OPERATORS = [
  * @param {string} str - String to check
  * @returns {boolean} - True if the string contains MongoDB operators
  */
-const stringContainsMongoOperator = (str: string): boolean => {
+export const stringContainsMongoOperator = (str: string): boolean => {
 	if (typeof str !== "string") return false
 
 	// Check if the string contains a MongoDB operator
@@ -61,7 +61,7 @@ const stringContainsMongoOperator = (str: string): boolean => {
  * @param {string} key - Key to check
  * @returns {boolean} - True if the key contains MongoDB operators
  */
-const containsMongoOperatorInKey = (key: string): boolean => {
+export const containsMongoOperatorInKey = (key: string): boolean => {
 	// Check for $ at the beginning
 	if (key.startsWith("$")) return true
 
@@ -80,12 +80,17 @@ const containsMongoOperatorInKey = (key: string): boolean => {
  * @param {any} value - Value to check
  * @returns {boolean} - True if the value contains MongoDB operators
  */
-const containsMongoOperatorInValue = (value: any): boolean => {
+export const containsMongoOperatorInValue = (value: any): boolean => {
 	// If not a string, check if it's an object with operators
 	if (typeof value !== "string") {
 		if (typeof value === "object" && value !== null) {
 			// Check if any key starts with $
-			return Object.keys(value).some((k) => k.startsWith("$"))
+			if (Object.keys(value).some((k) => k.startsWith("$"))) {
+				return true
+			}
+
+			// Récursivement vérifier toutes les valeurs de l'objet
+			return Object.values(value).some((v) => containsMongoOperatorInValue(v))
 		}
 		return false
 	}
@@ -123,7 +128,7 @@ const containsMongoOperatorInValue = (value: any): boolean => {
  * @param {string} path - Current path in the object (for logging)
  * @returns {object} - Sanitized object and detection info
  */
-const sanitizeMongoObject = (obj: any, path = ""): { sanitized: any; changes: string[] } => {
+export const sanitizeMongoObject = (obj: any, path = ""): { sanitized: any; changes: string[] } => {
 	const sanitized: any = {}
 	const changes: string[] = []
 	// For each key in the object
@@ -181,7 +186,7 @@ const sanitizeMongoObject = (obj: any, path = ""): { sanitized: any; changes: st
  * @param {string} parentPath - Parent path in the object (for logging)
  * @returns {object} - Sanitized array and detection info
  */
-const sanitizeMongoArray = (arr: any[], parentPath: string): { sanitized: any[]; changes: string[] } => {
+export const sanitizeMongoArray = (arr: any[], parentPath: string): { sanitized: any[]; changes: string[] } => {
 	const sanitized: any[] = []
 	const changes: string[] = []
 	for (let i = 0; i < arr.length; i++) {
@@ -226,7 +231,7 @@ const sanitizeMongoArray = (arr: any[], parentPath: string): { sanitized: any[];
  * @param {object} params - Route parameters
  * @returns {object} - Sanitized params and detected changes
  */
-const sanitizeRouteParams = (params: any): { sanitized: any; changes: string[] } => {
+export const sanitizeRouteParams = (params: any): { sanitized: any; changes: string[] } => {
 	const sanitized: any = {}
 	const changes: string[] = []
 	for (const key in params) {
