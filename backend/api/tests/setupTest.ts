@@ -24,8 +24,7 @@ beforeAll(async () => {
 	console.log(`MongoDB Memory Server running at ${mongoUri}`)
 
 	// Connect Mongoose to the in-memory database
-	await mongoose.connect(mongoUri, {
-	})
+	await mongoose.connect(mongoUri, {})
 })
 
 /**
