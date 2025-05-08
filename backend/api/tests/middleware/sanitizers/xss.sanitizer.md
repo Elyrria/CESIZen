@@ -154,7 +154,7 @@ Ces tests utilisent une approche isolée :
 import { sanitizeString, deepXssSanitize } from "@middlewares/sanitizers/xss.sanitizer.ts"
 
 describe("XSS Sanitizer Utils", () => {
-	// Tests pour sanitizeString
+	// Tests for sanitizeString
 	describe("sanitizeString", () => {
 		it("should sanitize strings with script tags", () => {
 			const input = "<script>alert('XSS')</script>Bonjour"
@@ -189,7 +189,7 @@ describe("XSS Sanitizer Utils", () => {
 		})
 	})
 
-	// Tests pour deepXssSanitize
+	// Tests for deepXssSanitize
 	describe("deepXssSanitize", () => {
 		it("should sanitize objects with XSS in string properties", () => {
 			const input = {

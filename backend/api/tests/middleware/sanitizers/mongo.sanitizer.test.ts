@@ -8,7 +8,7 @@ import {
 } from "@middlewares/sanitizers/mongo.sanitizer.ts"
 
 describe("MongoDB Sanitizer Utils", () => {
-	// Tests pour stringContainsMongoOperator
+	// Tests for stringContainsMongoOperator
 	describe("stringContainsMongoOperator", () => {
 		it("should return true when string contains a MongoDB operator", () => {
 			expect(stringContainsMongoOperator("field$eq: 'value'")).toBe(true)
@@ -29,7 +29,7 @@ describe("MongoDB Sanitizer Utils", () => {
 		})
 	})
 
-	// Tests pour containsMongoOperatorInKey
+	// Tests for containsMongoOperatorInKey
 	describe("containsMongoOperatorInKey", () => {
 		it("should detect keys starting with $", () => {
 			expect(containsMongoOperatorInKey("$eq")).toBe(true)
@@ -53,7 +53,7 @@ describe("MongoDB Sanitizer Utils", () => {
 		})
 	})
 
-	// Tests pour containsMongoOperatorInValue
+	// Tests for containsMongoOperatorInValue
 	describe("containsMongoOperatorInValue", () => {
 		it("should detect MongoDB operators in strings", () => {
 			expect(containsMongoOperatorInValue("$ne")).toBe(true)
@@ -78,7 +78,7 @@ describe("MongoDB Sanitizer Utils", () => {
 		})
 	})
 
-	// Tests pour sanitizeMongoObject
+	// Tests for sanitizeMongoObject
 	describe("sanitizeMongoObject", () => {
 		it("should sanitize objects with MongoDB operators in keys", () => {
 			const input = { name: "John", $where: "func()", age: 30 }
@@ -142,7 +142,7 @@ describe("MongoDB Sanitizer Utils", () => {
 		})
 	})
 
-	// Tests pour sanitizeMongoArray
+	// Tests for sanitizeMongoArray
 	describe("sanitizeMongoArray", () => {
 		it("should sanitize arrays with MongoDB operators", () => {
 			const input = ["normal", "$eq", 123, "safe"]
@@ -177,7 +177,7 @@ describe("MongoDB Sanitizer Utils", () => {
 		})
 	})
 
-	// Tests pour sanitizeRouteParams
+	// Tests for sanitizeRouteParams
 	describe("sanitizeRouteParams", () => {
 		it("should sanitize route parameters containing MongoDB operators", () => {
 			const input = { id: "123", query: "$ne: null" }
