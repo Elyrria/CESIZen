@@ -111,8 +111,8 @@ La fonction `hasRoleAccess` sert à :
 ## Implémentation des Tests
 
 ```typescript
-import { isValidRole, hasRoleAccess } from "@utils/role"
-import { ROLES } from "@configs/role.configs"
+import { isValidRole, hasRoleAccess } from "@utils/role.ts"
+import { ROLES } from "@configs/role.configs.ts"
 
 describe("isValidRole", () => {
     // Test for administrator role

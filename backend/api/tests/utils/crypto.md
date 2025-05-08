@@ -160,9 +160,9 @@ La fonction `decryptData` sert à :
 ## Implémentation des Tests
 
 ```typescript
-import { encrypt, decrypt, processUserData, processRefreshToken, decryptData } from "@utils/encryption"
-import { User, RefreshToken } from "@models/index"
-import { FIELD } from "@configs/fields.configs"
+import { encrypt, decrypt, processUserData, processRefreshToken, decryptData } from "@utils/encryption.ts"
+import { User, RefreshToken } from "@models/index.ts"
+import { FIELD } from "@configs/fields.configs.ts"
 import bcrypt from "bcrypt"
 import mongoose from "mongoose"
 

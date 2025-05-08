@@ -112,7 +112,7 @@ La fonction `stringToDate` sert à :
 ## Implémentation des Tests
 
 ```typescript
-import { dateToString, stringToDate } from "@utils/dateConverter"
+import { dateToString, stringToDate } from "@utils/dateConverter.ts"
 
 describe("dateToString", () => {
   // Test for Date objects
