@@ -11,6 +11,7 @@ export const FIELD = {
 	AUTHOR: "author",
 	INFORMATION: "information",
 	REFRESH_TOKEN: "refreshToken",
+	ACCESS_TOKEN: "accessToken",
 	USER_ID: "userId",
 }
 
