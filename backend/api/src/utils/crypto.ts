@@ -14,7 +14,6 @@ import crypto from "crypto"
  */
 
 const ENCRYPTION_KEY = Buffer.from(CONFIGS.ENCRYPTION.KEY, "hex")
-console.log(CRYPTO)
 if (ENCRYPTION_KEY.length !== CRYPTO.keyLength) {
 	throw new Error(`Invalid encryption key length. Must be ${CRYPTO.keyLength} bytes for ${CRYPTO.algorithm}.`)
 }

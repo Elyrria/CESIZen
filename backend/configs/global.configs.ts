@@ -43,5 +43,4 @@ const CRYPTO_CONFIG = {
 
 type Environment = "development" | "production"
 const ENV = (process.env.NODE_ENV || "development") as Environment
-console.log(`Environment: ${ENV}`)
 export const CRYPTO = CRYPTO_CONFIG[ENV]
