@@ -1,5 +1,5 @@
-import { ROLES } from "@configs/role.configs.ts"
 import { VALIDATOR } from "@api/src/middlewares/validator/schemas/user.validator.schema.ts"
+import { ROLES } from "@configs/role.configs.ts"
 
 /**
  * Validation rules for user registration (sign up).
