@@ -1,4 +1,4 @@
-import { ERROR_MAPPING, ERROR_CODE } from "@errorHandler/configs.errorHandler.ts"
+import { ERROR_MAPPING, ERROR_CODE, ERROR_MESSAGE } from "@errorHandler/configs.errorHandler.ts"
 import type { ErrorData, IErrorInfo } from "@api/types/handlerResponse.js"
 import type { Response } from "express"
 
@@ -86,5 +86,5 @@ export const handleValidationErrors = (res: Response, validationErrors: any[]): 
 		location: error.location,
 	}))
 
-	return errorHandler(res, ERROR_CODE.MISSING_INFO, "Validation failed", formattedErrors)
+	return errorHandler(res, ERROR_CODE.MISSING_INFO, ERROR_MESSAGE.VALIDATION_FAILED, formattedErrors)
 }

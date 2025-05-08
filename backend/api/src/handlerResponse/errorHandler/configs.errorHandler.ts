@@ -11,6 +11,7 @@ export const ERROR_CODE = {
 	NO_CONDITIONS: "noConditions",
 	NO_FIELDS: "noFields",
 	MALFORMED: "malformed",
+	VALIDATION_FAILED: "validationFailed",
 
 	// Authentication errors
 	UNAUTHORIZED: "unauthorized",
@@ -47,6 +48,8 @@ export const ERROR_MESSAGE = {
 	SERVER_ERROR: "Server error",
 	EXPIRED_TOKEN: "Token expired",
 	REVOKED_TOKEN:"Token has been revoked",
+	UNABLE_TO_CREATE: "Unable to create an account with the provided information",
+	VALIDATION_FAILED: "Validation failed",
 }
 
 // Message generator functions for users
@@ -92,6 +95,12 @@ export const ERROR_MAPPING: Record<string, IErrorInfo> = {
 	[ERROR_CODE.MISSING_INFO]: {
 		code: ERROR_CODE.MISSING_INFO,
 		message: "Missing information",
+		statusCode: 400,
+		location: "body",
+	},
+	[ERROR_CODE.MISSING_INFO]: {
+		code: ERROR_CODE.VALIDATION_FAILED,
+		message: ERROR_MESSAGE.VALIDATION_FAILED,
 		statusCode: 400,
 		location: "body",
 	},
@@ -188,7 +197,7 @@ export const ERROR_MAPPING: Record<string, IErrorInfo> = {
 	},
 	[ERROR_CODE.UNABLE_CREATE_USER]: {
 		code: ERROR_CODE.UNABLE_CREATE_USER,
-		message: "Unable to create an account with the provided information",
+		message: ERROR_MESSAGE.UNABLE_TO_CREATE,
 		statusCode: 409,
 	},
 	[ERROR_CODE.MIS_MATCH]: {
