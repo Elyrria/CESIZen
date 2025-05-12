@@ -10,7 +10,6 @@ import { processUserData } from "@utils/crypto.ts"
 import { deleteObjectIds } from "@utils/idCleaner.ts"
 import type { Request, Response } from "express"
 import { User } from "@models/index.ts"
-import bcrypt from "bcrypt"
 /**
  * Controller for user creation by administrators.
  *
@@ -38,7 +37,6 @@ export const adminCreateUser = async (req: Request, res: Response): Promise<void
 			errorHandler(res, ERROR_CODE.MISSING_INFO)
 			return
 		}
-
 		// Check if the user is exist
 		const userExist = await User.findOne({ email: userObject.email })
 
@@ -77,7 +75,7 @@ export const adminCreateUser = async (req: Request, res: Response): Promise<void
 		}
 
 		// Create and save new user
-		const newUser = await processUserData(cleanUserObject)
+		const newUser = await processUserData(cleanUserObject, true)
 		const savedUser = await newUser.save()
 
 		if (!savedUser) {
