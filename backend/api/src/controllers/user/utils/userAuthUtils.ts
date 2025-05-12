@@ -1,5 +1,5 @@
 import { generateAccesToken, generateRefreshToken } from "@controllers/auth/utils/generateTokens.ts"
-import type { IUserDisplay, IUser } from "@api/types/user.js"
+import type { IUserDisplay } from "@api/types/user.js"
 import { ERROR_CODE } from "@errorHandler/configs.errorHandler.ts"
 import { errorHandler } from "@errorHandler/errorHandler.ts"
 import type { Request, Response } from "express"
@@ -16,7 +16,8 @@ import { decryptData } from "@utils/crypto.ts"
 export const prepareUserAuthResponse = async (
 	user: IUserDisplay,
 	req: Request,
-	res: Response
+	res: Response,
+	admin: boolean = false
 ): Promise<{ user: IUserDisplay; tokens: { accessToken: string; refreshToken: string } } | null> => {
 	// List of fields to decrypt
 	const ENCRYPTED_FIELDS = ["name", "firstName", "birthDate"]
@@ -33,41 +34,42 @@ export const prepareUserAuthResponse = async (
 	if (cleanUserObject.password) {
 		delete cleanUserObject.password
 	}
+	if (admin === false) {
+		// Generate tokens
+		let accessToken: string | undefined
+		let refreshToken: string | undefined
 
-	// Generate tokens
-	let accessToken: string | undefined
-	let refreshToken: string | undefined
-
-	try {
-		accessToken = generateAccesToken({
-			id: decryptedUserResponse.id,
-			role: decryptedUserResponse.role,
-		})
-	} catch (error: any) {
-		errorHandler(res, ERROR_CODE.SERVER, error.message, error)
-		return null
-	}
-
-	try {
-		refreshToken = await generateRefreshToken(
-			{
+		try {
+			accessToken = generateAccesToken({
 				id: decryptedUserResponse.id,
 				role: decryptedUserResponse.role,
-			},
-			req
-		)
-	} catch (error: any) {
-		errorHandler(res, ERROR_CODE.SERVER, error.message, error)
-		return null
-	}
+			})
+		} catch (error: any) {
+			errorHandler(res, ERROR_CODE.SERVER, error.message, error)
+			return null
+		}
 
-	if (!refreshToken || !accessToken) {
-		errorHandler(res, ERROR_CODE.SERVER)
-		return null
-	}
+		try {
+			refreshToken = await generateRefreshToken(
+				{
+					id: decryptedUserResponse.id,
+					role: decryptedUserResponse.role,
+				},
+				req
+			)
+		} catch (error: any) {
+			errorHandler(res, ERROR_CODE.SERVER, error.message, error)
+			return null
+		}
 
-	return {
-		user: cleanUserObject,
-		tokens: { accessToken, refreshToken },
-	}
+		if (!refreshToken || !accessToken) {
+			errorHandler(res, ERROR_CODE.SERVER)
+			return null
+		}
+
+		return {
+			user: cleanUserObject,
+			tokens: { accessToken, refreshToken },
+		}
+	} else return cleanUserObject
 }
