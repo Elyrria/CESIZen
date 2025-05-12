@@ -71,7 +71,18 @@ export const updateUser = async (req: IAuthRequest, res: Response): Promise<void
 		// Validate and clean user data
 		const cleanUserObject = validateAndCleanUserData(req.body, isAdmin, isModifyingSelf, res)
 		if (!cleanUserObject) return
+		
+		if (cleanUserObject.email) {
+			const existingUser = await User.findOne({
+				email: cleanUserObject.email,
+				_id: { $ne: targetUserId },
+			})
 
+			if (existingUser) {
+				errorHandler(res, ERROR_CODE.UNABLE_MODIFY_USER)
+				return
+			}
+		}
 		// Check and process password update if necessary
 		const finalUserObject = await processPasswordUpdate(cleanUserObject, targetUserId, res)
 		if (!finalUserObject) return
