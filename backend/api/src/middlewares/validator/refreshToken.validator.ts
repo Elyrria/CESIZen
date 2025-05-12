@@ -10,3 +10,7 @@ export const createRefreshTokenValidationRules = [
 	...VALIDATOR.REQUIRED.REFRESH_TOKEN(),
 	...VALIDATOR.REQUIRED.USER_ID(),
 ]
+
+export const removeRefreshTokenValidationRules = [
+	...VALIDATOR.REQUIRED.REFRESH_TOKEN(), 
+]
