@@ -21,7 +21,7 @@ export default {
 	coverageDirectory: "coverage", // Directory where Jest should output coverage files
 	testTimeout: 10000, // Maximum time in milliseconds that a test can run before Jest aborts it (10 seconds in this case)
 	moduleNameMapper: {
-		"^(\\.{1,2}/.*)\\.js$": "$1",
+		"^@mongoQueryBuilders/(.*)$": "<rootDir>/api/src/controllers/mongoQueryBuilders/$1",
 		"^@successHandler/(.*)$": "<rootDir>/api/src/handlerResponse/successHandler/$1",
 		"^@errorHandler/(.*)$": "<rootDir>/api/src/handlerResponse/errorHandler/$1",
 		"^@sanitizers/(.*)$": "<rootDir>/api/src/middlewares/sanitizers/$1",
@@ -36,6 +36,7 @@ export default {
 		"^@core/(.*)$": "<rootDir>/api/src/core/$1",
 		"^@configs/(.*)$": "<rootDir>/configs/$1",
 		"^@api/(.*)$": "<rootDir>/api/$1",
+		"^(\\.{1,2}/.*)\\.js$": "$1",
 	},
 	testPathIgnorePatterns: ["/node_modules/"],
 	transformIgnorePatterns: ["/node_modules/"],
