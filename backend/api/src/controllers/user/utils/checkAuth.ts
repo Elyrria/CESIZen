@@ -1,4 +1,5 @@
-import { ERROR_MESSAGE } from "@errorHandler/configs.errorHandler.ts"
+import { ERROR_CODE, ERROR_MESSAGE } from "@errorHandler/configs.errorHandler.ts"
+import type { IUserReqBodyRequest } from "@api/types/user.d.ts"
 import type { IAuthRequest } from "@api/types/request.d.ts"
 import { ROLE_HIERARCHY } from "@configs/role.configs.ts"
 import type { IUser } from "@api/types/user.d.ts"
@@ -33,4 +34,22 @@ export const checkUserRole = (userRole: Role) => {
     if (userRoleIndex === -1) throw new Error(ERROR_MESSAGE.ROLE_UNAVAILABLE)
 
     return userRoleIndex
+}
+
+/**
+ * Function to check the role of a user specified by an ID in the request parameters.
+ *
+ * This function retrieves the user from the database using the provided user ID and returns the index of the user's role in the role hierarchy.
+ * If the user or the role is not found, it throws an error.
+ *
+ */
+
+export const checkUserParams = async (userParamsId: string) => {
+    const userParams: IUserReqBodyRequest | null = await User.findById(userParamsId)
+
+    if (!userParams || !userParams.role) throw new Error(ERROR_MESSAGE.MISSING_INFO)
+
+    const userParamsRoleIndex: number = ROLE_HIERARCHY.indexOf(userParams.role)
+
+    return userParamsRoleIndex
 }
