@@ -9,6 +9,7 @@ import getAllUsersRouter from "@routes/user/get/getAllUsers.route.ts"
 // Import DELETE routes
 import deleteUserByIdRouter from "@routes/user/delete/deleteUser.route.ts"
 // Import PUT routes
+import updateUserRouter from "@routes/user/put/updateUser.route.ts"
 
 const router = Router()
 // POST routes
@@ -18,4 +19,6 @@ router.use("/v1/users", getAllUsersRouter)
 // DETLE routes
 router.use("/v1/users", deleteUserByIdRouter)
 // PUT routes
+router.use("/v1/users", updateUserRouter)
+
 export default router
