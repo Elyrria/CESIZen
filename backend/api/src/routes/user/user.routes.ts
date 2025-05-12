@@ -7,7 +7,7 @@ import loginUseRouter from "@routes/user/post/loginUser.route.ts"
 // Import GET routes
 import getAllUsersRouter from "@routes/user/get/getAllUsers.route.ts"
 // Import DELETE routes
-
+import deleteUserByIdRouter from "@routes/user/delete/deleteUser.route.ts"
 // Import PUT routes
 
 const router = Router()
@@ -15,6 +15,7 @@ const router = Router()
 router.use("/v1/users", createUseRouter, loginUseRouter, adminCreateUseRouter, logoutUseRouter)
 // GET routes
 router.use("/v1/users", getAllUsersRouter)
-// PUT routes
 // DETLE routes
+router.use("/v1/users", deleteUserByIdRouter)
+// PUT routes
 export default router
