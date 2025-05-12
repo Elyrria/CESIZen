@@ -17,7 +17,7 @@ export const prepareUserAuthResponse = async (
 	user: IUserDisplay,
 	req: Request,
 	res: Response,
-	admin: boolean = false
+	skipTokenGeneration: boolean = false
 ): Promise<{ user: IUserDisplay; tokens: { accessToken: string; refreshToken: string } } | null> => {
 	// List of fields to decrypt
 	const ENCRYPTED_FIELDS = ["name", "firstName", "birthDate"]
@@ -34,42 +34,45 @@ export const prepareUserAuthResponse = async (
 	if (cleanUserObject.password) {
 		delete cleanUserObject.password
 	}
-	if (admin === false) {
-		// Generate tokens
-		let accessToken: string | undefined
-		let refreshToken: string | undefined
 
-		try {
-			accessToken = generateAccesToken({
+	if (skipTokenGeneration) {
+		return cleanUserObject
+	}
+
+	// Generate tokens
+	let accessToken: string | undefined
+	let refreshToken: string | undefined
+
+	try {
+		accessToken = generateAccesToken({
+			id: decryptedUserResponse.id,
+			role: decryptedUserResponse.role,
+		})
+	} catch (error: any) {
+		errorHandler(res, ERROR_CODE.SERVER, error.message, error)
+		return null
+	}
+
+	try {
+		refreshToken = await generateRefreshToken(
+			{
 				id: decryptedUserResponse.id,
 				role: decryptedUserResponse.role,
-			})
-		} catch (error: any) {
-			errorHandler(res, ERROR_CODE.SERVER, error.message, error)
-			return null
-		}
+			},
+			req
+		)
+	} catch (error: any) {
+		errorHandler(res, ERROR_CODE.SERVER, error.message, error)
+		return null
+	}
 
-		try {
-			refreshToken = await generateRefreshToken(
-				{
-					id: decryptedUserResponse.id,
-					role: decryptedUserResponse.role,
-				},
-				req
-			)
-		} catch (error: any) {
-			errorHandler(res, ERROR_CODE.SERVER, error.message, error)
-			return null
-		}
+	if (!refreshToken || !accessToken) {
+		errorHandler(res, ERROR_CODE.SERVER)
+		return null
+	}
 
-		if (!refreshToken || !accessToken) {
-			errorHandler(res, ERROR_CODE.SERVER)
-			return null
-		}
-
-		return {
-			user: cleanUserObject,
-			tokens: { accessToken, refreshToken },
-		}
-	} else return cleanUserObject
+	return {
+		user: cleanUserObject,
+		tokens: { accessToken, refreshToken },
+	}
 }
