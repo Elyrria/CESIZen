@@ -29,6 +29,7 @@ export const ERROR_CODE = {
 	// User-related errors
 	USER_NOT_FOUND: "userNotFound",
 	UNABLE_CREATE_USER: "unableToCreateUser",
+	UNABLE_MODIFY_USER: "unableToCreateUser",
 	MIS_MATCH: "userMisMatch",
 
 	// Role-related errors
@@ -49,6 +50,7 @@ export const ERROR_MESSAGE = {
 	EXPIRED_TOKEN: "Token expired",
 	REVOKED_TOKEN: "Token has been revoked",
 	UNABLE_TO_CREATE: "Unable to create an account with the provided information",
+	UNABLE_MODIFY_USER: "Unable to modify an account with the provided information",
 	VALIDATION_FAILED: "Validation failed",
 	UNAUTHORIZED: "Unauthorized access",
 	ROLE_UNAVAILABLE: `Invalid ${FIELD.ROLE}`,
@@ -200,6 +202,11 @@ export const ERROR_MAPPING: Record<string, IErrorInfo> = {
 	[ERROR_CODE.UNABLE_CREATE_USER]: {
 		code: ERROR_CODE.UNABLE_CREATE_USER,
 		message: ERROR_MESSAGE.UNABLE_TO_CREATE,
+		statusCode: 409,
+	},
+	[ERROR_CODE.UNABLE_MODIFY_USER]: {
+		code: ERROR_CODE.UNABLE_MODIFY_USER,
+		message: ERROR_MESSAGE.UNABLE_MODIFY_USER,
 		statusCode: 409,
 	},
 	[ERROR_CODE.MIS_MATCH]: {
