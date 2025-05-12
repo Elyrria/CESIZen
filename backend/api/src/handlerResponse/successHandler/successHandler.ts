@@ -105,7 +105,7 @@ export const createdHandler = (res: Response, successCode: string, data: IData, 
  * @param {string} [customMessage] - Optional custom success message
  * @returns {Response} - The Express response
  */
-export const okHandler = (res: Response, successCode: string, data: IData, customMessage?: string): Response => {
+export const okHandler = (res: Response, successCode: string, data?: IData, customMessage?: string): Response => {
 	return successHandler(res, successCode, data, customMessage)
 }
 
