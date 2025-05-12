@@ -22,6 +22,14 @@ declare global {
 	}
 }
 
+export interface IQueryInterface {
+	role?: { $ne?: string; $in?: string[] }
+	email?: { $regex: string; $options: string }
+	name?: { $regex: string; $options: string }
+	firstname?: { $regex: string; $options: string }
+	createdAt?: { $lte?: Date; $gte?: Date }
+}
+
 export interface IAuthRequest extends Request {
 	auth?: {
 		userId: string
