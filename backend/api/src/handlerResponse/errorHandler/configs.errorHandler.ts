@@ -24,6 +24,7 @@ export const ERROR_CODE = {
 	REVOKED_TOKEN: "revokedToken",
 	SIGN_TOKEN: "signatureInvalid",
 	REFRESH_TOKEN_REQUIRED: "refreshTokenRequired",
+	ALREADY_LOGOUT: "alreadyLoggedOut",
 
 	// User-related errors
 	USER_NOT_FOUND: "userNotFound",
@@ -117,6 +118,11 @@ export const ERROR_MAPPING: Record<string, IErrorInfo> = {
 	[ERROR_CODE.REFRESH_TOKEN_REQUIRED]: {
 		code: ERROR_CODE.REFRESH_TOKEN_REQUIRED,
 		message: "Refresh token is required",
+		statusCode: 400,
+	},
+	[ERROR_CODE.ALREADY_LOGOUT]: {
+		code: ERROR_CODE.ALREADY_LOGOUT,
+		message: "Refresh token already removed",
 		statusCode: 400,
 	},
 	[ERROR_CODE.NO_PASSWORD_SET]: {
