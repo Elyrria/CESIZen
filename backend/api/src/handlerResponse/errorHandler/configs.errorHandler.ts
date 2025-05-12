@@ -52,6 +52,7 @@ export const ERROR_MESSAGE = {
 	VALIDATION_FAILED: "Validation failed",
 	UNAUTHORIZED: "Unauthorized access",
 	ROLE_UNAVAILABLE: `Invalid ${FIELD.ROLE}`,
+	MISSING_INFO: "Missing information",
 }
 
 // Message generator functions for users
@@ -90,7 +91,7 @@ export const TOKEN_MESSAGE = {
 export const ERROR_MAPPING: Record<string, IErrorInfo> = {
 	[ERROR_CODE.MISSING_INFO]: {
 		code: ERROR_CODE.MISSING_INFO,
-		message: "Missing information",
+		message: ERROR_MESSAGE.MISSING_INFO,
 		statusCode: 400,
 		location: "body",
 	},
