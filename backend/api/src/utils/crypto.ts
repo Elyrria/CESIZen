@@ -69,6 +69,39 @@ export async function processUserData(userData: IUserCreate, admin: boolean = fa
 	return user
 }
 
+/**
+ * Process user data for updates, encrypting sensitive fields
+ * @param userData - User data to update
+ * @returns Processed user data with encrypted fields
+ */
+export async function processUserUpdateData(userData: Partial<IUserCreate>): Promise<Record<string, any>> {
+	const processedData: Record<string, any> = {}
+
+	// Process only fields that are present in the update
+	if (userData.name !== undefined) {
+		processedData.name = encrypt(userData.name)
+	}
+
+	if (userData.firstName !== undefined) {
+		processedData.firstName = encrypt(userData.firstName)
+	}
+
+	if (userData.birthDate !== undefined) {
+		processedData.birthDate = encrypt(dateToString(userData.birthDate))
+	}
+
+	// Copy other non-sensitive fields without modification
+	const nonSensitiveFields = ["email", "role", "password"]
+	for (const field of nonSensitiveFields) {
+		const key = field as keyof Partial<IUserCreate>
+		if (userData[key] !== undefined) {
+			processedData[field] = userData[key]
+		}
+	}
+
+	return processedData
+}
+
 export async function processRefreshToken(refreshTokenData: IRefreshTokenCreate): Promise<IRefreshTokenCreate> {
 	
 	if (!mongoose.Types.ObjectId.isValid(refreshTokenData.userId)) {
