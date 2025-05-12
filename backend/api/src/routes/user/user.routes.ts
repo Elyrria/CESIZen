@@ -2,6 +2,7 @@ import { Router } from "express"
 // Import POST routes
 import adminCreateUseRouter from "@routes/user/post/adminCreateUser.route.ts"
 import createUseRouter from "@routes/user/post/createUser.route.ts"
+import logoutUseRouter from "@routes/user/post/logoutUser.route.ts"
 import loginUseRouter from "@routes/user/post/loginUser.route.ts"
 // Import GET routes
 import getAllUsersRouter from "@routes/user/get/getAllUsers.route.ts"
@@ -11,7 +12,7 @@ import getAllUsersRouter from "@routes/user/get/getAllUsers.route.ts"
 
 const router = Router()
 // POST routes
-router.use("/v1/users", createUseRouter, loginUseRouter, adminCreateUseRouter)
+router.use("/v1/users", createUseRouter, loginUseRouter, adminCreateUseRouter, logoutUseRouter)
 // GET routes
 router.use("/v1/users", getAllUsersRouter)
 // PUT routes
