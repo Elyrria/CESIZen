@@ -86,13 +86,34 @@ export async function processRefreshToken(refreshTokenData: IRefreshTokenCreate)
 
 	return refreshToken
 }
+/**
+ * Decrypts sensitive data in a user object or an array of user objects.
+ * 
+ * This function handles both single user objects and arrays of users, applying
+ * decryption to specified fields. It preserves the original structure of the input
+ * and handles special cases like date conversion for birth dates.
+ * 
+ * @param userData - A single user object or an array of user objects to decrypt
+ * @param ENCRYPTED_FIELDS - Array of field names that need to be decrypted
+ * @returns The decrypted user data in the same structure as the input (single object or array)
+ */
+export function decryptData(userData: Record<string, any> | Record<string, any>[], ENCRYPTED_FIELDS: string[]): any {
+  // If userData is an array
+  if (Array.isArray(userData)) {
+    // Process each user in the array
+    return userData.map(user => decryptSingleUser(user, ENCRYPTED_FIELDS));
+  } else {
+    // Process a single user
+    return decryptSingleUser(userData, ENCRYPTED_FIELDS);
+  }
+}
 
 /**
  * Decrypts specified fields in a user object
  * @param {Record<string, any>} userData - The user data object with encrypted fields
  * @returns {Record<string, any>} - A new object with decrypted fields
  */
-export function decryptData(userData: Record<string, any>, ENCRYPTED_FIELDS: string[]): any {
+export function decryptSingleUser(userData: Record<string, any>, ENCRYPTED_FIELDS: string[]): any {
 	// Create a copy of the original object to avoid modifying it
 	const decryptedUser = { ...userData }
 
