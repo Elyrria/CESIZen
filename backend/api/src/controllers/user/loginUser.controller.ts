@@ -20,11 +20,10 @@ import bcrypt from "bcrypt"
 export const loginUser = async (req: Request, res: Response): Promise<void> => {
 	try {
 		// Find the user by email
-		const user = await User.findOne({ email: req.body.email })
-
+		const user = await User.findOne({ email: req.body.email }).select("+password")
 		// Check if the user exists and has a password
 		if (!user || !user.password) {
-			errorHandler(res, ERROR_CODE.UNABLE_CREATE_USER)
+			errorHandler(res, ERROR_CODE.MISSING_INFO)
 			return
 		}
 
