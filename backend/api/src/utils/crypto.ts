@@ -46,7 +46,7 @@ export function decrypt(data: string): string {
 	return decrypted
 }
 
-export async function processUserData(userData: IUserCreate) {
+export async function processUserData(userData: IUserCreate, admin: boolean = false) {
 	// Encrypt sensitive data
 	const encryptedName: string = encrypt(userData.name)
 	const encryptedFirstName: string = encrypt(userData.firstName)
@@ -60,7 +60,7 @@ export async function processUserData(userData: IUserCreate) {
 		name: encryptedName,
 		firstName: encryptedFirstName,
 		birthDate: encryptedBirthDate,
-		role: ROLE_HIERARCHY[ROLE_HIERARCHY.length - 1],
+		role: (admin = false ? ROLE_HIERARCHY[ROLE_HIERARCHY.length - 1] : userData.role),
 	})
 
 	// Later, to display the real name:
