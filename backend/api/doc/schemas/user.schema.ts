@@ -412,4 +412,198 @@
  *         error:
  *           code: "expiredToken"
  *           message: "Token expired"
+ *
+ *     UserListItem:
+ *       type: object
+ *       properties:
+ *         _id:
+ *           type: string
+ *           description: MongoDB ObjectID of the user
+ *         email:
+ *           type: string
+ *           format: email
+ *           description: User's email address
+ *         name:
+ *           type: string
+ *           description: User's last name
+ *         firstName:
+ *           type: string
+ *           description: User's first name
+ *         role:
+ *           type: string
+ *           description: User's role in the system
+ *           enum: [user, administrator]
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *           description: Account creation timestamp
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *           description: Account last update timestamp
+ *       example:
+ *         _id: "68220c41957e5a0aa8e3e9f9"
+ *         email: "johndoe@gmail.com"
+ *         name: "Doe"
+ *         firstName: "John"
+ *         role: "user"
+ *         createdAt: "2025-05-12T14:57:05.520Z"
+ *         updatedAt: "2025-05-12T14:57:05.520Z"
+ *
+ *     Pagination:
+ *       type: object
+ *       properties:
+ *         total:
+ *           type: number
+ *           description: Total number of records
+ *         page:
+ *           type: number
+ *           description: Current page number
+ *         limit:
+ *           type: number
+ *           description: Number of records per page
+ *         totalPages:
+ *           type: number
+ *           description: Total number of pages
+ *       example:
+ *         total: 8
+ *         page: 1
+ *         limit: 10
+ *         totalPages: 1
+ *
+ *     GetUsersSuccessResponse:
+ *       type: object
+ *       properties:
+ *         success:
+ *           type: boolean
+ *           example: true
+ *         code:
+ *           type: string
+ *           example: usersFound
+ *         message:
+ *           type: string
+ *           example: Users found
+ *         data:
+ *           type: object
+ *           properties:
+ *             users:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/UserListItem'
+ *             pagination:
+ *               $ref: '#/components/schemas/Pagination'
+ *       example:
+ *         success: true
+ *         code: "usersFound"
+ *         message: "Users found"
+ *         data:
+ *           users:
+ *             - _id: "68220c41957e5a0aa8e3e9f9"
+ *               email: "johndoe@gmail.com"
+ *               name: "Doe"
+ *               firstName: "John"
+ *               role: "user"
+ *               createdAt: "2025-05-12T14:57:05.520Z"
+ *               updatedAt: "2025-05-12T14:57:05.520Z"
+ *             - _id: "68220c41957e5a0aa8e3e9f8"
+ *               email: "janedoe@gmail.com"
+ *               name: "Doe"
+ *               firstName: "Jane"
+ *               role: "administrator"
+ *               createdAt: "2025-05-12T14:55:05.520Z"
+ *               updatedAt: "2025-05-12T14:55:05.520Z"
+ *           pagination:
+ *             total: 2
+ *             page: 1
+ *             limit: 10
+ *             totalPages: 1
+ *
+ *     GetUserSuccessResponse:
+ *       type: object
+ *       properties:
+ *         success:
+ *           type: boolean
+ *           example: true
+ *         code:
+ *           type: string
+ *           example: userFound
+ *         message:
+ *           type: string
+ *           example: User found
+ *         data:
+ *           type: object
+ *           properties:
+ *             users:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/UserListItem'
+ *             pagination:
+ *               $ref: '#/components/schemas/Pagination'
+ *       example:
+ *         success: true
+ *         code: "userFound"
+ *         message: "User found"
+ *         data:
+ *           users:
+ *             - _id: "68220c41957e5a0aa8e3e9f9"
+ *               email: "johndoe@gmail.com"
+ *               name: "Doe"
+ *               firstName: "John"
+ *               role: "user"
+ *               createdAt: "2025-05-12T14:57:05.520Z"
+ *               updatedAt: "2025-05-12T14:57:05.520Z"
+ *           pagination:
+ *             total: 1
+ *             page: 1
+ *             limit: 10
+ *             totalPages: 1
+ *
+ *     GetUsersEmptyResponse:
+ *       type: object
+ *       properties:
+ *         success:
+ *           type: boolean
+ *           example: true
+ *         code:
+ *           type: string
+ *           example: noUser
+ *         message:
+ *           type: string
+ *           example: No user found
+ *         data:
+ *           type: object
+ *           properties:
+ *             users:
+ *               type: array
+ *               items: {}
+ *             pagination:
+ *               type: object
+ *       example:
+ *         success: true
+ *         code: "noUser"
+ *         message: "No user found"
+ *         data:
+ *           users: []
+ *           pagination: {}
+ *
+ *     TokenInvalidErrorResponse:
+ *       type: object
+ *       properties:
+ *         success:
+ *           type: boolean
+ *           example: false
+ *         error:
+ *           type: object
+ *           properties:
+ *             code:
+ *               type: string
+ *               example: signatureInvalid
+ *             message:
+ *               type: string
+ *               example: Invalid token signature
+ *       example:
+ *         success: false
+ *         error:
+ *           code: "signatureInvalid"
+ *           message: "Invalid token signature"
  */
