@@ -23,7 +23,7 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
 		const user = await User.findOne({ email: req.body.email }).select("+password")
 		// Check if the user exists and has a password
 		if (!user || !user.password) {
-			errorHandler(res, ERROR_CODE.MISSING_INFO)
+			errorHandler(res, ERROR_CODE.INVALID_CREDENTIALS)
 			return
 		}
 
@@ -31,7 +31,7 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
 		const isValid: boolean = await bcrypt.compare(req.body.password, user.password)
 
 		if (!isValid) {
-			errorHandler(res, ERROR_CODE.UNABLE_CREATE_USER)
+			errorHandler(res, ERROR_CODE.INVALID_CREDENTIALS)
 			return
 		}
 		// Prepare user object without password for token generation
