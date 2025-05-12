@@ -20,10 +20,15 @@ export const logoutUser = async (req: Request, res: Response): Promise<void> => 
 		// Extract the refresh token from the request body
 		const refreshToken: string = req.body.refreshToken
 
+		const refreshTokenIsValid = await RefreshToken.findOne({ refreshToken: refreshToken })
+		if (!refreshTokenIsValid) {
+			errorHandler(res, ERROR_CODE.ALREADY_LOGOUT)
+		}
 		if (!refreshToken) {
 			errorHandler(res, ERROR_CODE.REFRESH_TOKEN_REQUIRED)
 			return
 		}
+
 		// Delete the refresh token from the database
 		await RefreshToken.deleteOne({ refreshToken: refreshToken })
 		// Return a success message
