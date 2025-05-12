@@ -46,10 +46,11 @@ export const getAllUsers = async (req: Request, res: Response): Promise<void> =>
 		const { page, limit, skip, sortOptions } = getPaginationOptions(req)
 		// Execute the query with all filters and options
 		const users = await User.find(query)
-			.select("_id email pseudonyme role createdAt updatedAt")
+			.select("_id email firstName name role createdAt updatedAt")
 			.sort(sortOptions)
 			.skip(skip)
 			.limit(limit)
+			.lean()
 
 		if (!users) {
 			// Return an error if no conditions are met
