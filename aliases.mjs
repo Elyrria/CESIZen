@@ -12,23 +12,24 @@ import { pathToFileURL } from "url"
  * Each key is an alias that will be replaced with its corresponding path value.
  */
 const aliases = {
-	"@api/": "./api/",
-	"@src/": "./api/src/",
-	"@sanitizers/": "./api/src/middlewares/sanitizers/",
-	"@controllers/": "./api/src/controllers/",
-	"@middlewares/": "./api/src/middlewares/",
-	"@validator/": "./api/src/middlewares/validator/",
+	"@mongoQueryBuilders/": "./api/src/controllers/mongoQueryBuilders/",
 	"@successHandler/": "./api/src/handlerResponse/successHandler/",
 	"@errorHandler/": "./api/src/handlerResponse/errorHandler/",
-	"@doc/": "./api/doc/",
+	"@sanitizers/": "./api/src/middlewares/sanitizers/",
+	"@validator/": "./api/src/middlewares/validator/",
+	"@controllers/": "./api/src/controllers/",
+	"@middlewares/": "./api/src/middlewares/",
 	"@models/": "./api/src/models/",
+	"@server/": "./api/src/server/",
 	"@routes/": "./api/src/routes/",
 	"@utils/": "./api/src/utils/",
 	"@logs/": "./api/src/logs/",
 	"@core/": "./api/src/core/",
-	"@server/": "./api/src/server/",
 	"@configs/": "./configs/",
 	"@types/": "./api/types/",
+	"@doc/": "./api/doc/",
+	"@src/": "./api/src/",
+	"@api/": "./api/",
 }
 
 /**
