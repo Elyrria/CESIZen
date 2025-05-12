@@ -31,7 +31,6 @@ export const ERROR_CODE = {
 	MIS_MATCH: "userMisMatch",
 
 	// Role-related errors
-	INVALID_ROLE: "invalidRole",
 	ROLE_UNAVAILABLE: "roleUnavailable",
 
 	// Password-related errors
@@ -47,9 +46,11 @@ export const ERROR_MESSAGE = {
 	INVALID_CREDENTIALS: "Incorrect username/password!",
 	SERVER_ERROR: "Server error",
 	EXPIRED_TOKEN: "Token expired",
-	REVOKED_TOKEN:"Token has been revoked",
+	REVOKED_TOKEN: "Token has been revoked",
 	UNABLE_TO_CREATE: "Unable to create an account with the provided information",
 	VALIDATION_FAILED: "Validation failed",
+	UNAUTHORIZED: "Unauthorized access",
+	ROLE_UNAVAILABLE: `Invalid ${FIELD.ROLE}`,
 }
 
 // Message generator functions for users
@@ -86,12 +87,6 @@ export const TOKEN_MESSAGE = {
  * Complete mapping of errors with their associated information
  */
 export const ERROR_MAPPING: Record<string, IErrorInfo> = {
-	[ERROR_CODE.INVALID_ROLE]: {
-		code: ERROR_CODE.INVALID_ROLE,
-		message: `Invalid ${FIELD.ROLE}`,
-		statusCode: 400,
-		location: "body",
-	},
 	[ERROR_CODE.MISSING_INFO]: {
 		code: ERROR_CODE.MISSING_INFO,
 		message: "Missing information",
@@ -111,7 +106,7 @@ export const ERROR_MAPPING: Record<string, IErrorInfo> = {
 	},
 	[ERROR_CODE.ROLE_UNAVAILABLE]: {
 		code: ERROR_CODE.ROLE_UNAVAILABLE,
-		message: `The ${FIELD.ROLE} is unavailable`,
+		message: ERROR_MESSAGE.ROLE_UNAVAILABLE,
 		statusCode: 400,
 	},
 	[ERROR_CODE.NO_FIELDS]: {
@@ -141,7 +136,7 @@ export const ERROR_MAPPING: Record<string, IErrorInfo> = {
 	},
 	[ERROR_CODE.UNAUTHORIZED]: {
 		code: ERROR_CODE.UNAUTHORIZED,
-		message: "Unauthorized access",
+		message: ERROR_MESSAGE.UNAUTHORIZED,
 		statusCode: 401,
 	},
 	[ERROR_CODE.INVALID_TOKEN]: {
