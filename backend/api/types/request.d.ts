@@ -28,6 +28,7 @@ export interface IQueryInterface {
 	name?: { $regex: string; $options: string }
 	firstname?: { $regex: string; $options: string }
 	createdAt?: { $lte?: Date; $gte?: Date }
+	updatedAt?: { $lte?: Date; $gte?: Date }
 }
 
 export interface IAuthRequest extends Request {
