@@ -20,7 +20,7 @@ import { User } from "@models/index.ts"
  * @param {Response} res - The response object to send the created user details and tokens or an error message.
  * @returns {Promise<Response>} - A promise that resolves to the response object with user details and tokens or an error message.
  */
-const createUser = async (req: Request, res: Response): Promise<void> => {
+export const createUser = async (req: Request, res: Response): Promise<void> => {
 	try {
 		// Extract user details from the request body
 		const userObject: IUserReqBodyRequest = req.body as IUser
@@ -63,5 +63,3 @@ const createUser = async (req: Request, res: Response): Promise<void> => {
 		handleUnexpectedError(res, error as Error)
 	}
 }
-
-export default createUser
