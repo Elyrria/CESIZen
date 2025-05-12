@@ -22,4 +22,11 @@ declare global {
 	}
 }
 
+export interface IAuthRequest extends Request {
+	auth?: {
+		userId: string
+	}
+}
+
+
 export type TSanitizedKeys = "sanitizedBody" | "sanitizedQuery" | "sanitizedParams"
