@@ -1,6 +1,6 @@
 import { validationErrorHandler } from "@validator/validationError.validator.ts"
 import { createUserValidationRules } from "@validator/user.validator.ts"
-import createUser from "@controllers/index.ts"
+import { createUser } from "@controllers/index.ts"
 import { Router } from "express"
 const createUseRouter = Router()
 
