@@ -1,11 +1,11 @@
-import { generateAccesToken, generateRefreshToken } from "@controllers/auth/utils/generateTokens.ts"
 import { errorHandler, handleUnexpectedError } from "@errorHandler/errorHandler.ts"
+import { prepareUserAuthResponse } from "@controllers/user/utils/userAuthUtils.ts"
 import { validateRequiredUserFields } from "@utils/validateRequiredFields.ts"
 import { SUCCESS_CODE } from "@successHandler/configs.successHandler.ts"
 import type { IUser, IUserReqBodyRequest } from "@api/types/user.d.ts"
 import { ERROR_CODE } from "@errorHandler/configs.errorHandler.ts"
 import { createdHandler } from "@successHandler/successHandler.ts"
-import { processUserData, decryptData } from "@utils/crypto.ts"
+import { processUserData } from "@utils/crypto.ts"
 import { deleteObjectIds } from "@utils/idCleaner.ts"
 import type { Request, Response } from "express"
 import { User } from "@models/index.ts"
@@ -24,75 +24,43 @@ const createUser = async (req: Request, res: Response): Promise<void> => {
 	try {
 		// Extract user details from the request body
 		const userObject: IUserReqBodyRequest = req.body as IUser
+
 		// Remove any user IDs from the request body for security reasons
 		const cleanUserObject = deleteObjectIds(userObject)
-		// Validate the presence of required fields in the request body
+
+		// Validate the presence of required fields
 		if (!validateRequiredUserFields(cleanUserObject)) {
 			errorHandler(res, ERROR_CODE.MISSING_INFO)
 			return
 		}
-		// Check if the user is exist
+
+		// Check if user already exists
 		const userExist = await User.findOne({ email: userObject.email })
 		if (userExist) {
 			errorHandler(res, ERROR_CODE.UNABLE_CREATE_USER)
 			return
 		}
-		// Create a new user instance with the hashed password
+
+		// Create and save new user
 		const newUser = await processUserData(cleanUserObject)
-		// Save the new user to the database
 		const savedUser = await newUser.save()
+
 		if (!savedUser) {
 			errorHandler(res, ERROR_CODE.SERVER)
 			return
 		}
+
+		// Prepare user object without password for token generation
 		const { password, _id, ...userWithoutPassword } = savedUser.toObject()
 
-		/**
-		 * List of field names that need to be decrypted
-		 */
-		const ENCRYPTED_FIELDS = ["name", "firstName", "birthDate"]
+		// Prepare auth response (tokens and user data)
+		const authResponse = await prepareUserAuthResponse({ ...userWithoutPassword, id: _id }, req, res)
+		if (!authResponse) return // Error already handled in the function
 
-		const decryptedUserResponse = decryptData(userWithoutPassword, ENCRYPTED_FIELDS)
-
-		// Generate an access token for the new user
-		let accessToken: string | undefined = undefined
-
-		try {
-			accessToken = generateAccesToken({
-				id: decryptedUserResponse.id,
-				role: decryptedUserResponse.role,
-			})
-		} catch (error: any) {
-			errorHandler(res, ERROR_CODE.SERVER, error.message, error)
-			return
-		}
-		// Generate a refresh token for the new user
-		let refreshToken: string | undefined = undefined
-		try {
-			refreshToken = await generateRefreshToken(
-				{
-					id: decryptedUserResponse.id,
-					role: decryptedUserResponse.role,
-				},
-				req
-			)
-		} catch (error: any) {
-			errorHandler(res, ERROR_CODE.SERVER, error.message, error)
-			return
-		}
-		if (!refreshToken || !accessToken) {
-			errorHandler(res, ERROR_CODE.SERVER)
-			return
-		}
-		createdHandler(res, SUCCESS_CODE.USER_CREATED, {
-			user: decryptedUserResponse,
-			tokens: { accessToken, refreshToken },
-		})
-		return
+		// Return success response
+		createdHandler(res, SUCCESS_CODE.USER_CREATED, authResponse)
 	} catch (error) {
-		// Handle unexpected errors
 		handleUnexpectedError(res, error as Error)
-		return
 	}
 }
 
