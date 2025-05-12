@@ -1,6 +1,7 @@
 import { Router } from "express"
 // Import POST routes
 import createUseRouter from "@routes/user/post/createUser.route.ts"
+import loginUseRouter from "@routes/user/post/loginUser.route.ts"
 
 // Import GET routes
 
@@ -10,6 +11,6 @@ import createUseRouter from "@routes/user/post/createUser.route.ts"
 
 const router = Router()
 
-router.use("/v1/users", createUseRouter)
+router.use("/v1/users", createUseRouter, loginUseRouter)
 
 export default router
