@@ -31,7 +31,6 @@ export const getAllUsers = async (req: Request, res: Response): Promise<void> =>
 		} catch (error: unknown) {
 			const errorType = error instanceof Error ? error.message : ERROR_CODE.SERVER
 			errorHandler(res, errorType)
-			// res.status(statusCode).json(errorResponse({ msg: errorMessage }))
 			return
 		}
 
