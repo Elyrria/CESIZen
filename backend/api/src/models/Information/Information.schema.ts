@@ -98,7 +98,6 @@ informationSchema.index({ fileId: 1 }) // Index for GridFS file references
 addPublicationDateMiddleware(informationSchema)
 // addUniqueValidationMiddleware(informationSchema)  // Uncomment if needed
 
-// Create and export the model
-const Information = mongoose.model<IInformationDocument>("Information", informationSchema)
 
-export default Information
+
+export default informationSchema
