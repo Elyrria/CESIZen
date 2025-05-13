@@ -39,7 +39,7 @@ export interface IInformation {
 	_id?: ObjectId
 	authorId: ObjectId // Reference to the user who created this information
 	title: string // Title of the information
-	description: string // Brief description or summary
+	descriptionInformation: string // Brief description or summary
 	name: string // Identifier name (can be used for URLs or reference)
 	type: ContentType // Content format type (TEXT, HTML, VIDEO, AUDIO, IMAGE)
 	status: InformationStatus // Publication status (DRAFT, PENDING, PUBLISHED)
