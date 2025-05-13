@@ -1,7 +1,7 @@
-import { Request } from "express"
-import { IUser } from "@api/types/user.d.ts"
 import { IRefreshTokenRequest } from "@api/types/tokens.d.ts"
-
+import { IUser } from "@api/types/user.d.ts"
+import { Request } from "express"
+import { Multer } from "multer" 
 declare global {
 	namespace Express {
 		interface Request {
@@ -35,6 +35,7 @@ export interface IAuthRequest extends Request {
 	auth?: {
 		userId: string
 	}
+	file?: Express.Multer.File
 }
 
 

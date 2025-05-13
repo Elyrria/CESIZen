@@ -1,6 +1,9 @@
-import type { Role } from "@api/types/roles.d.ts"
-import type { ObjectId, Document } from "mongoose"
 import { MEDIATYPE, STATUS } from "@configs/global.configs.ts"
+import type { Document } from "mongoose"
+import type { Role } from "@api/types/roles.d.ts"
+import {mongoose} from "mongoose"
+
+type ObjectId = mongoose.Types.ObjectId
 
 // Définition des types pour les formats de contenu
 export type ContentType = (typeof MEDIATYPE)[number]
@@ -33,6 +36,7 @@ export interface IFileMetadata {
  * Can contain different types of content (text, HTML, media files)
  */
 export interface IInformation {
+	_id?: ObjectId
 	authorId: ObjectId // Reference to the user who created this information
 	title: string // Title of the information
 	description: string // Brief description or summary
@@ -44,7 +48,7 @@ export interface IInformation {
 
 	// GridFS file reference (only for media types: VIDEO, AUDIO, IMAGE)
 	fileId?: ObjectId // ID of the associated file in GridFS
-	fileMetadata?: IFileMetadata // Metadata of the associated file
+	fileMetadata?: ObjectId // Metadata of the associated file
 	content?: string // Actual text
 }
 
