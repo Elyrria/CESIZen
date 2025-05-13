@@ -1,5 +1,5 @@
 import type { Role } from "@api/types/roles.d.ts"
-import type { ObjectId } from "mongoose"
+import type { ObjectId, Document } from "mongoose"
 /**
  * Base interface for a user
  */
