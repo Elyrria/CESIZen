@@ -1,4 +1,4 @@
-import type {ISuccessInfo } from "@api/types/handlerResponse.d.ts"
+import type { ISuccessInfo } from "@api/types/handlerResponse.d.ts"
 
 /**
  * Namespace for success event codes
@@ -19,6 +19,13 @@ export const SUCCESS_CODE = {
 
 	// Content related success codes
 	COMMENT_CREATED: "commentCreated",
+	// Information-related success codes
+	INFORMATION_CREATED: "informationCreated",
+	INFORMATION_UPDATED: "informationUpdated",
+	INFORMATION_DELETED: "informationDeleted",
+	INFORMATION_FOUND: "informationFound",
+	INFORMATION_LIST: "informationList",
+	NO_INFORMATION: "noInformation",
 }
 
 /**
@@ -35,6 +42,13 @@ export const SUCCESS_MESSAGE = {
 	LOGOUT_SUCCESS: "User logged out successfully",
 	TOKEN_RENEWED: "New token generated",
 	COMMENT_CREATED: "Comment created successfully",
+	// Information-related success messages
+	INFORMATION_CREATED: "Information created successfully",
+	INFORMATION_UPDATED: "Information updated successfully",
+	INFORMATION_DELETED: "Information deleted successfully",
+	INFORMATION_FOUND: "Information retrieved successfully",
+	INFORMATION_LIST: "Information list retrieved successfully",
+	NO_INFORMATION: "No information found",
 }
 
 /**
@@ -90,5 +104,36 @@ export const SUCCESS_MAPPING: Record<string, ISuccessInfo> = {
 		code: SUCCESS_CODE.COMMENT_CREATED,
 		message: SUCCESS_MESSAGE.COMMENT_CREATED,
 		statusCode: 201,
+	},
+	// Information related success mappings
+	[SUCCESS_CODE.INFORMATION_CREATED]: {
+		code: SUCCESS_CODE.INFORMATION_CREATED,
+		message: SUCCESS_MESSAGE.INFORMATION_CREATED,
+		statusCode: 201,
+	},
+	[SUCCESS_CODE.INFORMATION_UPDATED]: {
+		code: SUCCESS_CODE.INFORMATION_UPDATED,
+		message: SUCCESS_MESSAGE.INFORMATION_UPDATED,
+		statusCode: 200,
+	},
+	[SUCCESS_CODE.INFORMATION_DELETED]: {
+		code: SUCCESS_CODE.INFORMATION_DELETED,
+		message: SUCCESS_MESSAGE.INFORMATION_DELETED,
+		statusCode: 200,
+	},
+	[SUCCESS_CODE.INFORMATION_FOUND]: {
+		code: SUCCESS_CODE.INFORMATION_FOUND,
+		message: SUCCESS_MESSAGE.INFORMATION_FOUND,
+		statusCode: 200,
+	},
+	[SUCCESS_CODE.INFORMATION_LIST]: {
+		code: SUCCESS_CODE.INFORMATION_LIST,
+		message: SUCCESS_MESSAGE.INFORMATION_LIST,
+		statusCode: 200,
+	},
+	[SUCCESS_CODE.NO_INFORMATION]: {
+		code: SUCCESS_CODE.NO_INFORMATION,
+		message: SUCCESS_MESSAGE.NO_INFORMATION,
+		statusCode: 200,
 	},
 }
