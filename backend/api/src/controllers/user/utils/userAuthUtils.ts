@@ -4,6 +4,7 @@ import { ERROR_CODE } from "@errorHandler/configs.errorHandler.ts"
 import { errorHandler } from "@errorHandler/errorHandler.ts"
 import type { Request, Response } from "express"
 import { decryptData } from "@utils/crypto.ts"
+import { RefreshToken } from "@models/index.ts"
 
 /**
  * Utility function to generate auth tokens and prepare user response
@@ -54,6 +55,8 @@ export const prepareUserAuthResponse = async (
 	}
 
 	try {
+		await RefreshToken.deleteMany({ userId: decryptedUserResponse.id })
+
 		refreshToken = await generateRefreshToken(
 			{
 				id: decryptedUserResponse.id,
