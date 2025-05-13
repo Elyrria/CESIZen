@@ -1,4 +1,3 @@
-// src/controllers/information.controller.ts
 import { validateRequierdInformationFields } from "@utils/validateRequiredFields.ts"
 import { errorHandler, handleUnexpectedError } from "@errorHandler/errorHandler.ts"
 import { SUCCESS_CODE } from "@successHandler/configs.successHandler.ts"
@@ -12,49 +11,76 @@ import type { IAuthRequest } from "@api/types/request.d.ts"
 import { deleteObjectIds } from "@utils/idCleaner.ts"
 import { Information } from "@models/index.ts"
 import { logger } from "@logs/logger.ts"
-import { Response } from "express"
+import type { Response } from "express"
 import mongoose from "mongoose"
 import sharp from "sharp"
 import chalk from "chalk"
 
+/**
+ * Controller to create a new information entry.
+ * Handles both text and media (image, video) content types.
+ *
+ * Steps:
+ * - Validates user authentication and status.
+ * - Sanitizes the input data.
+ * - Validates required fields.
+ * - Processes file if media type is IMAGE or VIDEO.
+ * - Uploads the file to GridFS with metadata if applicable.
+ * - Saves the information document to the database.
+ * - Returns a success response.
+ *
+ * @param req - Authenticated request containing information data and optionally a file.
+ * @param res - Express response object.
+ */
 export const createInformation = async (req: IAuthRequest, res: Response): Promise<void> => {
 	try {
-		// Vérification d'authentification
+		// Authentication check
 		if (!req.auth?.userId) {
 			errorHandler(res, ERROR_CODE.NO_CONDITIONS)
 			return
 		}
 
+		// Ensure the user is active
 		const user = await checkUserActive(req.auth.userId, res)
-		if (!user) return
+		if (!user) return // If user is not active, response has already been handled
 
+		// Clean and extract the data from the request
 		const informationObject = req.body
 		const cleanInformationObject = deleteObjectIds(informationObject)
 
+		// Validate presence of all required fields
 		if (!validateRequierdInformationFields(cleanInformationObject)) {
 			errorHandler(res, ERROR_CODE.MISSING_INFO)
 			return
 		}
 
-		const { title, description, name, type, status = STATUS[0], content } = cleanInformationObject
+		// Destructure validated fields with default status
+		const {
+			title,
+			descriptionInformation,
+			name,
+			type,
+			status = STATUS[0],
+			content,
+		} = cleanInformationObject
 
-		// Vérifie que le type est correct
+		// Validate media type
 		if (!MEDIATYPE.includes(type)) {
 			errorHandler(res, ERROR_CODE.INVALID_INFORMATION_TYPE)
 			return
 		}
 
-		// Initialise l'objet information
+		// Build the base information document
 		const informationData: Partial<IInformationDocument> = {
 			authorId: new mongoose.Types.ObjectId(req.auth.userId),
 			title,
-			description,
+			descriptionInformation,
 			name,
 			type,
 			status,
 		}
 
-		// Contenu texte requis
+		// Handle TEXT content
 		if (type === MEDIATYPE[0]) {
 			if (!content) {
 				errorHandler(res, ERROR_CODE.CONTENT_REQUIRED)
@@ -63,7 +89,7 @@ export const createInformation = async (req: IAuthRequest, res: Response): Promi
 			informationData.content = content
 		}
 
-		// Cas MEDIA : fichier requis
+		// Handle MEDIA (IMAGE or VIDEO)
 		if (type !== MEDIATYPE[0]) {
 			const file = req.file
 			if (!file) {
@@ -73,6 +99,7 @@ export const createInformation = async (req: IAuthRequest, res: Response): Promi
 
 			let fileMetadata: Record<string, any> = {}
 
+			// Extract image metadata if the type is IMAGE
 			if (type === "IMAGE") {
 				try {
 					const imageInfo = await sharp(file.buffer).metadata()
@@ -84,18 +111,20 @@ export const createInformation = async (req: IAuthRequest, res: Response): Promi
 						format: imageInfo.format,
 					}
 				} catch (error) {
-					logger.error(`Erreur lors de l'extraction des métadonnées de l'image:`, error)
+					logger.error("Error while extracting image metadata:", error)
 				}
 			}
 
-			logger.info(`Début de l'upload vers GridFS: ${chalk.blue(file.originalname)}`)
+			// Upload file to GridFS
+			logger.info(`Starting upload to GridFS: ${chalk.blue(file.originalname)}`)
 			const fileId = await uploadToGridFS(file.buffer, file.originalname, file.mimetype, {
 				type,
 				createdBy: req.auth.userId,
 				...fileMetadata,
 			})
-			logger.info(`Upload réussi, ID: ${chalk.green(fileId.toString())}`)
+			logger.info(`Upload successful, ID: ${chalk.green(fileId.toString())}`)
 
+			// Attach file info to the document
 			informationData.fileId = fileId
 			informationData.fileMetadata = {
 				filename: file.originalname,
@@ -106,11 +135,16 @@ export const createInformation = async (req: IAuthRequest, res: Response): Promi
 			}
 		}
 
+		// Save the final document to the database
 		const information = await new Information(informationData).save()
-		logger.info(`Information créée: ${chalk.green(information._id.toString())} (Type: ${chalk.blue(type)})`)
+		logger.info(
+			`Information created: ${chalk.green(information._id.toString())} (Type: ${chalk.blue(type)})`
+		)
 
+		// Return a successful response
 		createdHandler(res, SUCCESS_CODE.INFORMATION_CREATED, { information })
 	} catch (error: unknown) {
+		// Catch-all for any unexpected errors
 		handleUnexpectedError(res, error as Error)
 	}
 }
