@@ -78,46 +78,47 @@ export const ERROR_MESSAGE = {
 	INVALID_FILE_TYPE: "The uploaded file type is not allowed",
 }
 // Shared message generators
-const SHARED_MESSAGES = {
+export const SHARED_MESSAGES = {
 	required: (type: string): string => `The ${type} is required`,
+	mustBeString: (type: string): string => `The ${type} must be a string`,
+	length: (type: string, min: number, max: number): string =>
+		`The ${type} must contain between ${min} and ${max} characters`,
+	cannotBeEmpty: (type: string): string => `The ${type} cannot be empty`,
+	statusInvalid: (roles: string[]): string => `The status must be one of the following: ${roles.join(", ")}`,
 }
 // Message generator functions for users
 export const USER_MESSAGE = {
-	emailInvalid: `The ${FIELD.EMAIL} must be a valid email address`,
-
+	mustBeString: SHARED_MESSAGES.mustBeString,
+	cannotBeEmpty: SHARED_MESSAGES.cannotBeEmpty,
 	required: SHARED_MESSAGES.required,
-
+	length: SHARED_MESSAGES.length,
+	emailInvalid: `The ${FIELD.EMAIL} must be a valid email address`,
 	passwordRequirements: `The ${FIELD.PASSWORD} must contain at least one uppercase letter, one lowercase letter, one number, and one special character in ${SPECIAL_CHARS_DISPLAY}`,
-
-	length: (type: string, min: number, max: number): string =>
-		`The ${type} must contain between ${min} and ${max} characters`,
-
 	minLength: (type: string, min: number): string => `The ${type} must contain at least ${min} characters`,
-
 	maxLength: (type: string, max: number): string => `The ${type} must not contain more than ${max} characters`,
-
-	cannotBeEmpty: (type: string): string => `The ${type} cannot be empty`,
-
-	mustBeString: (type: string): string => `The ${type} must be a string`,
-
 	roleInvalid: (roles: string[]): string => `The role must be one of the following: ${roles.join(", ")}`,
 }
 
 export const INFORMATION_MESSAGE = {
+	cannotBeEmpty: SHARED_MESSAGES.cannotBeEmpty,
+	mustBeString: SHARED_MESSAGES.mustBeString,
 	required: SHARED_MESSAGES.required,
+	length: SHARED_MESSAGES.length,
 	CONTENT_REQUIRED: "Content is required for text information",
 	FILE_REQUIRED: "File is required for media information",
 	INVALID_TYPE: (validTypes: string[]): string =>
 		`The information type must be one of the following: ${validTypes.join(", ")}`,
 	maxLength: (type: string, max: number): string => `The ${type} must not exceed ${max} characters`,
+	typeInvalid: (type: string[]): string => `The type must be one of the following: ${type.join(", ")}`,
+	fileRequired: (type: string): string => `File is required for ${type} information type`,
 }
 
 // Message generator functions for tokens
 export const TOKEN_MESSAGE = {
+	cannotBeEmpty: SHARED_MESSAGES.cannotBeEmpty,
 	mustBeString: (type: string): string => `The ${type} must be a string`,
 	invalidFormat: (type: string): string => `The ${type} must be a valid format: MongoDB ObjectID`,
 	refreshTokenRequired: "The refresh token is required",
-	cannotBeEmpty: USER_MESSAGE.cannotBeEmpty,
 }
 
 /**
