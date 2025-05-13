@@ -10,6 +10,7 @@ export const FIELD = {
 	DESCRIPTION_ACTIVITY: "descriptionActivity",
 	TITLE: "title",
 	AUTHOR: "authorId",
+	CONTENT: "content",
 	CATEGORY_NAME: "categoryName",
 	ACTIVITY_NAME: "activityName",
 	INFORMATION: "information",
@@ -17,6 +18,7 @@ export const FIELD = {
 	ACCESS_TOKEN: "accessToken",
 	USER_ID: "userId",
 	TYPE: "type",
+	STATUS: "status"
 }
 
 export const SPECIAL_CHARS = "@!%*?&"
