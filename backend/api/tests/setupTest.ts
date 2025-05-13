@@ -4,7 +4,7 @@ import mongoose from "mongoose" // Import Mongoose ODM for MongoDB interactions
 
 // Define the MongoDB server variable with proper typing to avoid TypeScript errors
 let mongoServer: MongoMemoryServer
-
+const isFunctionalTest = process.env.FUNCTIONAL_TEST === "true"
 /**
  * Connect to the in-memory database before running any tests.
  */
@@ -31,14 +31,15 @@ beforeAll(async () => {
  * Clear all test data after each individual test to ensure test isolation.
  */
 afterEach(async () => {
-	try {
-		// Use Promise.all to parallelize collection clearing for better performance
-		const collections = mongoose.connection.collections
-		const promises = Object.values(collections).map((collection) => collection.deleteMany({}))
-		await Promise.all(promises)
-		console.log("All collections cleared")
-	} catch (error) {
-		console.error("Error clearing the database", error)
+	if (!isFunctionalTest) {
+		try {
+			const collections = mongoose.connection.collections
+			const promises = Object.values(collections).map((collection) => collection.deleteMany({}))
+			await Promise.all(promises)
+			console.log("All collections cleared")
+		} catch (error) {
+			console.error("Error clearing the database", error)
+		}
 	}
 })
 
