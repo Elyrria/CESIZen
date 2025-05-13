@@ -5,7 +5,7 @@
 	"main": "server.ts",
 	"scripts": {
 		"start": "node --no-warnings --loader=../aliases.mjs node_modules/ts-node/dist/bin.js -r tsconfig-paths/register api/src/index.ts",
-		"dev": "nodemon --exec \"node --no-warnings --loader=../aliases.mjs node_modules/ts-node/dist/bin.js -r tsconfig-paths/register api/src/index.ts\"",
+		"dev": "cross-env NODE_ENV=development nodemon --exec \"node --no-warnings --loader=../aliases.mjs node_modules/ts-node/dist/bin.js -r tsconfig-paths/register api/src/index.ts\"",
 		"test": "cross-env NODE_ENV=test jest --config=jest.config.js",
 		"test:functional": "cross-env NODE_ENV=test FUNCTIONAL_TEST=true jest --config=jest.config.js",
 		"lint": "eslint ./**/*.ts",

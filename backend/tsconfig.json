@@ -16,6 +16,7 @@
 			"@validator/*": ["api/src/middlewares/validator/*"],
 			"@middlewares/*": ["api/src/middlewares/*"],
 			"@controllers/*": ["api/src/controllers/*"],
+			"@services/*": ["api/src/services/*"],
 			"@server/*": ["api/src/server/*"],
 			"@models/*": ["api/src/models/*"],
 			"@routes/*": ["api/src/routes/*"],
