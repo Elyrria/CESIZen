@@ -21,7 +21,7 @@ const informationSchema = new Schema<IInformationDocument>(
 			required: [true, INFORMATION_MESSAGE.required(FIELD.TITLE)],
 			trim: true,
 		},
-		description: {
+		descriptionInformation: {
 			type: String,
 			required: [true, INFORMATION_MESSAGE.required(FIELD.DESCRIPTION_INFORMATION)],
 			trim: true,
