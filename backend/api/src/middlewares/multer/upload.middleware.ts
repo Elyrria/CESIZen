@@ -1,5 +1,5 @@
 // src/middlewares/upload.middleware.ts
-import { Request } from "express"
+import type { Request } from "express"
 import { ERROR_CODE } from "@errorHandler/configs.errorHandler.ts"
 import { logger } from "@logs/logger.ts"
 import multer from "multer"

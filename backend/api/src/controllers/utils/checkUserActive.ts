@@ -1,7 +1,7 @@
 import { ERROR_CODE } from "@errorHandler/configs.errorHandler.ts"
 import { errorHandler } from "@errorHandler/errorHandler.ts"
+import type { Response } from "express"
 import {User} from "@models/index.ts"
-import { Response } from "express"
 import mongoose from "mongoose"
 
 /**
@@ -14,7 +14,7 @@ import mongoose from "mongoose"
 export const checkUserActive = async (userId: string | mongoose.Types.ObjectId, res: Response): Promise<any | null> => {
 	try {
 		// Find user and check if active
-		const user = await User.findById(userId).select("isActive")
+		const user = await User.findById(userId).select("active")
 		if (!user) {
             errorHandler(res, ERROR_CODE.USER_NOT_FOUND)
 			return null
