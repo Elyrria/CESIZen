@@ -56,12 +56,15 @@ export const ERROR_MESSAGE = {
 	ROLE_UNAVAILABLE: `Invalid ${FIELD.ROLE}`,
 	MISSING_INFO: "Missing information",
 }
-
+// Shared message generators
+const SHARED_MESSAGES = {
+	required: (type: string): string => `The ${type} is required`,
+}
 // Message generator functions for users
 export const USER_MESSAGE = {
 	emailInvalid: `The ${FIELD.EMAIL} must be a valid email address`,
 
-	required: (type: string): string => `The ${type} is required`,
+	required: SHARED_MESSAGES.required,
 
 	passwordRequirements: `The ${FIELD.PASSWORD} must contain at least one uppercase letter, one lowercase letter, one number, and one special character in ${SPECIAL_CHARS_DISPLAY}`,
 
@@ -79,12 +82,16 @@ export const USER_MESSAGE = {
 	roleInvalid: (roles: string[]): string => `The role must be one of the following: ${roles.join(", ")}`,
 }
 
+export const INFORMATION_MESSAGE = {
+	required: SHARED_MESSAGES.required,
+}
+
 // Message generator functions for tokens
 export const TOKEN_MESSAGE = {
 	mustBeString: (type: string): string => `The ${type} must be a string`,
 	invalidFormat: (type: string): string => `The ${type} must be a valid format: MongoDB ObjectID`,
 	refreshTokenRequired: "The refresh token is required",
-	cannotBeEmpty: USER_MESSAGE.cannotBeEmpty
+	cannotBeEmpty: USER_MESSAGE.cannotBeEmpty,
 }
 
 /**
