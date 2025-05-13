@@ -41,6 +41,18 @@ export const ERROR_CODE = {
 	PASSWORD_REQUIRED: "passwordRequired",
 	INCORRECT_PASSWORD: "incorrectPassword",
 	INVALID_CREDENTIALS: "invalidCredentials",
+
+	// Information-related errors
+	INFORMATION_NOT_FOUND: "informationNotFound",
+	UNABLE_CREATE_INFORMATION: "unableToCreateInformation",
+	UNABLE_MODIFY_INFORMATION: "unableToModifyInformation",
+	INACTIVE_USER: "inactiveUser",
+	CONTENT_REQUIRED: "contentRequired",
+	FILE_REQUIRED: "fileRequired",
+	FILE_UPLOAD_FAILED: "fileUploadFailed",
+	INVALID_INFORMATION_TYPE: "invalidInformationType",
+	MISSING_FIELDS: "missingFields",
+	INVALID_FILE_TYPE: "invalidFileType",
 }
 
 // Predefined error messages
@@ -55,6 +67,15 @@ export const ERROR_MESSAGE = {
 	UNAUTHORIZED: "Unauthorized access",
 	ROLE_UNAVAILABLE: `Invalid ${FIELD.ROLE}`,
 	MISSING_INFO: "Missing information",
+	// Information-related messages
+	INACTIVE_USER: "User account is inactive",
+	NOT_FOUND: (type: string): string => `${type} not found`,
+	CONTENT_REQUIRED: "Content is required for text-based information",
+	FILE_REQUIRED: "File is required for media-based information",
+	FILE_UPLOAD_FAILED: "Failed to upload file to storage",
+	INVALID_INFORMATION_TYPE: "Invalid information type provided",
+	MISSING_FIELDS: "Required fields are missing",
+	INVALID_FILE_TYPE: "The uploaded file type is not allowed",
 }
 // Shared message generators
 const SHARED_MESSAGES = {
@@ -84,6 +105,11 @@ export const USER_MESSAGE = {
 
 export const INFORMATION_MESSAGE = {
 	required: SHARED_MESSAGES.required,
+	CONTENT_REQUIRED: "Content is required for text information",
+	FILE_REQUIRED: "File is required for media information",
+	INVALID_TYPE: (validTypes: string[]): string =>
+		`The information type must be one of the following: ${validTypes.join(", ")}`,
+	maxLength: (type: string, max: number): string => `The ${type} must not exceed ${max} characters`,
 }
 
 // Message generator functions for tokens
@@ -150,6 +176,13 @@ export const ERROR_MAPPING: Record<string, IErrorInfo> = {
 		message: `'${FIELD.PASSWORD}' is required to confirm your identity before modification`,
 		statusCode: 400,
 	},
+	[ERROR_CODE.INVALID_FILE_TYPE]: {
+		code: ERROR_CODE.INVALID_FILE_TYPE,
+		message: ERROR_MESSAGE.INVALID_FILE_TYPE,
+		statusCode: 400,
+		location: "file",
+	},
+
 	[ERROR_CODE.UNAUTHORIZED]: {
 		code: ERROR_CODE.UNAUTHORIZED,
 		message: ERROR_MESSAGE.UNAUTHORIZED,
@@ -230,5 +263,50 @@ export const ERROR_MAPPING: Record<string, IErrorInfo> = {
 		code: ERROR_CODE.UNEXPECTED,
 		message: "An unexpected error occurred",
 		statusCode: 500,
+	},
+	[ERROR_CODE.INFORMATION_NOT_FOUND]: {
+		code: ERROR_CODE.INFORMATION_NOT_FOUND,
+		message: ERROR_MESSAGE.NOT_FOUND("Information"),
+		statusCode: 404,
+	},
+	[ERROR_CODE.UNABLE_CREATE_INFORMATION]: {
+		code: ERROR_CODE.UNABLE_CREATE_INFORMATION,
+		message: "Unable to create information with provided data",
+		statusCode: 409,
+	},
+	[ERROR_CODE.UNABLE_MODIFY_INFORMATION]: {
+		code: ERROR_CODE.UNABLE_MODIFY_INFORMATION,
+		message: "Unable to modify information with provided data",
+		statusCode: 409,
+	},
+	[ERROR_CODE.INACTIVE_USER]: {
+		code: ERROR_CODE.INACTIVE_USER,
+		message: ERROR_MESSAGE.INACTIVE_USER,
+		statusCode: 403,
+	},
+	[ERROR_CODE.CONTENT_REQUIRED]: {
+		code: ERROR_CODE.CONTENT_REQUIRED,
+		message: ERROR_MESSAGE.CONTENT_REQUIRED,
+		statusCode: 400,
+	},
+	[ERROR_CODE.FILE_REQUIRED]: {
+		code: ERROR_CODE.FILE_REQUIRED,
+		message: ERROR_MESSAGE.FILE_REQUIRED,
+		statusCode: 400,
+	},
+	[ERROR_CODE.FILE_UPLOAD_FAILED]: {
+		code: ERROR_CODE.FILE_UPLOAD_FAILED,
+		message: ERROR_MESSAGE.FILE_UPLOAD_FAILED,
+		statusCode: 500,
+	},
+	[ERROR_CODE.INVALID_INFORMATION_TYPE]: {
+		code: ERROR_CODE.INVALID_INFORMATION_TYPE,
+		message: ERROR_MESSAGE.INVALID_INFORMATION_TYPE,
+		statusCode: 400,
+	},
+	[ERROR_CODE.MISSING_FIELDS]: {
+		code: ERROR_CODE.MISSING_FIELDS,
+		message: ERROR_MESSAGE.MISSING_FIELDS,
+		statusCode: 400,
 	},
 }
