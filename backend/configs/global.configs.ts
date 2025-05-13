@@ -33,6 +33,9 @@ const CRYPTO_CONFIG = {
 	},
 }
 
+export const MEDIATYPE = ["TEXT", "VIDEO", "IMAGE"]
+export const STATUS = ["DRAFT", "PENDING", "PUBLISHED"]
+
 type Environment = "development" | "production"
 const ENV = (process.env.NODE_ENV || "development") as Environment
 export const CRYPTO = CRYPTO_CONFIG[ENV]

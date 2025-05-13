@@ -6,13 +6,17 @@ export const FIELD = {
 	BIRTH_DATE: "birthDate",
 	EMAIL: "email",
 	ROLE: "role",
-	CONTENT: "content",
+	DESCRIPTION_INFORMATION: "descriptionInformation",
+	DESCRIPTION_ACTIVITY: "descriptionActivity",
 	TITLE: "title",
-	AUTHOR: "author",
+	AUTHOR: "authorId",
+	CATEGORY_NAME: "categoryName",
+	ACTIVITY_NAME: "activityName",
 	INFORMATION: "information",
 	REFRESH_TOKEN: "refreshToken",
 	ACCESS_TOKEN: "accessToken",
 	USER_ID: "userId",
+	TYPE: "type",
 }
 
 export const SPECIAL_CHARS = "@!%*?&"
@@ -37,6 +41,26 @@ export const CONFIG_FIELD = {
 		FIRST_NAME: {
 			MIN: 2,
 			MAX: 65,
+		},
+		TITLE: {
+			MIN: 5,
+			MAX: 65,
+		},
+		ACTIVITY_NAME: {
+			MIN: 5,
+			MAX: 65,
+		},
+		DESCRIPTION_ACTIVITY: {
+			MIN: 25,
+			MAX: 600,
+		},
+		DESCRIPTION_INFORMATION: {
+			MIN: 25,
+			MAX: 600,
+		},
+		CATEGORY_NAME: {
+			MIN: 4,
+			MAX: 70,
 		},
 	},
 	MIN_AGE: 13, // Minimum required age to use the application
