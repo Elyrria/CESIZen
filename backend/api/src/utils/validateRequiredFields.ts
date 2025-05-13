@@ -7,5 +7,5 @@ export function validateRequiredUserFields(user: Partial<IUserCreate>): boolean 
 }
 
 export function validateRequierdInformationFields(information: Partial<IInformationDocument>): boolean {
-	return Boolean(information.title && information.description && information.name && information.type)
+	return Boolean(information.title && information.descriptionInformation && information.name && information.type)
 }
