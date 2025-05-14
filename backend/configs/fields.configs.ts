@@ -18,7 +18,8 @@ export const FIELD = {
 	ACCESS_TOKEN: "accessToken",
 	USER_ID: "userId",
 	TYPE: "type",
-	STATUS: "status"
+	STATUS: "status",
+	CREATED_BY: "createdBy",
 }
 
 export const SPECIAL_CHARS = "@!%*?&"
