@@ -8,8 +8,12 @@ import { setupMongoConnection } from "@configs/db.configs.ts"
 import userRouter from "@routes/user/user.routes.ts"
 import swaggerUi from "swagger-ui-express"
 import swaggerJsdoc from "swagger-jsdoc"
+import { fileURLToPath } from "url"
 import express from "express"
 import path from "path"
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 const app = express()
 
