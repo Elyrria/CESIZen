@@ -9,59 +9,62 @@ import { logger } from "@logs/logger.ts"
 import chalk from "chalk"
 
 /**
- * Get all information entries with pagination and filtering
- * @route GET /api/v1/informations
- * @access Public
+ * Controller for retrieving all information entries.
+ *
+ * This controller handles the process of fetching a list of information entries from the database,
+ * applying optional filters, pagination, and sorting based on the query parameters.
+ * It also formats media URLs and includes pagination metadata in the response.
+ *
+ * @param {Request} req - The request object containing optional filters, pagination, and sorting parameters in the query.
+ * @param {Response} res - The response object to send the list of information entries, pagination metadata, and applied filters.
+ * @returns {Promise<void>} - A promise that resolves when the response is sent with the information data or an error message.
  */
-export const getAllInformations = async (req: Request, res: Response): Promise<void> => {
+export const getInformations = async (req: Request, res: Response): Promise<void> => {
 	try {
-		logger.info(`Récupération des informations avec filtres: ${JSON.stringify(req.query)}`)
+		logger.info(`Fetching information with filters: ${JSON.stringify(req.query)}`)
 
-		// Étape 1: Obtenir les options de pagination
+		//  Get pagination options
 		const { page, limit, skip, sortOptions } = getPaginationOptions(req)
 		logger.info(`Pagination: page=${page}, limit=${limit}, skip=${skip}`)
 
-		// Étape 2: Construire la requête de filtrage
+		//  Build the filtering query
 		const query = buildInformationQuery(req)
-		logger.info(`Requête de filtrage: ${JSON.stringify(query)}`)
+		logger.info(`Filtering query: ${JSON.stringify(query)}`)
 
-		// Étape 3: Exécuter la requête pour récupérer les données
-		const informations = await Information.find(query)
-			.sort(sortOptions)
-			.skip(skip)
-			.limit(limit)
+		//  Execute the query to retrieve data
+		const informations = await Information.find(query).sort(sortOptions).skip(skip).limit(limit)
 
-		logger.info(`${chalk.green(informations.length)} informations trouvées`)
+		logger.info(`${chalk.green(informations.length)} information entries found`)
 
-		// Étape 4: Compter le nombre total de documents pour la pagination
+		//  Count total number of documents matching the filter
 		const total = await Information.countDocuments(query)
-		logger.info(`Total ${chalk.green(total)} informations correspondent aux critères`)
+		logger.info(`Total ${chalk.green(total)} entries match the criteria`)
 
-		// Étape 5: Calculer les métadonnées de pagination
+		//  Calculate pagination metadata
 		const totalPages = Math.ceil(total / limit)
 
-		// Étape 6: Ajouter les URLs des médias pour l'affichage
+		//  Add media URLs for display purposes
 		const baseUrl = `${req.protocol}://${req.get("host")}`
 		const transformedInfos = informations.map((info) => {
 			const infoObj = info.toObject()
 
-			// Ajouter l'URL du média si c'est une IMAGE ou VIDEO
+			// Add media URL if the type is IMAGE or VIDEO
 			if (["IMAGE", "VIDEO"].includes(info.type) && info.fileId) {
 				infoObj.mediaUrl = `${baseUrl}/api/v1/media/${info._id}`
 
-				// Pour les vidéos, utiliser une image par défaut pour la prévisualisation
+				// Use a default thumbnail for videos
 				if (info.type === "VIDEO") {
 					infoObj.thumbnailUrl = `${baseUrl}/assets/images/video-thumbnail.png`
 				}
 			} else if (info.type === "TEXT") {
-				// Image par défaut pour le texte
+				// Default thumbnail for text entries
 				infoObj.thumbnailUrl = `${baseUrl}/assets/images/text-icon.png`
 			}
 
 			return infoObj
 		})
 
-		// Étape 7: Préparer la réponse
+		//  Prepare the response object
 		const responseData = {
 			data: transformedInfos,
 			pagination: {
@@ -75,10 +78,10 @@ export const getAllInformations = async (req: Request, res: Response): Promise<v
 			filters: req.query,
 		}
 
-		// Étape 8: Envoyer la réponse
+		//  Send the response
 		successHandler(res, SUCCESS_CODE.INFORMATION_LIST, responseData)
 	} catch (error: unknown) {
-		logger.error(`Erreur lors de la récupération des informations: ${(error as Error).message}`)
+		logger.error(`Error while retrieving information: ${(error as Error).message}`)
 		handleUnexpectedError(res, error as Error)
 	}
 }

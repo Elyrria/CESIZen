@@ -7,5 +7,6 @@ export { logoutUser } from "@controllers/user/logoutUser.controller.ts"
 export { getAllUsers } from "@controllers/user/getUsers.controller.ts"
 export { loginUser } from "@controllers/user/loginUser.controller.ts"
 // Infroamtion controllers
-export {createInformation} from "@controllers/information/createInformation.controller.ts"
+export { createInformation } from "@controllers/information/createInformation.controller.ts"
+export { getInformations } from "@controllers/information/getInformations.controller.ts"
 // Activity controllers
