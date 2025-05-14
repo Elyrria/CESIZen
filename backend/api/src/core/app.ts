@@ -3,6 +3,7 @@ import { setupSecurityMiddleware } from "@api/src/middlewares/security/security.
 import refreshTokenRouter from "@routes/refreshToken/refreshToken.route.ts"
 import { swaggerOptions, swaggerUiOptions } from "@doc/swagger.configs.ts"
 import informationRouter from "@routes/information/information.route.ts"
+import categoryRouter from "@routes/category/category.route.ts"
 import { morganMiddleware, errorLogger } from "@logs/logger.ts"
 import { setupMongoConnection } from "@configs/db.configs.ts"
 import userRouter from "@routes/user/user.routes.ts"
@@ -41,6 +42,7 @@ app.use(errorLogger)
 app.use("/api", userRouter)
 app.use("/api", informationRouter)
 app.use("/api", refreshTokenRouter)
+app.use("/api", categoryRouter)
 
 
 export default app
