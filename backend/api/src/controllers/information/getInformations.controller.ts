@@ -1,112 +1,76 @@
-import type { IInformationDocument, TransformedInfo } from "@api/types/information.d.ts"
-import { getPaginationOptions } from "@mongoQueryBuilders/paginationOptions.ts"
-import { buildInformationQuery } from "@mongoQueryBuilders/queryUserBuilder.ts"
+import { fetchInformationWithQuery } from "@controllers/information/utils/fetchInformationWithQuery .ts"
+import { handleUnexpectedError, errorHandler } from "@errorHandler/errorHandler.ts"
 import { SUCCESS_CODE } from "@successHandler/configs.successHandler.ts"
-import { handleUnexpectedError } from "@errorHandler/errorHandler.ts"
+import { ERROR_CODE } from "@errorHandler/configs.errorHandler.ts"
 import { successHandler } from "@successHandler/successHandler.ts"
-import type { Request, Response } from "express"
-import { Information } from "@models/index.ts"
+import type { IAuthRequest } from "@api/types/request.d.ts"
+import { ROLES } from "@configs/role.configs.ts"
+import { STATUS } from "@configs/global.configs.ts"
 import { logger } from "@logs/logger.ts"
+import type { Response } from "express"
+import { User } from "@models/index.ts"
 import chalk from "chalk"
 
 /**
- * Controller for retrieving all information entries.
+ * Controller for retrieving information entries with role-based access control.
  *
- * This controller handles the process of fetching a list of information entries from the database,
- * applying optional filters, pagination, and sorting based on the query parameters.
- * It also formats media URLs and includes pagination metadata in the response.
+ * This controller requires authentication and implements role-based rules:
+ * - Regular users can see their own information (all statuses) and PUBLISHED information from others
+ * - Administrators can see all information entries
  *
- * @param {Request} req - The request object containing optional filters, pagination, and sorting parameters in the query.
- * @param {Response} res - The response object to send the list of information entries, pagination metadata, and applied filters.
- * @returns {Promise<void>} - A promise that resolves when the response is sent with the information data or an error message.
+ * @param {Request} req - The request object containing query parameters
+ * @param {Response} res - The response object to send the list of information entries
+ * @returns {Promise<void>} - A promise that resolves when the response is sent
  */
-export const getInformations = async (req: Request, res: Response): Promise<void> => {
+export const getInformations = async (req: IAuthRequest, res: Response): Promise<void> => {
 	try {
-		logger.info(`Fetching information with filters: ${JSON.stringify(req.query)}`)
+		// Authentication check
+		if (!req.auth?.userId) {
+			errorHandler(res, ERROR_CODE.NO_CONDITIONS)
+			return
+		}
+		const userId = req.auth.userId
 
-		//  Get pagination options
-		const { page, limit, skip, sortOptions } = getPaginationOptions(req)
-		logger.info(`Pagination: page=${page}, limit=${limit}, skip=${skip}`)
+		logger.info(
+			`Fetching information with filters: ${JSON.stringify(req.query)} for user: ${chalk.blue(userId)}`
+		)
 
-		//  Build the filtering query
-		const query = buildInformationQuery(req)
-		logger.info(`Filtering query: ${JSON.stringify(query)}`)
+		// Fetch user role to check if admin
+		const user = await User.findById(userId).select("role")
 
-		//  Count total number of documents matching the filter (moved up)
-		const total = await Information.countDocuments(query)
-		logger.info(`Total ${chalk.green(total)} entries match the criteria`)
+		if (!user) {
+			logger.warn(`User with ID ${chalk.yellow(userId)} not found`)
+			errorHandler(res, ERROR_CODE.USER_NOT_FOUND)
+			return
+		}
 
-		// Variables to store results
-		let transformedInfos: TransformedInfo[] = []
-		let informations: IInformationDocument[] = []
+		const isAdmin = user.role === ROLES.ADMIN
 
-		// Calculate pagination metadata
-		const totalPages = total > 0 ? Math.ceil(total / limit) : 0
+		// Define base query according to user role
+		let baseQuery = {}
 
-		// Only fetch data if there are results
-		if (total > 0) {
-			//  Execute the query to retrieve data
-			informations = await Information.find(query).sort(sortOptions).skip(skip).limit(limit)
-			logger.info(`${chalk.green(informations.length)} information entries found`)
-
-			//  Add media URLs for display purposes
-			const baseUrl = `${req.protocol}://${req.get("host")}`
-			transformedInfos = informations.map((info) => {
-				const infoObj = info.toObject() as TransformedInfo
-
-				// Add media URL if the type is IMAGE or VIDEO
-				if (["IMAGE", "VIDEO"].includes(info.type) && info.fileId) {
-					infoObj.mediaUrl = `${baseUrl}/api/v1/informations/media/${info._id}`
-
-					// Use a default thumbnail for videos
-					if (info.type === "VIDEO") {
-						infoObj.thumbnailUrl = `${baseUrl}/assets/images/video-thumbnail.png`
-					}
-				} else if (info.type === "TEXT") {
-					// Default thumbnail for text entries
-					infoObj.thumbnailUrl = `${baseUrl}/assets/images/text-icon.png`
-				}
-
-				return infoObj
-			})
-
-			// Send success response with data
-			const responseData = {
-				items: transformedInfos,
-				pagination: {
-					currentPage: page,
-					totalPages,
-					totalItems: total,
-					itemsPerPage: limit,
-					hasNextPage: page < totalPages,
-					hasPrevPage: page > 1,
-				},
-				filters: req.query,
+		if (!isAdmin) {
+			// Regular users can only see their own information or PUBLISHED information
+			baseQuery = {
+				$or: [
+					{ authorId: userId }, // User's own information (any status)
+					{ status: STATUS[2] }, // Published information from any user
+				],
 			}
+		}
+		// Admins can see everything - no base query restrictions
 
+		// Fetch data with the appropriate base query
+		const responseData = await fetchInformationWithQuery(req, baseQuery)
+
+		// Send response with appropriate success code
+		if (responseData.items.length > 0) {
 			successHandler(res, SUCCESS_CODE.INFORMATION_LIST, responseData)
 		} else {
-			logger.info(`${chalk.yellow("No")} information entries found matching the criteria`)
-
-			// Send success response with empty array using the existing NO_INFORMATION code
-			const responseData = {
-				items: [],
-				pagination: {
-					currentPage: page,
-					totalPages: 0,
-					totalItems: 0,
-					itemsPerPage: limit,
-					hasNextPage: false,
-					hasPrevPage: false,
-				},
-				filters: req.query,
-			}
-
-			// Use the existing NO_INFORMATION code for the "no data found" case
 			successHandler(res, SUCCESS_CODE.NO_INFORMATION, responseData)
 		}
 	} catch (error: unknown) {
-		logger.error(`Error while retrieving information: ${(error as Error).message}`)
+		logger.error(`Error retrieving information: ${(error as Error).message}`)
 		handleUnexpectedError(res, error as Error)
 	}
 }
