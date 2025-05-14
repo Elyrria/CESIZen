@@ -2,6 +2,7 @@
 export const FIELD = {
 	PASSWORD: "password",
 	NAME: "name",
+	IS_ACTIVE: "isActive",
 	FIRST_NAME: "firstName",
 	BIRTH_DATE: "birthDate",
 	EMAIL: "email",
@@ -62,7 +63,7 @@ export const CONFIG_FIELD = {
 			MAX: 600,
 		},
 		CATEGORY_NAME: {
-			MIN: 4,
+			MIN: 5,
 			MAX: 70,
 		},
 	},
