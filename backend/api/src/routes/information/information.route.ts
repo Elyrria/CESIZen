@@ -1,12 +1,13 @@
+// Import POST routes
 import createInformationRouter from "@routes/information/post/createInformation.route.ts"
+// Import PUT routes
+import updateInformatioNRouter from "@routes/information/put/updateInformation.route.ts"
+// Import GET routes
 import getInformationsRouter from "@routes/information/get/getInformations.route.ts"
 import getMediaByIdRouter from "@routes/information/get/getMediaById.route.ts"
-import { Router } from "express"
-// Import POST routes
-
-// Import GET routes
 // Import DELETE routes
-// Import PUT routes
+import { Router } from "express"
+
 
 const router = Router()
 // POST routes
@@ -15,5 +16,6 @@ router.use("/v1/informations", createInformationRouter)
 router.use("/v1/informations", getInformationsRouter, getMediaByIdRouter)
 // DETLE routes
 // PUT routes
+router.use("/v1/informations", updateInformatioNRouter)
 
 export default router
