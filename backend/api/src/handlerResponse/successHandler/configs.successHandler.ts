@@ -26,6 +26,13 @@ export const SUCCESS_CODE = {
 	INFORMATION_FOUND: "informationFound",
 	INFORMATION_LIST: "informationList",
 	NO_INFORMATION: "noInformation",
+	// Category-related success codes
+	CATEGORY_CREATED: "categoryCreated",
+	CATEGORY_UPDATED: "categoryUpdated",
+	CATEGORY_DELETED: "categoryDeleted",
+	CATEGORY_FOUND: "categoryFound",
+	CATEGORY_LIST: "categoryList",
+	NO_CATEGORY: "noCategory",
 }
 
 /**
@@ -49,6 +56,13 @@ export const SUCCESS_MESSAGE = {
 	INFORMATION_FOUND: "Information retrieved successfully",
 	INFORMATION_LIST: "Information list retrieved successfully",
 	NO_INFORMATION: "No information found",
+	// Category-related success messages
+	CATEGORY_CREATED: "Category created successfully",
+	CATEGORY_UPDATED: "Category updated successfully",
+	CATEGORY_DELETED: "Category deleted successfully",
+	CATEGORY_FOUND: "Category retrieved successfully",
+	CATEGORY_LIST: "Categories list retrieved successfully",
+	NO_CATEGORY: "No category found",
 }
 
 /**
@@ -134,6 +148,36 @@ export const SUCCESS_MAPPING: Record<string, ISuccessInfo> = {
 	[SUCCESS_CODE.NO_INFORMATION]: {
 		code: SUCCESS_CODE.NO_INFORMATION,
 		message: SUCCESS_MESSAGE.NO_INFORMATION,
+		statusCode: 200,
+	},
+	[SUCCESS_CODE.CATEGORY_CREATED]: {
+		code: SUCCESS_CODE.CATEGORY_CREATED,
+		message: SUCCESS_MESSAGE.CATEGORY_CREATED,
+		statusCode: 201,
+	},
+	[SUCCESS_CODE.CATEGORY_UPDATED]: {
+		code: SUCCESS_CODE.CATEGORY_UPDATED,
+		message: SUCCESS_MESSAGE.CATEGORY_UPDATED,
+		statusCode: 200,
+	},
+	[SUCCESS_CODE.CATEGORY_DELETED]: {
+		code: SUCCESS_CODE.CATEGORY_DELETED,
+		message: SUCCESS_MESSAGE.CATEGORY_DELETED,
+		statusCode: 200,
+	},
+	[SUCCESS_CODE.CATEGORY_FOUND]: {
+		code: SUCCESS_CODE.CATEGORY_FOUND,
+		message: SUCCESS_MESSAGE.CATEGORY_FOUND,
+		statusCode: 200,
+	},
+	[SUCCESS_CODE.CATEGORY_LIST]: {
+		code: SUCCESS_CODE.CATEGORY_LIST,
+		message: SUCCESS_MESSAGE.CATEGORY_LIST,
+		statusCode: 200,
+	},
+	[SUCCESS_CODE.NO_CATEGORY]: {
+		code: SUCCESS_CODE.NO_CATEGORY,
+		message: SUCCESS_MESSAGE.NO_CATEGORY,
 		statusCode: 200,
 	},
 }
