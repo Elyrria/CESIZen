@@ -7,10 +7,10 @@ import { successHandler } from "@successHandler/successHandler.ts"
 import { MEDIATYPE, STATUS } from "@configs/global.configs.ts"
 import type { IAuthRequest } from "@api/types/request.d.ts"
 import { Information, User } from "@models/index.ts"
+import { ROLES } from "@configs/role.configs.ts"
 import type {  Response } from "express"
 import { logger } from "@logs/logger.ts"
 import mongoose from "mongoose"
-import { ROLES } from "@configs/role.configs.ts"
 import chalk from "chalk"
 
 /**
@@ -21,7 +21,7 @@ import chalk from "chalk"
  * - Authors can update their own information and set status to DRAFT or PENDING
  * - Administrators can update any information and set status to PUBLISHED
  *
- * @param {Request} req - The request object containing the information ID and update data
+ * @param {IAuthRequest} req - The request object containing the information ID and update data
  * @param {Response} res - The response object to send the update result
  * @returns {Promise<void>} - A promise that resolves when the update is complete
  */
@@ -33,7 +33,7 @@ export const updateInformation = async (req: IAuthRequest, res: Response): Promi
 			return
 		}
 		const informationId = req.params.id
-		const userId = req.auth.userId // Assuming user is added to request by auth middleware
+		const userId = req.auth.userId
 		
         const user = await User.findById(userId).select("role")
 		const isAdmin = user && user.role === ROLES.ADMIN
