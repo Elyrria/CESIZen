@@ -9,6 +9,7 @@ import userRouter from "@routes/user/user.routes.ts"
 import swaggerUi from "swagger-ui-express"
 import swaggerJsdoc from "swagger-jsdoc"
 import express from "express"
+import path from "path"
 
 const app = express()
 
@@ -30,5 +31,7 @@ app.use(errorLogger)
 app.use("/api", userRouter)
 app.use("/api", informationRouter)
 app.use("/api", refreshTokenRouter)
+
+app.use(express.static(path.join(__dirname, "public")))
 
 export default app
