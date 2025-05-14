@@ -1,3 +1,4 @@
+import type { IInformationDocument, TransformedInfo } from "@api/types/information.d.ts"
 import { getPaginationOptions } from "@mongoQueryBuilders/paginationOptions.ts"
 import { buildInformationQuery } from "@mongoQueryBuilders/queryUserBuilder.ts"
 import { SUCCESS_CODE } from "@successHandler/configs.successHandler.ts"
@@ -31,55 +32,79 @@ export const getInformations = async (req: Request, res: Response): Promise<void
 		const query = buildInformationQuery(req)
 		logger.info(`Filtering query: ${JSON.stringify(query)}`)
 
-		//  Execute the query to retrieve data
-		const informations = await Information.find(query).sort(sortOptions).skip(skip).limit(limit)
-
-		logger.info(`${chalk.green(informations.length)} information entries found`)
-
-		//  Count total number of documents matching the filter
+		//  Count total number of documents matching the filter (moved up)
 		const total = await Information.countDocuments(query)
 		logger.info(`Total ${chalk.green(total)} entries match the criteria`)
 
-		//  Calculate pagination metadata
-		const totalPages = Math.ceil(total / limit)
+		// Variables to store results
+		let transformedInfos: TransformedInfo[] = []
+		let informations: IInformationDocument[] = []
 
-		//  Add media URLs for display purposes
-		const baseUrl = `${req.protocol}://${req.get("host")}`
-		const transformedInfos = informations.map((info) => {
-			const infoObj = info.toObject()
+		// Calculate pagination metadata
+		const totalPages = total > 0 ? Math.ceil(total / limit) : 0
 
-			// Add media URL if the type is IMAGE or VIDEO
-			if (["IMAGE", "VIDEO"].includes(info.type) && info.fileId) {
-				infoObj.mediaUrl = `${baseUrl}/api/v1/media/${info._id}`
+		// Only fetch data if there are results
+		if (total > 0) {
+			//  Execute the query to retrieve data
+			informations = await Information.find(query).sort(sortOptions).skip(skip).limit(limit)
+			logger.info(`${chalk.green(informations.length)} information entries found`)
 
-				// Use a default thumbnail for videos
-				if (info.type === "VIDEO") {
-					infoObj.thumbnailUrl = `${baseUrl}/assets/images/video-thumbnail.png`
+			//  Add media URLs for display purposes
+			const baseUrl = `${req.protocol}://${req.get("host")}`
+			transformedInfos = informations.map((info) => {
+				const infoObj = info.toObject() as TransformedInfo
+
+				// Add media URL if the type is IMAGE or VIDEO
+				if (["IMAGE", "VIDEO"].includes(info.type) && info.fileId) {
+					infoObj.mediaUrl = `${baseUrl}/api/v1/media/${info._id}`
+
+					// Use a default thumbnail for videos
+					if (info.type === "VIDEO") {
+						infoObj.thumbnailUrl = `${baseUrl}/assets/images/video-thumbnail.png`
+					}
+				} else if (info.type === "TEXT") {
+					// Default thumbnail for text entries
+					infoObj.thumbnailUrl = `${baseUrl}/assets/images/text-icon.png`
 				}
-			} else if (info.type === "TEXT") {
-				// Default thumbnail for text entries
-				infoObj.thumbnailUrl = `${baseUrl}/assets/images/text-icon.png`
+
+				return infoObj
+			})
+
+			// Send success response with data
+			const responseData = {
+				items: transformedInfos,
+				pagination: {
+					currentPage: page,
+					totalPages,
+					totalItems: total,
+					itemsPerPage: limit,
+					hasNextPage: page < totalPages,
+					hasPrevPage: page > 1,
+				},
+				filters: req.query,
 			}
 
-			return infoObj
-		})
+			successHandler(res, SUCCESS_CODE.INFORMATION_LIST, responseData)
+		} else {
+			logger.info(`${chalk.yellow("No")} information entries found matching the criteria`)
 
-		//  Prepare the response object
-		const responseData = {
-			data: transformedInfos,
-			pagination: {
-				currentPage: page,
-				totalPages,
-				totalItems: total,
-				itemsPerPage: limit,
-				hasNextPage: page < totalPages,
-				hasPrevPage: page > 1,
-			},
-			filters: req.query,
+			// Send success response with empty array using the existing NO_INFORMATION code
+			const responseData = {
+				items: [],
+				pagination: {
+					currentPage: page,
+					totalPages: 0,
+					totalItems: 0,
+					itemsPerPage: limit,
+					hasNextPage: false,
+					hasPrevPage: false,
+				},
+				filters: req.query,
+			}
+
+			// Use the existing NO_INFORMATION code for the "no data found" case
+			successHandler(res, SUCCESS_CODE.NO_INFORMATION, responseData)
 		}
-
-		//  Send the response
-		successHandler(res, SUCCESS_CODE.INFORMATION_LIST, responseData)
 	} catch (error: unknown) {
 		logger.error(`Error while retrieving information: ${(error as Error).message}`)
 		handleUnexpectedError(res, error as Error)
