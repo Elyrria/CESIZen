@@ -9,6 +9,7 @@ export { loginUser } from "@controllers/user/loginUser.controller.ts"
 // Infroamtion controllers
 export { createInformation } from "@controllers/information/createInformation.controller.ts"
 export { updateInformation } from "@controllers/information/updateInformation.controller.ts"
+export { deleteInformation} from "@controllers/information/deleteInformation.controller.ts"
 export { getInformations } from "@controllers/information/getInformations.controller.ts"
 export { getMediaById } from "@controllers/information/getMediaById.controller.ts"
 // Activity controllers
