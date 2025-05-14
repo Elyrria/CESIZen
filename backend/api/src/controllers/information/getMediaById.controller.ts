@@ -1,10 +1,12 @@
-import { handleUnexpectedError } from "@errorHandler/errorHandler.ts"
+import { errorHandler, handleUnexpectedError } from "@errorHandler/errorHandler.ts"
+import { ERROR_CODE } from "@errorHandler/configs.errorHandler.ts"
 import { streamFile } from "@services/gridfs.services.ts"
 import type { Request, Response } from "express"
 import { Information } from "@models/index.ts"
 import { logger } from "@logs/logger.ts"
 import mongoose from "mongoose"
 import chalk from "chalk"
+
 /**
  * Controller for retrieving and streaming media files associated with information entries.
  *
@@ -27,21 +29,18 @@ export const getMediaById = async (req: Request, res: Response): Promise<void> =
 
 		if (!information) {
 			logger.warn(`Information with ID ${chalk.yellow(informationId)} not found`)
-			res.status(404).json({ success: false, message: "Information not found" })
+			errorHandler(res, ERROR_CODE.INFORMATION_NOT_FOUND)
 			return
 		}
 
 		if (!information.fileId) {
 			logger.warn(`Information ${chalk.yellow(informationId)} has no associated file`)
-			res.status(404).json({
-				success: false,
-				message: "No media file associated with this information",
-			})
+			errorHandler(res, ERROR_CODE.FILE_REQUIRED)
 			return
 		}
 
 		// Convert string ID to ObjectId
-        const fileIdString: string = information.fileId.toString()
+		const fileIdString: string = information.fileId.toString()
 		const fileId = new mongoose.Types.ObjectId(fileIdString)
 
 		try {
@@ -84,7 +83,7 @@ export const getMediaById = async (req: Request, res: Response): Promise<void> =
 
 				// Only send error response if headers haven't been sent yet
 				if (!res.headersSent) {
-					res.status(500).json({ success: false, message: "Error streaming file" })
+					errorHandler(res, ERROR_CODE.FILE_UPLOAD_FAILED)
 				} else {
 					res.end() // End the response if headers were already sent
 				}
@@ -93,7 +92,7 @@ export const getMediaById = async (req: Request, res: Response): Promise<void> =
 			logger.error(
 				`Failed to retrieve file ${chalk.red(fileId.toString())}: ${(streamError as Error).message}`
 			)
-			res.status(404).json({ success: false, message: "File not found or inaccessible" })
+			errorHandler(res, ERROR_CODE.INFORMATION_NOT_FOUND)
 		}
 	} catch (error: unknown) {
 		logger.error(`Error retrieving media: ${(error as Error).message}`)
