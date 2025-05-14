@@ -1,7 +1,7 @@
 import { MEDIATYPE, STATUS } from "@configs/global.configs.ts"
 import type { Document } from "mongoose"
 import type { Role } from "@api/types/roles.d.ts"
-import {mongoose} from "mongoose"
+import { mongoose } from "mongoose"
 
 type ObjectId = mongoose.Types.ObjectId
 
@@ -58,4 +58,10 @@ export interface IInformation {
  */
 export interface IInformationDocument extends IInformation, Document {}
 // Helper type to identify media types vs text types
-export type MediaType = Exclude<ContentType, "TEXT">;
+export type MediaType = Exclude<ContentType, "TEXT">
+
+export type TransformedInfo = IInformation & {
+	mediaUrl?: string
+	thumbnailUrl?: string
+	id?: string
+}
