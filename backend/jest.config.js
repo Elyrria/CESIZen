@@ -28,6 +28,7 @@ export default {
 		"^@validator/(.*)$": "<rootDir>/api/src/middlewares/validator/$1",
 		"^@controllers/(.*)$": "<rootDir>/api/src/controllers/$1",
 		"^@middlewares/(.*)$": "<rootDir>/api/src/middlewares/$1",
+		"^@services/(.*)$": "<rootDir>/api/src/services/$1",
 		"^@models/(.*)$": "<rootDir>/api/src/models/$1",
 		"^@server/(.*)$": "<rootDir>/api/src/server/$1",
 		"^@routes/(.*)$": "<rootDir>/api/src/routes/$1",

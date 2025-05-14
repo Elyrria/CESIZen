@@ -8,12 +8,9 @@ import { setupMongoConnection } from "@configs/db.configs.ts"
 import userRouter from "@routes/user/user.routes.ts"
 import swaggerUi from "swagger-ui-express"
 import swaggerJsdoc from "swagger-jsdoc"
-import { fileURLToPath } from "url"
 import express from "express"
 import path from "path"
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
 
 const app = express()
 
@@ -21,6 +18,14 @@ const app = express()
 setupSecurityMiddleware(app)
 
 if (process.env.NODE_ENV !== "test") {
+	let __dirname
+	try {
+		const mainFilePath = require.main?.filename || ""
+		__dirname = path.dirname(mainFilePath)
+	} catch (error) {
+		__dirname = process.cwd()
+	}
+
 	app.use(morganMiddleware) // For request logging
 	setupMongoConnection()
 	// Generate Swagger specification
@@ -28,6 +33,7 @@ if (process.env.NODE_ENV !== "test") {
 	// Setup Swagger UI
 	app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec, swaggerUiOptions))
 	// Global error handler middleware
+	app.use(express.static(path.join(__dirname, "public")))
 }
 
 app.use(errorLogger)
@@ -36,6 +42,5 @@ app.use("/api", userRouter)
 app.use("/api", informationRouter)
 app.use("/api", refreshTokenRouter)
 
-app.use(express.static(path.join(__dirname, "public")))
 
 export default app

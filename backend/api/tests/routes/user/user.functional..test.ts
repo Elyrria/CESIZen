@@ -6,7 +6,10 @@ import request from "supertest"
 import app from "@core/app.ts"
 import bcrypt from "bcrypt"
 
-describe("User API Functional Tests", () => {
+const isFunctionalTest = process.env.FUNCTIONAL_TEST === "true"
+const describeIfFunctional = isFunctionalTest ? describe : describe.skip
+
+describeIfFunctional("User API Functional Tests", () => {
 	// Shared test data
 	const adminUser = {
 		email: "admin-test@example.com",

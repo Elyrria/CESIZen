@@ -29,7 +29,7 @@ export const ERROR_CODE = {
 	// User-related errors
 	USER_NOT_FOUND: "userNotFound",
 	UNABLE_CREATE_USER: "unableToCreateUser",
-	UNABLE_MODIFY_USER: "unableToCreateUser",
+	UNABLE_MODIFY_USER: "unableToModifyUser",
 	MIS_MATCH: "userMisMatch",
 
 	// Role-related errors
