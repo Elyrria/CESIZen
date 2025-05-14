@@ -1,149 +1,25 @@
+import { auth } from "@middlewares/security/auth.middleware.ts"
 import { getInformations } from "@controllers/index.ts"
 import { Router } from "express"
 
 const getInformationsRouter = Router()
 /**
  * @swagger
- * components:
- *   schemas:
- *     TransformedInformation:
- *       type: object
- *       properties:
- *         _id:
- *           type: string
- *           description: MongoDB ObjectID of the information
- *         authorId:
- *           type: string
- *           description: MongoDB ObjectID of the author
- *         title:
- *           type: string
- *           description: Title of the information
- *         descriptionInformation:
- *           type: string
- *           description: Brief description of the information
- *         name:
- *           type: string
- *           description: Unique identifier/slug for the information
- *         type:
- *           type: string
- *           enum: [TEXT, IMAGE, VIDEO]
- *           description: Type of information content
- *         content:
- *           type: string
- *           description: Text content (only present for TEXT type)
- *         status:
- *           type: string
- *           enum: [DRAFT, PUBLISHED]
- *           description: Publication status of the information
- *         validatedAndPublishedAt:
- *           type: string
- *           format: date-time
- *           nullable: true
- *           description: Date when the information was published (null for drafts)
- *         fileId:
- *           type: string
- *           description: MongoDB ObjectID of the uploaded file (only present for IMAGE or VIDEO types)
- *         fileMetadata:
- *           $ref: '#/components/schemas/FileMetadata'
- *           description: Metadata about the uploaded file (only present for IMAGE or VIDEO types)
- *         createdAt:
- *           type: string
- *           format: date-time
- *           description: Creation timestamp
- *         updatedAt:
- *           type: string
- *           format: date-time
- *           description: Last update timestamp
- *         __v:
- *           type: number
- *           description: MongoDB version key
- *         id:
- *           type: string
- *           description: MongoDB ObjectID of the information
- *         mediaUrl:
- *           type: string
- *           description: URL to access the media file (only present for IMAGE or VIDEO types)
- *         thumbnailUrl:
- *           type: string
- *           description: URL to a thumbnail image (present for all types)
- *
- *     PaginationInfo:
- *       type: object
- *       properties:
- *         currentPage:
- *           type: number
- *           description: Current page number
- *         totalPages:
- *           type: number
- *           description: Total number of pages
- *         totalItems:
- *           type: number
- *           description: Total number of items matching the query
- *         itemsPerPage:
- *           type: number
- *           description: Number of items per page
- *         hasNextPage:
- *           type: boolean
- *           description: Whether there is a next page
- *         hasPrevPage:
- *           type: boolean
- *           description: Whether there is a previous page
- *
- *     GetInformationsResponse:
- *       type: object
- *       properties:
- *         success:
- *           type: boolean
- *           example: true
- *         code:
- *           type: string
- *           example: informationList
- *         message:
- *           type: string
- *           example: Information list retrieved successfully
- *         data:
- *           type: object
- *           properties:
- *             items:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/TransformedInformation'
- *             pagination:
- *               $ref: '#/components/schemas/PaginationInfo'
- *             filters:
- *               type: object
- *               description: Filter parameters that were applied to the query
- *
- *     NoInformationsResponse:
- *       type: object
- *       properties:
- *         success:
- *           type: boolean
- *           example: true
- *         code:
- *           type: string
- *           example: noInformation
- *         message:
- *           type: string
- *           example: No information found
- *         data:
- *           type: object
- *           properties:
- *             items:
- *               type: array
- *               items: {}
- *               description: Empty array when no items are found
- *             pagination:
- *               $ref: '#/components/schemas/PaginationInfo'
- *             filters:
- *               type: object
- *               description: Filter parameters that were applied to the query
- *
  * /api/v1/informations/get-informations:
  *   get:
- *     summary: Retrieve a list of information entries
- *     description: Fetches a paginated list of information entries with optional filtering and sorting
+ *     summary: Retrieve a list of information entries with role-based access control
+ *     description: |
+ *       Fetches a paginated list of information entries with optional filtering and sorting.
+ *       This endpoint requires authentication and implements role-based access control:
+ *       
+ *       - Regular users can only see:
+ *         - Their own information entries (all statuses: DRAFT, PENDING, PUBLISHED)
+ *         - PUBLISHED information entries from other users
+ *       
+ *       - Administrators can see all information entries from all users in any status
  *     tags: [Informations]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: query
  *         name: type
@@ -155,7 +31,7 @@ const getInformationsRouter = Router()
  *         name: status
  *         schema:
  *           type: string
- *           enum: [DRAFT, PUBLISHED]
+ *           enum: [DRAFT, PENDING, PUBLISHED]
  *         description: Filter by publication status
  *       - in: query
  *         name: authorId
@@ -330,6 +206,67 @@ const getInformationsRouter = Router()
  *                       hasPrevPage: false
  *                     filters:
  *                       type: "VIDEO"
+ *       401:
+ *         description: Authentication required or invalid token
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: object
+ *                   properties:
+ *                     code:
+ *                       type: string
+ *                     message:
+ *                       type: string
+ *             examples:
+ *               unauthorized:
+ *                 summary: No authentication token provided
+ *                 value:
+ *                   success: false
+ *                   error:
+ *                     code: "unauthorized"
+ *                     message: "Unauthorized access"
+ *               invalidSignature:
+ *                 summary: Invalid token signature
+ *                 value:
+ *                   success: false
+ *                   error:
+ *                     code: "signatureInvalid"
+ *                     message: "Invalid token signature"
+ *               expiredToken:
+ *                 summary: Token has expired
+ *                 value:
+ *                   success: false
+ *                   error:
+ *                     code: "expiredToken"
+ *                     message: "Token expired"
+ *       404:
+ *         description: User not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: object
+ *                   properties:
+ *                     code:
+ *                       type: string
+ *                     message:
+ *                       type: string
+ *             example:
+ *               success: false
+ *               error:
+ *                 code: "userNotFound"
+ *                 message: "User not found"
  *       500:
  *         description: Server error
  *         content:
@@ -337,6 +274,6 @@ const getInformationsRouter = Router()
  *             schema:
  *               $ref: '#/components/schemas/ApiErrorResponse'
  */
-getInformationsRouter.get("/get-informations", getInformations)
+getInformationsRouter.get("/get-informations", auth, getInformations)
 
 export default getInformationsRouter
