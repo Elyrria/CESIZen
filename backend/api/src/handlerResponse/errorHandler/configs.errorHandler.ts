@@ -53,6 +53,9 @@ export const ERROR_CODE = {
 	INVALID_INFORMATION_TYPE: "invalidInformationType",
 	MISSING_FIELDS: "missingFields",
 	INVALID_FILE_TYPE: "invalidFileType",
+	FILE_NOT_FOUND: "fileNotFound",
+	FILE_STREAMING_ERROR: "fileStreamingError",
+	FILE_ACCESS_ERROR: "fileAccessError",
 }
 
 // Predefined error messages
@@ -76,6 +79,9 @@ export const ERROR_MESSAGE = {
 	INVALID_INFORMATION_TYPE: "Invalid information type provided",
 	MISSING_FIELDS: "Required fields are missing",
 	INVALID_FILE_TYPE: "The uploaded file type is not allowed",
+	FILE_NOT_FOUND: "The requested file could not be found in the storage",
+	FILE_STREAMING_ERROR: "An error occurred while streaming the file",
+	FILE_ACCESS_ERROR: "Unable to access the requested file",
 }
 // Shared message generators
 export const SHARED_MESSAGES = {
@@ -309,5 +315,20 @@ export const ERROR_MAPPING: Record<string, IErrorInfo> = {
 		code: ERROR_CODE.MISSING_FIELDS,
 		message: ERROR_MESSAGE.MISSING_FIELDS,
 		statusCode: 400,
+	},
+	[ERROR_CODE.FILE_NOT_FOUND]: {
+		code: ERROR_CODE.FILE_NOT_FOUND,
+		message: ERROR_MESSAGE.FILE_NOT_FOUND,
+		statusCode: 404,
+	},
+	[ERROR_CODE.FILE_STREAMING_ERROR]: {
+		code: ERROR_CODE.FILE_STREAMING_ERROR,
+		message: ERROR_MESSAGE.FILE_STREAMING_ERROR,
+		statusCode: 500,
+	},
+	[ERROR_CODE.FILE_ACCESS_ERROR]: {
+		code: ERROR_CODE.FILE_ACCESS_ERROR,
+		message: ERROR_MESSAGE.FILE_ACCESS_ERROR,
+		statusCode: 403,
 	},
 }
