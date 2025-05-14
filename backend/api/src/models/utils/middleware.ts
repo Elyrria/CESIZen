@@ -1,5 +1,4 @@
 import type { IMongoError } from "@api/types/mongoError.d.ts"
-import type { IInformationDocument } from "@api/types/information.d.ts"
 import { Schema } from "mongoose"
 
 type NextFunction = (err?: Error | null) => void

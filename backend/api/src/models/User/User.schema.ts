@@ -1,6 +1,6 @@
 import { addUniqueValidationMiddleware } from "@models/utils/middleware.ts"
 import { USER_MESSAGE } from "@errorHandler/configs.errorHandler.ts"
-import { FIELD, CONFIG_FIELD } from "@configs/fields.configs.ts"
+import { FIELD } from "@configs/fields.configs.ts"
 import type { IUserDocument } from "@api/types/user.d.ts"
 import { ROLE_HIERARCHY } from "@configs/role.configs.ts"
 import { Schema } from "mongoose"

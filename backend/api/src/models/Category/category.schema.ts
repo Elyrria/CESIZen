@@ -1,3 +1,4 @@
+import { addUniqueValidationMiddleware } from "@models/utils/middleware.ts"
 import { CATEGORY_MESSAGE } from "@errorHandler/configs.errorHandler.ts"
 import type { ICategoryDocument } from "@api/types/category.d.ts"
 import { FIELD } from "@configs/fields.configs.ts"
@@ -12,6 +13,7 @@ const categorySchema = new Schema<ICategoryDocument>(
 		name: {
 			type: String,
 			required: [true, CATEGORY_MESSAGE.required(FIELD.NAME)],
+            unique: true,
 			trim: true,
 			minlength: [2, CATEGORY_MESSAGE.minLength(FIELD.NAME, 2)],
 			maxlength: [50, CATEGORY_MESSAGE.maxLength(FIELD.NAME, 50)],
@@ -43,5 +45,7 @@ const categorySchema = new Schema<ICategoryDocument>(
 categorySchema.index({ name: 1 }, { unique: true })
 categorySchema.index({ createdAt: -1 })
 categorySchema.index({ isActive: 1 })
+
+addUniqueValidationMiddleware(categorySchema)
 
 export default categorySchema
