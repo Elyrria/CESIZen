@@ -7,6 +7,7 @@ export { logoutUser } from "@controllers/user/logoutUser.controller.ts"
 export { getAllUsers } from "@controllers/user/getUsers.controller.ts"
 export { loginUser } from "@controllers/user/loginUser.controller.ts"
 // Infroamtion controllers
+export {getPublicInformations} from "@controllers/information/getPublicInformations.controller.ts"
 export { createInformation } from "@controllers/information/createInformation.controller.ts"
 export { updateInformation } from "@controllers/information/updateInformation.controller.ts"
 export { deleteInformation} from "@controllers/information/deleteInformation.controller.ts"
