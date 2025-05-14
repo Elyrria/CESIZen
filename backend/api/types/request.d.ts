@@ -1,7 +1,10 @@
 import { IRefreshTokenRequest } from "@api/types/tokens.d.ts"
 import { IUser } from "@api/types/user.d.ts"
 import { Request } from "express"
-import { Multer } from "multer" 
+import { mongoose } from "mongoose"
+import { Multer } from "multer"
+
+type ObjectId = mongoose.Types.ObjectId
 declare global {
 	namespace Express {
 		interface Request {
@@ -29,6 +32,10 @@ export interface IQueryInterface {
 	firstname?: { $regex: string; $options: string }
 	createdAt?: { $lte?: Date; $gte?: Date }
 	updatedAt?: { $lte?: Date; $gte?: Date }
+	type?: { $in?: string[] }
+	status?: { $in?: string[] }
+	authorId?: ObjectId
+	validatedAndPublishedAt?: null | { $ne?: null }
 }
 
 export interface IAuthRequest extends Request {
@@ -37,6 +44,5 @@ export interface IAuthRequest extends Request {
 	}
 	file?: Express.Multer.File
 }
-
 
 export type TSanitizedKeys = "sanitizedBody" | "sanitizedQuery" | "sanitizedParams"
