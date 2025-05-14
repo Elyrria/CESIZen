@@ -56,7 +56,7 @@ export const getInformations = async (req: Request, res: Response): Promise<void
 
 				// Add media URL if the type is IMAGE or VIDEO
 				if (["IMAGE", "VIDEO"].includes(info.type) && info.fileId) {
-					infoObj.mediaUrl = `${baseUrl}/api/v1/media/${info._id}`
+					infoObj.mediaUrl = `${baseUrl}/api/v1/informations/media/${info._id}`
 
 					// Use a default thumbnail for videos
 					if (info.type === "VIDEO") {
