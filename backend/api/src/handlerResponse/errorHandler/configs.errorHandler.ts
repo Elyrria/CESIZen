@@ -56,6 +56,12 @@ export const ERROR_CODE = {
 	FILE_NOT_FOUND: "fileNotFound",
 	FILE_STREAMING_ERROR: "fileStreamingError",
 	FILE_ACCESS_ERROR: "fileAccessError",
+
+	// Category-related errors
+	CATEGORY_NOT_FOUND: "categoryNotFound",
+	UNABLE_CREATE_CATEGORY: "unableToCreateCategory",
+	UNABLE_MODIFY_CATEGORY: "unableToModifyCategory",
+	DUPLICATE_CATEGORY: "duplicateCategory",
 }
 
 // Predefined error messages
@@ -82,6 +88,11 @@ export const ERROR_MESSAGE = {
 	FILE_NOT_FOUND: "The requested file could not be found in the storage",
 	FILE_STREAMING_ERROR: "An error occurred while streaming the file",
 	FILE_ACCESS_ERROR: "Unable to access the requested file",
+	// Category-related messages
+	CATEGORY_NOT_FOUND: "Category not found",
+	UNABLE_CREATE_CATEGORY: "Unable to create category with provided data",
+	UNABLE_MODIFY_CATEGORY: "Unable to modify category with provided data",
+	DUPLICATE_CATEGORY: "A category with this name already exists",
 }
 // Shared message generators
 export const SHARED_MESSAGES = {
@@ -91,38 +102,35 @@ export const SHARED_MESSAGES = {
 		`The ${type} must contain between ${min} and ${max} characters`,
 	cannotBeEmpty: (type: string): string => `The ${type} cannot be empty`,
 	statusInvalid: (roles: string[]): string => `The status must be one of the following: ${roles.join(", ")}`,
+	minLength: (type: string, min: number): string => `The ${type} must contain at least ${min} characters`,
+	maxLength: (type: string, max: number): string => `The ${type} must not contain more than ${max} characters`,
 }
 // Message generator functions for users
 export const USER_MESSAGE = {
-	mustBeString: SHARED_MESSAGES.mustBeString,
-	cannotBeEmpty: SHARED_MESSAGES.cannotBeEmpty,
-	required: SHARED_MESSAGES.required,
-	length: SHARED_MESSAGES.length,
+	...SHARED_MESSAGES,
 	emailInvalid: `The ${FIELD.EMAIL} must be a valid email address`,
 	passwordRequirements: `The ${FIELD.PASSWORD} must contain at least one uppercase letter, one lowercase letter, one number, and one special character in ${SPECIAL_CHARS_DISPLAY}`,
-	minLength: (type: string, min: number): string => `The ${type} must contain at least ${min} characters`,
-	maxLength: (type: string, max: number): string => `The ${type} must not contain more than ${max} characters`,
 	roleInvalid: (roles: string[]): string => `The role must be one of the following: ${roles.join(", ")}`,
 }
 
 export const INFORMATION_MESSAGE = {
-	cannotBeEmpty: SHARED_MESSAGES.cannotBeEmpty,
-	mustBeString: SHARED_MESSAGES.mustBeString,
-	required: SHARED_MESSAGES.required,
-	length: SHARED_MESSAGES.length,
+	...SHARED_MESSAGES,
 	CONTENT_REQUIRED: "Content is required for text information",
 	FILE_REQUIRED: "File is required for media information",
 	INVALID_TYPE: (validTypes: string[]): string =>
 		`The information type must be one of the following: ${validTypes.join(", ")}`,
-	maxLength: (type: string, max: number): string => `The ${type} must not exceed ${max} characters`,
 	typeInvalid: (type: string[]): string => `The type must be one of the following: ${type.join(", ")}`,
 	fileRequired: (type: string): string => `File is required for ${type} information type`,
+}
+export const CATEGORY_MESSAGE = {
+	...SHARED_MESSAGES,
+	duplicateName: "A category with this name already exists",
 }
 
 // Message generator functions for tokens
 export const TOKEN_MESSAGE = {
 	cannotBeEmpty: SHARED_MESSAGES.cannotBeEmpty,
-	mustBeString: (type: string): string => `The ${type} must be a string`,
+	mustBeString: SHARED_MESSAGES.mustBeString,
 	invalidFormat: (type: string): string => `The ${type} must be a valid format: MongoDB ObjectID`,
 	refreshTokenRequired: "The refresh token is required",
 }
@@ -330,5 +338,25 @@ export const ERROR_MAPPING: Record<string, IErrorInfo> = {
 		code: ERROR_CODE.FILE_ACCESS_ERROR,
 		message: ERROR_MESSAGE.FILE_ACCESS_ERROR,
 		statusCode: 403,
+	},
+	[ERROR_CODE.CATEGORY_NOT_FOUND]: {
+		code: ERROR_CODE.CATEGORY_NOT_FOUND,
+		message: ERROR_MESSAGE.CATEGORY_NOT_FOUND,
+		statusCode: 404,
+	},
+	[ERROR_CODE.UNABLE_CREATE_CATEGORY]: {
+		code: ERROR_CODE.UNABLE_CREATE_CATEGORY,
+		message: ERROR_MESSAGE.UNABLE_CREATE_CATEGORY,
+		statusCode: 409,
+	},
+	[ERROR_CODE.UNABLE_MODIFY_CATEGORY]: {
+		code: ERROR_CODE.UNABLE_MODIFY_CATEGORY,
+		message: ERROR_MESSAGE.UNABLE_MODIFY_CATEGORY,
+		statusCode: 409,
+	},
+	[ERROR_CODE.DUPLICATE_CATEGORY]: {
+		code: ERROR_CODE.DUPLICATE_CATEGORY,
+		message: ERROR_MESSAGE.DUPLICATE_CATEGORY,
+		statusCode: 409,
 	},
 }
