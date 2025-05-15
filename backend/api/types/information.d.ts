@@ -1,6 +1,6 @@
 import { MEDIATYPE, STATUS } from "@configs/global.configs.ts"
-import type { Document } from "mongoose"
 import type { Role } from "@api/types/roles.d.ts"
+import type { Document } from "mongoose"
 import { mongoose } from "mongoose"
 
 type ObjectId = mongoose.Types.ObjectId
@@ -37,19 +37,20 @@ export interface IFileMetadata {
  */
 export interface IInformation {
 	_id?: ObjectId
-	authorId: ObjectId // Reference to the user who created this information
-	title: string // Title of the information
-	descriptionInformation: string // Brief description or summary
-	name: string // Identifier name (can be used for URLs or reference)
-	type: ContentType // Content format type (TEXT, HTML, VIDEO, AUDIO, IMAGE)
-	status: InformationStatus // Publication status (DRAFT, PENDING, PUBLISHED)
-	validatedBy?: ObjectId // Reference to the user who validated/approved this information
-	validatedAndPublishedAt?: Date // Timestamp when the information was validated and published
-
-	// GridFS file reference (only for media types: VIDEO, AUDIO, IMAGE)
-	fileId?: ObjectId // ID of the associated file in GridFS
-	fileMetadata?: ObjectId // Metadata of the associated file
-	content?: string // Actual text
+	authorId: ObjectId
+	title: string
+	descriptionInformation: string
+	name: string
+	type: ContentType
+	status: InformationStatus
+	validatedBy?: ObjectId
+	validatedAndPublishedAt?: Date
+	fileId?: ObjectId
+	fileMetadata?: Object
+	content?: string
+	categoryId?: ObjectId
+	createdAt?: Date
+	updatedAt?: Date
 }
 
 /**
