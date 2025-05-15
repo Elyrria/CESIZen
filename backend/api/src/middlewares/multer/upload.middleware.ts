@@ -23,10 +23,10 @@ const fileFilter = (req: Request, file: Express.Multer.File, cb: multer.FileFilt
 	]
 
 	if (allowedMimeTypes.includes(file.mimetype)) {
-		logger.info(`Type de fichier accepté: ${chalk.green(file.mimetype)}`)
+		logger.info(`Accepted file type: ${chalk.green(file.mimetype)}`)
 		cb(null, true)
 	} else {
-		logger.warn(`Type de fichier refusé: ${chalk.red(file.mimetype)}`)
+		logger.warn(`Rejected file type: ${chalk.red(file.mimetype)}`)
 		cb(new Error(ERROR_CODE.INVALID_FILE_TYPE))
 	}
 }
