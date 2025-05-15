@@ -10,6 +10,7 @@ import { uploadToGridFS } from "@services/gridfs.services.ts"
 import type { IAuthRequest } from "@api/types/request.d.ts"
 import { deleteObjectIds } from "@utils/idCleaner.ts"
 import { Information } from "@models/index.ts"
+import { Category } from "@models/index.ts"
 import { logger } from "@logs/logger.ts"
 import type { Response } from "express"
 import mongoose from "mongoose"
@@ -62,11 +63,34 @@ export const createInformation = async (req: IAuthRequest, res: Response): Promi
 			type,
 			status = STATUS[0],
 			content,
+			categoryId,
 		} = cleanInformationObject
 
 		// Validate media type
 		if (!MEDIATYPE.includes(type)) {
 			errorHandler(res, ERROR_CODE.INVALID_INFORMATION_TYPE)
+			return
+		}
+
+		if (!categoryId) {
+			errorHandler(res, ERROR_CODE.MISSING_FIELDS, "Category is required")
+			return
+		}
+
+		// Verify the category ID is valid
+		if (!mongoose.Types.ObjectId.isValid(categoryId)) {
+			errorHandler(res, ERROR_CODE.INVALID_INFORMATION_TYPE, "Invalid category ID format")
+			return
+		}
+
+		const category = await Category.findById(categoryId)
+		if (!category) {
+			errorHandler(res, ERROR_CODE.INVALID_INFORMATION_TYPE, "Category not found")
+			return
+		}
+
+		if (!category.isActive) {
+			errorHandler(res, ERROR_CODE.INVALID_INFORMATION_TYPE, "Category is inactive")
 			return
 		}
 
@@ -78,6 +102,7 @@ export const createInformation = async (req: IAuthRequest, res: Response): Promi
 			name,
 			type,
 			status,
+			categoryId: new mongoose.Types.ObjectId(String(categoryId)),
 		}
 
 		// Handle TEXT content

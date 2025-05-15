@@ -6,11 +6,11 @@ import { ERROR_CODE } from "@errorHandler/configs.errorHandler.ts"
 import { successHandler } from "@successHandler/successHandler.ts"
 import { MEDIATYPE, STATUS } from "@configs/global.configs.ts"
 import type { IAuthRequest } from "@api/types/request.d.ts"
-import { Information, User } from "@models/index.ts"
+import { Information, User, Category } from "@models/index.ts"
 import { ROLES } from "@configs/role.configs.ts"
-import type {  Response } from "express"
+import type { Response } from "express"
 import { logger } from "@logs/logger.ts"
-import mongoose from "mongoose"
+import { ObjectId } from "mongodb"
 import chalk from "chalk"
 
 /**
@@ -20,6 +20,7 @@ import chalk from "chalk"
  * with validation based on the user's role:
  * - Authors can update their own information and set status to DRAFT or PENDING
  * - Administrators can update any information and set status to PUBLISHED
+ * - The category of an information can be changed
  *
  * @param {IAuthRequest} req - The request object containing the information ID and update data
  * @param {Response} res - The response object to send the update result
@@ -34,14 +35,14 @@ export const updateInformation = async (req: IAuthRequest, res: Response): Promi
 		}
 		const informationId = req.params.id
 		const userId = req.auth.userId
-		
-        const user = await User.findById(userId).select("role")
+
+		const user = await User.findById(userId).select("role")
 		const isAdmin = user && user.role === ROLES.ADMIN
 
 		logger.info(`Updating information ID: ${chalk.blue(informationId)}`)
 
 		// Find the information to update
-		const information = await Information.findById(informationId)
+		const information = await Information.findById(informationId).populate("categoryId", "name")
 
 		if (!information) {
 			logger.warn(`Information with ID ${chalk.yellow(informationId)} not found`)
@@ -63,6 +64,42 @@ export const updateInformation = async (req: IAuthRequest, res: Response): Promi
 		if (req.body.title) updateData.title = req.body.title
 		if (req.body.descriptionInformation) updateData.descriptionInformation = req.body.descriptionInformation
 		if (req.body.name) updateData.name = req.body.name
+
+		// Process category update if provided
+		if (req.body.categoryId) {
+			const categoryId = req.body.categoryId
+
+			// Validate category ID format
+			if (!ObjectId.isValid(String(categoryId))) {
+				logger.warn(`Invalid category ID format: ${chalk.yellow(categoryId)}`)
+				errorHandler(res, ERROR_CODE.INVALID_INFORMATION_TYPE, "Invalid category ID format")
+				return
+			}
+
+			// Check if category exists and is active
+			const category = await Category.findById(categoryId)
+			if (!category) {
+				logger.warn(`Category with ID ${chalk.yellow(categoryId)} not found`)
+				errorHandler(res, ERROR_CODE.INVALID_INFORMATION_TYPE, "Category not found")
+				return
+			}
+
+			if (!category.isActive) {
+				logger.warn(`Attempted to assign inactive category ${chalk.yellow(categoryId)}`)
+				errorHandler(res, ERROR_CODE.INVALID_INFORMATION_TYPE, "Category is inactive")
+				return
+			}
+
+			// Category is valid, assign it to the update data
+			updateData.categoryId = new ObjectId(String(categoryId))
+
+			const oldCategoryName = information.categoryId
+				? (information.categoryId as any).name
+				: "unknown"
+			logger.info(
+				`Changing category from "${chalk.blue(oldCategoryName)}" to "${chalk.green(category.name)}"`
+			)
+		}
 
 		// Process content for TEXT type
 		if (information.type === MEDIATYPE[0] && req.body.content) {
@@ -90,7 +127,7 @@ export const updateInformation = async (req: IAuthRequest, res: Response): Promi
 
 			// If setting to PUBLISHED as admin, record validation timestamp and validator
 			if (req.body.status === STATUS[2] && isAdmin) {
-				updateData.validatedBy = new mongoose.Types.ObjectId(userId)
+				updateData.validatedBy = new ObjectId(String(userId))
 				updateData.validatedAndPublishedAt = new Date()
 			}
 		}
@@ -151,12 +188,18 @@ export const updateInformation = async (req: IAuthRequest, res: Response): Promi
 			}
 		}
 
-		// Update the information
+		// Update the information - only if there are fields to update
+		if (Object.keys(updateData).length === 0) {
+			logger.warn(`No fields to update for information: ${chalk.yellow(informationId)}`)
+			errorHandler(res, ERROR_CODE.NO_FIELDS)
+			return
+		}
+
 		const updatedInformation = await Information.findByIdAndUpdate(
 			informationId,
 			{ $set: updateData },
 			{ new: true, runValidators: true }
-		)
+		).populate("categoryId", "name") // Populate category to include it in response
 
 		if (!updatedInformation) {
 			logger.error(`Failed to update information: ${chalk.red(informationId)}`)
