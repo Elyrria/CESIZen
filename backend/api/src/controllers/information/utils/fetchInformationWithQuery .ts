@@ -1,20 +1,25 @@
 import type { IInformationDocument, TransformedInfo } from "@api/types/information.d.ts"
 import { getPaginationOptions } from "@mongoQueryBuilders/paginationOptions.ts"
 import { buildInformationQuery } from "@mongoQueryBuilders/queryUserBuilder.ts"
-import { Information } from "@models/index.ts"
+import { Information, Category } from "@models/index.ts"
 import { logger } from "@logs/logger.ts"
 import type { Request } from "express"
+import { ObjectId } from "mongodb"
 import mongoose from "mongoose"
 import chalk from "chalk"
 
 /**
  * Utility function to fetch and format information entries with filtering and pagination.
+ * Now supports filtering by category.
  *
  * @param {Request} req - The request object containing query parameters
  * @param {mongoose.FilterQuery<IInformationDocument>} baseQuery - The base query to apply
- * @returns {Promise<{items: TransformedInfo[], pagination: any}>} - The fetched and formatted information
+ * @returns {Promise<{items: TransformedInfo[], pagination: any, category?: any}>} - The fetched and formatted information
  */
-export const fetchInformationWithQuery = async (req: Request, baseQuery: mongoose.FilterQuery<IInformationDocument> = {}) => {
+export const fetchInformationWithQuery = async (
+	req: Request,
+	baseQuery: mongoose.FilterQuery<IInformationDocument> = {}
+) => {
 	// Get pagination options
 	const { page, limit, skip, sortOptions } = getPaginationOptions(req)
 	logger.info(`Pagination: page=${page}, limit=${limit}, skip=${skip}`)
@@ -22,6 +27,35 @@ export const fetchInformationWithQuery = async (req: Request, baseQuery: mongoos
 	// Build the filtering query from request and combine with baseQuery
 	let userQuery = buildInformationQuery(req)
 	const query = { ...baseQuery, ...userQuery }
+
+	// Handle category filtering
+	let categoryInfo = null
+	if (req.query.categoryId) {
+		const categoryId = req.query.categoryId as string
+
+		// Validate category ID format
+		if (ObjectId.isValid(String(categoryId))) {
+			// Add category filter to query
+			query.categoryId = new ObjectId(String(categoryId))
+
+			// Get category info for response
+			try {
+				categoryInfo = await Category.findById(categoryId)
+				if (categoryInfo) {
+					logger.info(`Filtering by category: ${chalk.blue(categoryInfo.name)}`)
+				} else {
+					logger.warn(
+						`Category with ID ${chalk.yellow(categoryId)} not found, but still applying filter`
+					)
+				}
+			} catch (error) {
+				logger.error(`Error fetching category info: ${(error as Error).message}`)
+			}
+		} else {
+			logger.warn(`Invalid category ID format: ${chalk.yellow(categoryId)}`)
+		}
+	}
+
 	logger.info(`Filtering query: ${JSON.stringify(query)}`)
 
 	// Count total number of documents matching the filter
@@ -38,7 +72,11 @@ export const fetchInformationWithQuery = async (req: Request, baseQuery: mongoos
 	// Only fetch data if there are results
 	if (total > 0) {
 		// Execute the query to retrieve data
-		informations = await Information.find(query).sort(sortOptions).skip(skip).limit(limit)
+		informations = await Information.find(query)
+			.sort(sortOptions)
+			.skip(skip)
+			.limit(limit)
+			.populate("categoryId", "name") // Populate category information
 
 		logger.info(`${chalk.green(informations.length)} information entries found`)
 
@@ -67,7 +105,7 @@ export const fetchInformationWithQuery = async (req: Request, baseQuery: mongoos
 	}
 
 	// Prepare the response data
-	return {
+	const responseData = {
 		items: transformedInfos,
 		pagination: {
 			currentPage: page,
@@ -79,4 +117,14 @@ export const fetchInformationWithQuery = async (req: Request, baseQuery: mongoos
 		},
 		filters: req.query,
 	}
+
+	if (categoryInfo) {
+		// @ts-ignore - Adding category property to response
+		responseData.category = {
+			id: categoryInfo._id,
+			name: categoryInfo.name,
+		}
+	}
+
+	return responseData
 }
