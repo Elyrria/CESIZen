@@ -2,7 +2,294 @@ import { getPublicActivities } from "@controllers/index.ts"
 import { Router } from "express"
 
 const getPublicActivitiesRouter = Router()
-
+/**
+ * @swagger
+ * /api/v1/activities/get-public-activities:
+ *   get:
+ *     summary: Retrieve a list of public activities
+ *     description: |
+ *       Fetches a paginated list of active activities with optional filtering and sorting.
+ *       This endpoint is publicly accessible without authentication and is intended for
+ *       retrieving content that is ready for public use.
+ *       
+ *       Only returns activities where isActive is true.
+ *     tags: [Activities]
+ *     parameters:
+ *       - in: query
+ *         name: type
+ *         schema:
+ *           type: string
+ *           enum: [TEXT, VIDEO]
+ *         description: Filter by activity type
+ *       - in: query
+ *         name: categoryId
+ *         schema:
+ *           type: string
+ *         description: Filter by category ID
+ *       - in: query
+ *         name: search
+ *         schema:
+ *           type: string
+ *         description: Search in name and descriptionActivity
+ *       - in: query
+ *         name: createdFrom
+ *         schema:
+ *           type: string
+ *           format: date-time
+ *         description: Filter by creation date (from)
+ *       - in: query
+ *         name: createdTo
+ *         schema:
+ *           type: string
+ *           format: date-time
+ *         description: Filter by creation date (to)
+ *       - in: query
+ *         name: sortBy
+ *         schema:
+ *           type: string
+ *           default: createdAt
+ *         description: Field to sort by (createdAt, name, type)
+ *       - in: query
+ *         name: order
+ *         schema:
+ *           type: string
+ *           enum: [asc, desc]
+ *           default: desc
+ *         description: Sort order (ascending or descending)
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *           minimum: 1
+ *         description: Page number for pagination
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *           minimum: 1
+ *           maximum: 100
+ *         description: Number of items per page
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved public activities list or empty list
+ *         content:
+ *           application/json:
+ *             examples:
+ *               activityList:
+ *                 summary: List of public activities
+ *                 value:
+ *                   success: true
+ *                   code: "activityList"
+ *                   message: "Activity list retrieved successfully"
+ *                   data:
+ *                     items:
+ *                       - _id: "6825f53b3a0944127c37756a"
+ *                         authorId: "6821e20f005c0032d4936c24"
+ *                         name: "Cohérence cardiaque"
+ *                         descriptionActivity: "L'exercice de respiration proposé se base sur la cohérence cardiaque et s'articule autour de trois valeurs : Durée d'inspiration, Durée d'apnée et Durée d'expiration. Cette technique aide à réguler le rythme cardiaque, diminuer le stress et améliorer la concentration."
+ *                         type: "TEXT"
+ *                         content: "Pour pratiquer cet exercice, installez-vous confortablement dans un endroit calme. Respirez en suivant le rythme indiqué et visualisez l'air circulant dans vos poumons. Maintenez le rythme pendant au moins 5 minutes pour de meilleurs résultats."
+ *                         isActive: true
+ *                         parameters:
+ *                           breathingPatterns:
+ *                             - name: "748"
+ *                               description: "Inspiration : 7 secondes / Apnée : 4 secondes / Expiration : 8 secondes"
+ *                               inspiration: 7
+ *                               retention: 4
+ *                               expiration: 8
+ *                             - name: "55"
+ *                               description: "Inspiration : 5 secondes / Apnée : 0 secondes / Expiration : 5 secondes"
+ *                               inspiration: 5
+ *                               retention: 0
+ *                               expiration: 5
+ *                             - name: "46"
+ *                               description: "Inspiration : 4 secondes / Apnée : 0 secondes / Expiration : 6 secondes"
+ *                               inspiration: 4
+ *                               retention: 0
+ *                               expiration: 6
+ *                           defaultPattern: "748"
+ *                           recommendedDuration: 300
+ *                           benefits:
+ *                             - "Réduction du stress et de l'anxiété"
+ *                             - "Amélioration de la concentration"
+ *                             - "Baisse de la pression artérielle"
+ *                             - "Meilleure gestion des émotions"
+ *                             - "Amélioration du sommeil"
+ *                           instructions:
+ *                             before: "Trouvez un endroit calme et adoptez une posture confortable, assise ou allongée"
+ *                             during: "Concentrez-vous uniquement sur votre respiration en suivant le rythme affiché"
+ *                             after: "Prenez un moment pour observer comment vous vous sentez après l'exercice"
+ *                         categoryId: 
+ *                           _id: "6824ac779ca3a43fb48bbeac"
+ *                           name: "Techniques de respiration"
+ *                           id: "6824ac779ca3a43fb48bbeac"
+ *                         createdAt: "2025-05-15T14:07:55.883Z"
+ *                         updatedAt: "2025-05-15T14:07:55.883Z"
+ *                         __v: 0
+ *                         id: "6825f53b3a0944127c37756a"
+ *                       - _id: "6825f5bc3a0944127c37756d"
+ *                         authorId: "6821e20f005c0032d4936c24"
+ *                         name: "Exercice de respiration guidé"
+ *                         descriptionActivity: "Une séance vidéo guidée pour pratiquer la respiration cohérente"
+ *                         type: "VIDEO"
+ *                         isActive: true
+ *                         parameters:
+ *                           recommendedDuration: 300
+ *                           benefits:
+ *                             - "Réduction du stress et de l'anxiété"
+ *                             - "Amélioration de la concentration"
+ *                           instructions:
+ *                             before: "Trouvez un endroit calme et confortable"
+ *                             during: "Suivez les instructions visuelles de la vidéo"
+ *                             after: "Notez les changements dans votre état de relaxation"
+ *                         fileMetadata:
+ *                           filename: "breathing_exercise.mp4"
+ *                           contentType: "video/mp4"
+ *                           size: 15728640
+ *                           uploadDate: "2025-05-15T14:09:32.456Z"
+ *                         fileId: "6825f5bc3a0944127c37756c"
+ *                         categoryId: 
+ *                           _id: "6824ac779ca3a43fb48bbeac"
+ *                           name: "Techniques de respiration"
+ *                           id: "6824ac779ca3a43fb48bbeac"
+ *                         createdAt: "2025-05-15T14:09:32.456Z"
+ *                         updatedAt: "2025-05-15T14:09:32.456Z"
+ *                         __v: 0
+ *                         id: "6825f5bc3a0944127c37756d"
+ *                     pagination:
+ *                       currentPage: 1
+ *                       totalPages: 1
+ *                       totalItems: 2
+ *                       itemsPerPage: 10
+ *                       hasNextPage: false
+ *                       hasPrevPage: false
+ *                     filters: 
+ *                       sortBy: "createdAt"
+ *                       order: "desc"
+ *               filteredActivities:
+ *                 summary: Filtered list of public activities (TEXT type only)
+ *                 value:
+ *                   success: true
+ *                   code: "activityList"
+ *                   message: "Activity list retrieved successfully"
+ *                   data:
+ *                     items:
+ *                       - _id: "6825f53b3a0944127c37756a"
+ *                         authorId: "6821e20f005c0032d4936c24"
+ *                         name: "Cohérence cardiaque"
+ *                         descriptionActivity: "L'exercice de respiration proposé se base sur la cohérence cardiaque et s'articule autour de trois valeurs : Durée d'inspiration, Durée d'apnée et Durée d'expiration. Cette technique aide à réguler le rythme cardiaque, diminuer le stress et améliorer la concentration."
+ *                         type: "TEXT"
+ *                         content: "Pour pratiquer cet exercice, installez-vous confortablement dans un endroit calme. Respirez en suivant le rythme indiqué et visualisez l'air circulant dans vos poumons. Maintenez le rythme pendant au moins 5 minutes pour de meilleurs résultats."
+ *                         isActive: true
+ *                         parameters:
+ *                           breathingPatterns:
+ *                             - name: "748"
+ *                               description: "Inspiration : 7 secondes / Apnée : 4 secondes / Expiration : 8 secondes"
+ *                               inspiration: 7
+ *                               retention: 4
+ *                               expiration: 8
+ *                           defaultPattern: "748"
+ *                           recommendedDuration: 300
+ *                           benefits:
+ *                             - "Réduction du stress et de l'anxiété"
+ *                             - "Amélioration de la concentration"
+ *                           instructions:
+ *                             before: "Trouvez un endroit calme et adoptez une posture confortable"
+ *                             during: "Concentrez-vous uniquement sur votre respiration"
+ *                             after: "Prenez un moment pour observer comment vous vous sentez"
+ *                         categoryId: 
+ *                           _id: "6824ac779ca3a43fb48bbeac"
+ *                           name: "Techniques de respiration"
+ *                           id: "6824ac779ca3a43fb48bbeac"
+ *                         createdAt: "2025-05-15T14:07:55.883Z"
+ *                         updatedAt: "2025-05-15T14:07:55.883Z"
+ *                         __v: 0
+ *                         id: "6825f53b3a0944127c37756a"
+ *                     pagination:
+ *                       currentPage: 1
+ *                       totalPages: 1
+ *                       totalItems: 1
+ *                       itemsPerPage: 10
+ *                       hasNextPage: false
+ *                       hasPrevPage: false
+ *                     filters:
+ *                       type: "TEXT"
+ *               filteredByCategory:
+ *                 summary: Filtered list of public activities by category
+ *                 value:
+ *                   success: true
+ *                   code: "activityList"
+ *                   message: "Activity list retrieved successfully"
+ *                   data:
+ *                     items:
+ *                       - _id: "6825f53b3a0944127c37756a"
+ *                         authorId: "6821e20f005c0032d4936c24"
+ *                         name: "Cohérence cardiaque"
+ *                         descriptionActivity: "L'exercice de respiration proposé se base sur la cohérence cardiaque"
+ *                         type: "TEXT"
+ *                         content: "Pour pratiquer cet exercice, installez-vous confortablement dans un endroit calme."
+ *                         isActive: true
+ *                         parameters:
+ *                           defaultPattern: "748"
+ *                           recommendedDuration: 300
+ *                         categoryId: 
+ *                           _id: "6824ac779ca3a43fb48bbeac"
+ *                           name: "Techniques de respiration"
+ *                           id: "6824ac779ca3a43fb48bbeac"
+ *                         createdAt: "2025-05-15T14:07:55.883Z"
+ *                         updatedAt: "2025-05-15T14:07:55.883Z"
+ *                         id: "6825f53b3a0944127c37756a"
+ *                     pagination:
+ *                       currentPage: 1
+ *                       totalPages: 1
+ *                       totalItems: 1
+ *                       itemsPerPage: 10
+ *                       hasNextPage: false
+ *                       hasPrevPage: false
+ *                     filters:
+ *                       categoryId: "6824ac779ca3a43fb48bbeac"
+ *               emptyActivitiesList:
+ *                 summary: No public activities found
+ *                 value:
+ *                   success: true
+ *                   code: "noActivity"
+ *                   message: "No activity found"
+ *                   data:
+ *                     items: []
+ *                     pagination:
+ *                       currentPage: 1
+ *                       totalPages: 0
+ *                       totalItems: 0
+ *                       itemsPerPage: 10
+ *                       hasNextPage: false
+ *                       hasPrevPage: false
+ *                     filters:
+ *                       type: "VIDEO"
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: object
+ *                   properties:
+ *                     code:
+ *                       type: string
+ *                     message:
+ *                       type: string
+ *             example:
+ *               success: false
+ *               error:
+ *                 code: "serverError"
+ *                 message: "An unexpected error occurred"
+ */
 getPublicActivitiesRouter.get("/get-public-activities", getPublicActivities)
 
 export default getPublicActivitiesRouter
