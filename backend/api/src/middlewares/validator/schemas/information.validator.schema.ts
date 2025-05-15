@@ -83,9 +83,9 @@ export const INFORMATION_VALIDATOR = {
 						CONFIG_FIELD.LENGTH.NAME.MAX
 					)
 				)
-				.matches(/^[a-zA-Z0-9-_]+$/) // Uniquement caractères alphanumériques, tirets et underscores
+				.matches(/^[a-zA-Z0-9-_]+$/)
 				.withMessage(
-					"Le nom ne doit contenir que des caractères alphanumériques, tirets ou underscores"
+					"The name should only contain alphanumeric characters, dashes, or underscores"
 				)
 				.escape()
 				.trim(),
