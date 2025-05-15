@@ -38,11 +38,10 @@ export const createActivity = async (req: IAuthRequest, res: Response): Promise<
 			errorHandler(res, ERROR_CODE.MISSING_INFO)
 			return
 		}
-
 		// Destructure validated fields
 		const {
 			name,
-			description,
+			descriptionActivity,
 			type,
 			content,
 			isActive = true, // Default to active
@@ -59,12 +58,11 @@ export const createActivity = async (req: IAuthRequest, res: Response): Promise<
 		// Validate category
 		const category = await validateCategory(categoryId, res)
 		if (!category) return // If validation fails, response has already been handled
-
 		// Build the base activity document
 		const activityData: Partial<IActivityDocument> = {
 			authorId: new mongoose.Types.ObjectId(adminAccess.userId),
 			name,
-			description,
+			descriptionActivity,
 			type,
 			isActive,
 			parameters,
@@ -112,7 +110,7 @@ export const createActivity = async (req: IAuthRequest, res: Response): Promise<
 
 		// Save the final document to the database
 		const activity = await new Activity(activityData).save()
-		
+
 		logger.info(`Activity created: ${chalk.green(activity._id.toString())} (Type: ${chalk.blue(type)})`)
 
 		// Return a successful response
