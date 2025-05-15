@@ -62,6 +62,7 @@ export const ERROR_CODE = {
 	UNABLE_CREATE_CATEGORY: "unableToCreateCategory",
 	CATEGORY_NOT_FOUND: "categoryNotFound",
 	DUPLICATE_CATEGORY: "duplicateCategory",
+	INVALID_CATEGORY: "invalidCategory",
 	// Activity-related errors
 	UNABLE_CREATE_ACTIVITY: "unableToCreateActivity",
 	UNABLE_MODIFY_ACTIVITY: "unableToModifyActivity",
@@ -99,6 +100,7 @@ export const ERROR_MESSAGE = {
 	UNABLE_CREATE_CATEGORY: "Unable to create category with provided data",
 	UNABLE_MODIFY_CATEGORY: "Unable to modify category with provided data",
 	DUPLICATE_CATEGORY: "A category with this name already exists",
+	INVALID_CATEGORY: "Invalid category",
 	// Activity-related messages
 	ACTIVITY_NOT_FOUND: "Activity not found",
 	UNABLE_CREATE_ACTIVITY: "Unable to create activity with provided data",
@@ -118,13 +120,13 @@ export const SHARED_MESSAGES = {
 	maxLength: (type: string, max: number): string => `The ${type} must not contain more than ${max} characters`,
 }
 export const ACTIVITY_MESSAGE = {
-    ...SHARED_MESSAGES,
-    CONTENT_REQUIRED: "Content is required for text activity",
-    FILE_REQUIRED: "File is required for video activity",
-    INVALID_TYPE: (validTypes: string[]): string =>
-        `The activity type must be one of the following: ${validTypes.join(", ")}`,
-    typeInvalid: (type: string[]): string => `The type must be one of the following: ${type.join(", ")}`,
-    fileRequired: (type: string): string => `File is required for ${type} activity type`,
+	...SHARED_MESSAGES,
+	CONTENT_REQUIRED: "Content is required for text activity",
+	FILE_REQUIRED: "File is required for video activity",
+	INVALID_TYPE: (validTypes: string[]): string =>
+		`The activity type must be one of the following: ${validTypes.join(", ")}`,
+	typeInvalid: (type: string[]): string => `The type must be one of the following: ${type.join(", ")}`,
+	fileRequired: (type: string): string => `File is required for ${type} activity type`,
 }
 // Message generator functions for users
 export const USER_MESSAGE = {
@@ -379,6 +381,11 @@ export const ERROR_MAPPING: Record<string, IErrorInfo> = {
 		code: ERROR_CODE.DUPLICATE_CATEGORY,
 		message: ERROR_MESSAGE.DUPLICATE_CATEGORY,
 		statusCode: 409,
+	},
+	[ERROR_CODE.INVALID_CATEGORY]: {
+		code: ERROR_CODE.INVALID_CATEGORY,
+		message: ERROR_MESSAGE.INVALID_CATEGORY,
+		statusCode: 400,
 	},
 	[ERROR_CODE.ACTIVITY_NOT_FOUND]: {
 		code: ERROR_CODE.ACTIVITY_NOT_FOUND,
