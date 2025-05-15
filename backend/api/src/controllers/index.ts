@@ -11,7 +11,7 @@ export { getPublicInformations } from "@controllers/information/getPublicInforma
 export { createInformation } from "@controllers/information/createInformation.controller.ts"
 export { updateInformation } from "@controllers/information/updateInformation.controller.ts"
 export { deleteInformation } from "@controllers/information/deleteInformation.controller.ts"
-export { getInformations } from "@controllers/information/getAdminInformations.controller.ts"
+export { getAdminInformations } from "@controllers/information/getAdminInformations.controller.ts"
 export { getMediaById } from "@controllers/information/getMediaById.controller.ts"
 // Category controllers
 export { getPublicCategories } from "@controllers/category/getPublicCategories.controller.ts"
