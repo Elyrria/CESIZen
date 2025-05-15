@@ -21,6 +21,7 @@ export const FIELD = {
 	TYPE: "type",
 	STATUS: "status",
 	CREATED_BY: "createdBy",
+	CATEGORY_ID: "categoryId"
 }
 
 export const SPECIAL_CHARS = "@!%*?&"
