@@ -93,3 +93,59 @@ export const buildInformationQuery = (req: Request): IQueryInterface => {
 
 	return query
 }
+
+
+/**
+ * Builds a query object for filtering activities based on request parameters
+ *
+ * @param req - The request object containing query parameters
+ * @returns A query object for mongoose
+ */
+export const buildActivityQuery = (req: Request): IQueryInterface => {
+    const query: IQueryInterface = {}
+
+    // Text-based filters
+    getRegexFilter(req, query, FIELD.NAME as keyof IQueryInterface)
+    getRegexFilter(req, query, FIELD.DESCRIPTION_ACTIVITY as keyof IQueryInterface)
+
+    // Type filter (exact match)
+    if (req.query.type) {
+        const requestedTypes: string[] = Array.isArray(req.query.type)
+            ? (req.query.type as string[])
+            : [req.query.type as string]
+
+        // Only allow valid types
+        const validTypes = requestedTypes.filter((type) => MEDIATYPE.includes(type))
+        if (validTypes.length > 0) {
+            query.type = { $in: validTypes }
+        }
+    }
+
+    // isActive filter (boolean)
+    if (req.query.isActive !== undefined) {
+        query.isActive = req.query.isActive === "true"
+    }
+
+    // Author filter
+    if (req.query.authorId && mongoose.Types.ObjectId.isValid(req.query.authorId as string)) {
+        query.authorId = new mongoose.Types.ObjectId(req.query.authorId as string)
+    }
+
+    // Category filter
+    if (req.query.categoryId && mongoose.Types.ObjectId.isValid(req.query.categoryId as string)) {
+        query.categoryId = new mongoose.Types.ObjectId(req.query.categoryId as string)
+    }
+
+    // Date filters
+    getCreatedFilter(req, query)
+    getUpdatedFilter(req, query)
+
+    // Filter for validated content
+    if (req.query.validated === "true") {
+        query.validatedAndPublishedAt = { $ne: null }
+    } else if (req.query.validated === "false") {
+        query.validatedAndPublishedAt = null
+    }
+
+    return query
+}
