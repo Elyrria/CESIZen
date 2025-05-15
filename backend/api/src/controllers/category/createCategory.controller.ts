@@ -2,9 +2,9 @@ import { handleUnexpectedError, errorHandler } from "@errorHandler/errorHandler.
 import { SUCCESS_CODE } from "@successHandler/configs.successHandler.ts"
 import { ERROR_CODE } from "@errorHandler/configs.errorHandler.ts"
 import { successHandler } from "@successHandler/successHandler.ts"
+import { verifyAdminAccess } from "@utils/verifyAdminAccess.ts"
 import type { IAuthRequest } from "@api/types/request.d.ts"
-import { Category, User } from "@models/index.ts"
-import { ROLES } from "@configs/role.configs.ts"
+import { Category } from "@models/index.ts"
 import type { Response } from "express"
 import { logger } from "@logs/logger.ts"
 import chalk from "chalk"
@@ -19,31 +19,13 @@ import chalk from "chalk"
  */
 export const createCategory = async (req: IAuthRequest, res: Response): Promise<void> => {
 	try {
-		// Authentication check
-		if (!req.auth?.userId) {
-			errorHandler(res, ERROR_CODE.NO_CONDITIONS)
-			return
-		}
-		const userId = req.auth.userId
+		// Verify admin access
+		const authResult = await verifyAdminAccess(req, res, "attempted to create a category")
 
-		logger.info(`Attempting to create a new category by user: ${chalk.blue(userId)}`)
+		// If verification failed, the function above will have already sent an error response
+		if (!authResult) return
 
-		// Verify the user is an admin
-		const user = await User.findById(userId).select("role")
-
-		if (!user) {
-			logger.warn(`User with ID ${chalk.yellow(userId)} not found`)
-			errorHandler(res, ERROR_CODE.USER_NOT_FOUND)
-			return
-		}
-
-		const isAdmin = user.role === ROLES.ADMIN
-
-		if (!isAdmin) {
-			logger.warn(`Non-admin user ${chalk.yellow(userId)} attempted to create a category`)
-			errorHandler(res, ERROR_CODE.INSUFFICIENT_ACCESS)
-			return
-		}
+		const { userId } = authResult
 
 		// Create new category
 		const categoryData = {
