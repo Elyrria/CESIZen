@@ -3,7 +3,7 @@ import createInformationRouter from "@routes/information/post/createInformation.
 // Import PUT routes
 import updateInformatioNRouter from "@routes/information/put/updateInformation.route.ts"
 // Import GET routes
-import getInformationsRouter from "@routes/information/get/getAdminInformations.route.ts"
+import getInformationsRouter from "@routes/information/get/getInformations.route.ts"
 import getPublicInformationsRouter from "./get/getPublicInformations.route.ts"
 import getMediaByIdRouter from "@routes/information/get/getMediaById.route.ts"
 // Import DELETE routes

@@ -22,7 +22,7 @@ import chalk from "chalk"
  * @param {Response} res - The response object to send the list of information entries
  * @returns {Promise<void>} - A promise that resolves when the response is sent
  */
-export const getAdminInformations = async (req: IAuthRequest, res: Response): Promise<void> => {
+export const getInformations = async (req: IAuthRequest, res: Response): Promise<void> => {
 	try {
 		// Authentication check
 		if (!req.auth?.userId) {
