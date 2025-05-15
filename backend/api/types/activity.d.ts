@@ -10,7 +10,7 @@ export interface IActivity {
 	content?: string
 	isActive: boolean
 	parameters?: Record<string, any>
-	validatedBy?: ObjectId
+	validatedBy?: mongoose.Types.ObjectId
 	validatedAndPublishedAt?: Date
 	fileId?: mongoose.Types.ObjectId
 	fileMetadata?: {
@@ -29,6 +29,10 @@ export interface IActivity {
 	categoryId: mongoose.Types.ObjectId
 	createdAt?: Date
 	updatedAt?: Date
+	mediaUrl?: string
+	thumbnailUrl?: string
 }
 
 export interface IActivityDocument extends IActivity, Document {}
+
+export interface TransformedActivity extends IActivity {}

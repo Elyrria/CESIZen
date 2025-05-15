@@ -36,6 +36,8 @@ export interface IQueryInterface {
 	status?: { $in?: string[] }
 	authorId?: ObjectId
 	validatedAndPublishedAt?: null | { $ne?: null }
+	isActive?: boolean
+	categoryId?: ObjectId
 }
 
 export interface IAuthRequest extends Request {
