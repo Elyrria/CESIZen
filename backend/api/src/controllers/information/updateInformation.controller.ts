@@ -4,9 +4,10 @@ import { SUCCESS_CODE } from "@successHandler/configs.successHandler.ts"
 import type { IInformationDocument } from "@api/types/information.d.ts"
 import { ERROR_CODE } from "@errorHandler/configs.errorHandler.ts"
 import { successHandler } from "@successHandler/successHandler.ts"
+import { validateCategory } from "@utils/validateCategory.ts"
 import { MEDIATYPE, STATUS } from "@configs/global.configs.ts"
 import type { IAuthRequest } from "@api/types/request.d.ts"
-import { Information, User, Category } from "@models/index.ts"
+import { Information, User } from "@models/index.ts"
 import { ROLES } from "@configs/role.configs.ts"
 import type { Response } from "express"
 import { logger } from "@logs/logger.ts"
@@ -67,31 +68,18 @@ export const updateInformation = async (req: IAuthRequest, res: Response): Promi
 
 		// Process category update if provided
 		if (req.body.categoryId) {
-			const categoryId = req.body.categoryId
+			// Use the validateCategory utility function
+			const category = await validateCategory(
+				req.body.categoryId,
+				res,
+				"Category",
+				ERROR_CODE.INVALID_INFORMATION_TYPE
+			)
 
-			// Validate category ID format
-			if (!ObjectId.isValid(String(categoryId))) {
-				logger.warn(`Invalid category ID format: ${chalk.yellow(categoryId)}`)
-				errorHandler(res, ERROR_CODE.INVALID_INFORMATION_TYPE, "Invalid category ID format")
-				return
-			}
-
-			// Check if category exists and is active
-			const category = await Category.findById(categoryId)
-			if (!category) {
-				logger.warn(`Category with ID ${chalk.yellow(categoryId)} not found`)
-				errorHandler(res, ERROR_CODE.INVALID_INFORMATION_TYPE, "Category not found")
-				return
-			}
-
-			if (!category.isActive) {
-				logger.warn(`Attempted to assign inactive category ${chalk.yellow(categoryId)}`)
-				errorHandler(res, ERROR_CODE.INVALID_INFORMATION_TYPE, "Category is inactive")
-				return
-			}
+			if (!category) return // If validation fails, response has already been handled
 
 			// Category is valid, assign it to the update data
-			updateData.categoryId = new ObjectId(String(categoryId))
+			updateData.categoryId = new ObjectId(String(req.body.categoryId))
 
 			const oldCategoryName = information.categoryId
 				? (information.categoryId as any).name

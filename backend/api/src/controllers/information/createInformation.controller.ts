@@ -7,10 +7,10 @@ import { ERROR_CODE } from "@errorHandler/configs.errorHandler.ts"
 import { createdHandler } from "@successHandler/successHandler.ts"
 import { MEDIATYPE, STATUS } from "@configs/global.configs.ts"
 import { uploadToGridFS } from "@services/gridfs.services.ts"
+import { validateCategory } from "@utils/validateCategory.ts"
 import type { IAuthRequest } from "@api/types/request.d.ts"
 import { deleteObjectIds } from "@utils/idCleaner.ts"
 import { Information } from "@models/index.ts"
-import { Category } from "@models/index.ts"
 import { logger } from "@logs/logger.ts"
 import type { Response } from "express"
 import mongoose from "mongoose"
@@ -72,27 +72,14 @@ export const createInformation = async (req: IAuthRequest, res: Response): Promi
 			return
 		}
 
-		if (!categoryId) {
-			errorHandler(res, ERROR_CODE.MISSING_FIELDS, "Category is required")
-			return
-		}
-
-		// Verify the category ID is valid
-		if (!mongoose.Types.ObjectId.isValid(categoryId)) {
-			errorHandler(res, ERROR_CODE.INVALID_INFORMATION_TYPE, "Invalid category ID format")
-			return
-		}
-
-		const category = await Category.findById(categoryId)
-		if (!category) {
-			errorHandler(res, ERROR_CODE.INVALID_INFORMATION_TYPE, "Category not found")
-			return
-		}
-
-		if (!category.isActive) {
-			errorHandler(res, ERROR_CODE.INVALID_INFORMATION_TYPE, "Category is inactive")
-			return
-		}
+		// Validate category with utility function
+		const category = await validateCategory(
+			categoryId,
+			res,
+			"Category",
+			ERROR_CODE.INVALID_INFORMATION_TYPE
+		)
+		if (!category) return // If validation fails, response has already been handled
 
 		// Build the base information document
 		const informationData: Partial<IInformationDocument> = {
@@ -167,7 +154,7 @@ export const createInformation = async (req: IAuthRequest, res: Response): Promi
 		)
 
 		// Return a successful response
-		createdHandler(res, SUCCESS_CODE.INFORMATION_CREATED, { information })
+		createdHandler(res, SUCCESS_CODE.INFORMATION_CREATED, { information: information })
 	} catch (error: unknown) {
 		// Catch-all for any unexpected errors
 		handleUnexpectedError(res, error as Error)
