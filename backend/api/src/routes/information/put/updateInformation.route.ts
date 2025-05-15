@@ -18,6 +18,7 @@ const updateInformationRouter = Router()
  *       - Administrators can update any information entry and set status to PUBLISHED
  *       
  *       For media types (IMAGE, VIDEO), a new file can be uploaded to replace the existing one.
+ *       The category of the information can also be updated.
  *     tags: [Informations]
  *     security:
  *       - bearerAuth: []
@@ -48,6 +49,10 @@ const updateInformationRouter = Router()
  *                 type: string
  *                 description: Updated unique identifier/slug
  *                 example: "infographie-stress"
+ *               categoryId:
+ *                 type: string
+ *                 description: MongoDB ObjectID of the new category for this information
+ *                 example: "6824ac779ca3a43fb48bbeac"
  *               content:
  *                 type: string
  *                 description: Updated text content (only for TEXT type)
@@ -77,8 +82,6 @@ const updateInformationRouter = Router()
  *                 message:
  *                   type: string
  *                   example: Information updated successfully
- *                 data:
- *                   $ref: '#/components/schemas/TransformedInformation'
  *             example:
  *               success: true
  *               code: "informationUpdated"
@@ -95,6 +98,7 @@ const updateInformationRouter = Router()
  *                 descriptionInformation: "Une infographie illustrant les principales techniques de gestion du stress"
  *                 name: "infographie-stress"
  *                 type: "IMAGE"
+ *                 categoryId: "6824ac779ca3a43fb48bbeac"
  *                 status: "DRAFT"
  *                 validatedAndPublishedAt: null
  *                 fileId: "68236226831d7acd21d5e896"
@@ -102,7 +106,7 @@ const updateInformationRouter = Router()
  *                 updatedAt: "2025-05-14T11:47:19.058Z"
  *                 __v: 0
  *                 id: "68236226831d7acd21d5e898"
- *                 mediaUrl: "http://localhost:3000/api/v1/informations/media/68236226831d7acd21d5e898"
+ *                 mediaUrl: "http://localhost:3000/api/v1/media/68236226831d7acd21d5e898"
  *       400:
  *         description: Validation error or invalid file type
  *         content:
@@ -154,6 +158,18 @@ const updateInformationRouter = Router()
  *                     code: "invalidFileType"
  *                     message: "The file type is invalid for this operation"
  *                     location: "body"
+ *               invalidCategory:
+ *                 summary: Invalid category ID
+ *                 value:
+ *                   success: false
+ *                   error:
+ *                     code: "validationFailed"
+ *                     message: "Validation failed"
+ *                     location: "body"
+ *                     errors:
+ *                       - field: "categoryId"
+ *                         message: "Category with ID 6824ac779ca3a43fb48bbea1 does not exist"
+ *                         location: "body"
  *       401:
  *         description: Authentication required
  *         content:

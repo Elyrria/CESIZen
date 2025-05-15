@@ -39,6 +39,11 @@ const getInformationsRouter = Router()
  *           type: string
  *         description: Filter by author ID
  *       - in: query
+ *         name: categoryId
+ *         schema:
+ *           type: string
+ *         description: Filter by category ID
+ *       - in: query
  *         name: search
  *         schema:
  *           type: string
@@ -88,10 +93,6 @@ const getInformationsRouter = Router()
  *         description: Successfully retrieved information list
  *         content:
  *           application/json:
- *             schema:
- *               oneOf:
- *                 - $ref: '#/components/schemas/GetInformationsResponse'
- *                 - $ref: '#/components/schemas/NoInformationsResponse'
  *             examples:
  *               informationList:
  *                 summary: List of information entries
@@ -115,6 +116,13 @@ const getInformationsRouter = Router()
  *                         status: "DRAFT"
  *                         validatedAndPublishedAt: null
  *                         fileId: "682367a522de12d1d3d9b0a4"
+ *                         categoryId: [
+ *                           {
+ *                             _id: "6824ac779ca3a43fb48bbeac",
+ *                             name: "Techniques de respiration",
+ *                             id: "6824ac779ca3a43fb48bbeac"
+ *                           }
+ *                         ]
  *                         createdAt: "2025-05-13T15:39:17.836Z"
  *                         updatedAt: "2025-05-13T15:39:17.836Z"
  *                         __v: 0
@@ -129,6 +137,7 @@ const getInformationsRouter = Router()
  *                         content: "La technique de respiration 4-7-8 est une méthode simple mais efficace pour réduire le stress immédiat. Inspirez pendant 4 secondes, retenez votre souffle pendant 7 secondes, puis expirez lentement pendant 8 secondes. Répétez ce cycle 3 à 4 fois."
  *                         status: "DRAFT"
  *                         validatedAndPublishedAt: null
+ *                         categoryId: []
  *                         createdAt: "2025-05-13T15:37:35.011Z"
  *                         updatedAt: "2025-05-13T15:37:35.011Z"
  *                         __v: 0
@@ -161,24 +170,11 @@ const getInformationsRouter = Router()
  *                         content: "La technique de respiration 4-7-8 est une méthode simple mais efficace pour réduire le stress immédiat. Inspirez pendant 4 secondes, retenez votre souffle pendant 7 secondes, puis expirez lentement pendant 8 secondes. Répétez ce cycle 3 à 4 fois."
  *                         status: "DRAFT"
  *                         validatedAndPublishedAt: null
+ *                         categoryId: []
  *                         createdAt: "2025-05-13T15:37:35.011Z"
  *                         updatedAt: "2025-05-13T15:37:35.011Z"
  *                         __v: 0
  *                         id: "6823673f22de12d1d3d9b0a1"
- *                         thumbnailUrl: "http://localhost:3000/assets/images/text-icon.png"
- *                       - _id: "68235ce7081116d136ac8498"
- *                         authorId: "6821e20f005c0032d4936c24"
- *                         title: "Techniques de respiration anti-stress"
- *                         descriptionInformation: "Découvrez les techniques de respiration pour réduire le stress au quotidien"
- *                         name: "respiration-anti-stress"
- *                         type: "TEXT"
- *                         content: "La technique de respiration 4-7-8 est une méthode simple mais efficace pour réduire le stress immédiat. Inspirez pendant 4 secondes, retenez votre souffle pendant 7 secondes, puis expirez lentement pendant 8 secondes. Répétez ce cycle 3 à 4 fois."
- *                         status: "DRAFT"
- *                         validatedAndPublishedAt: null
- *                         createdAt: "2025-05-13T14:53:27.815Z"
- *                         updatedAt: "2025-05-13T14:53:27.815Z"
- *                         __v: 0
- *                         id: "68235ce7081116d136ac8498"
  *                         thumbnailUrl: "http://localhost:3000/assets/images/text-icon.png"
  *                     pagination:
  *                       currentPage: 1
@@ -189,6 +185,50 @@ const getInformationsRouter = Router()
  *                       hasPrevPage: false
  *                     filters:
  *                       type: "TEXT"
+ *               filteredByCategory:
+ *                 summary: Filtered list of information entries by category
+ *                 value:
+ *                   success: true
+ *                   code: "informationList"
+ *                   message: "Information list retrieved successfully"
+ *                   data:
+ *                     items:
+ *                       - fileMetadata:
+ *                           filename: "glass-sphere-7986102_640.jpg"
+ *                           contentType: "image/jpeg"
+ *                           size: 73276
+ *                           uploadDate: "2025-05-15T10:32:25.109Z"
+ *                         _id: "6825c2b9d1d9b042fd9acd35"
+ *                         authorId: "6821e20f005c0032d4936c24"
+ *                         title: "Infographie sur la gestion du stress"
+ *                         descriptionInformation: "Une infographie illustrant les principales techniques de gestion du stress"
+ *                         name: "infographie-stress"
+ *                         type: "IMAGE"
+ *                         status: "PUBLISHED"
+ *                         validatedAndPublishedAt: "2025-05-15T10:39:27.236Z"
+ *                         fileId: "6825c2b9d1d9b042fd9acd33"
+ *                         categoryId: [
+ *                           {
+ *                             _id: "6824ac779ca3a43fb48bbeac",
+ *                             name: "Techniques de respiration",
+ *                             id: "6824ac779ca3a43fb48bbeac"
+ *                           }
+ *                         ]
+ *                         createdAt: "2025-05-15T10:32:25.147Z"
+ *                         updatedAt: "2025-05-15T10:39:27.238Z"
+ *                         __v: 0
+ *                         validatedBy: "6821e20f005c0032d4936c24"
+ *                         id: "6825c2b9d1d9b042fd9acd35"
+ *                         mediaUrl: "http://localhost:3000/api/v1/media/6825c2b9d1d9b042fd9acd35"
+ *                     pagination:
+ *                       currentPage: 1
+ *                       totalPages: 1
+ *                       totalItems: 1
+ *                       itemsPerPage: 10
+ *                       hasNextPage: false
+ *                       hasPrevPage: false
+ *                     filters:
+ *                       categoryId: "6824ac779ca3a43fb48bbeac"
  *               emptyInformationList:
  *                 summary: No information entries found
  *                 value:

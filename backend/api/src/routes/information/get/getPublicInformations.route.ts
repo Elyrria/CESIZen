@@ -27,6 +27,11 @@ const getPublicInformationsRouter = Router()
  *           type: string
  *         description: Filter by author ID
  *       - in: query
+ *         name: categoryId
+ *         schema:
+ *           type: string
+ *         description: Filter by category ID
+ *       - in: query
  *         name: search
  *         schema:
  *           type: string
@@ -76,10 +81,6 @@ const getPublicInformationsRouter = Router()
  *         description: Successfully retrieved published information list
  *         content:
  *           application/json:
- *             schema:
- *               oneOf:
- *                 - $ref: '#/components/schemas/GetInformationsResponse'
- *                 - $ref: '#/components/schemas/NoInformationsResponse'
  *             examples:
  *               informationList:
  *                 summary: List of published information entries
@@ -104,6 +105,13 @@ const getPublicInformationsRouter = Router()
  *                         validatedAndPublishedAt: "2025-05-14T10:23:45.789Z"
  *                         validatedBy: "6821e20f005c0032d4936c24"
  *                         fileId: "682367a522de12d1d3d9b0a4"
+ *                         categoryId: [
+ *                           {
+ *                             _id: "6824ac779ca3a43fb48bbeac",
+ *                             name: "Techniques de respiration",
+ *                             id: "6824ac779ca3a43fb48bbeac"
+ *                           }
+ *                         ]
  *                         createdAt: "2025-05-13T15:39:17.836Z"
  *                         updatedAt: "2025-05-14T10:23:45.789Z"
  *                         __v: 0
@@ -119,6 +127,7 @@ const getPublicInformationsRouter = Router()
  *                         status: "PUBLISHED"
  *                         validatedAndPublishedAt: "2025-05-14T09:45:30.123Z"
  *                         validatedBy: "6821e20f005c0032d4936c24"
+ *                         categoryId: []
  *                         createdAt: "2025-05-13T15:37:35.011Z"
  *                         updatedAt: "2025-05-14T09:45:30.123Z"
  *                         __v: 0
@@ -152,6 +161,7 @@ const getPublicInformationsRouter = Router()
  *                         status: "PUBLISHED"
  *                         validatedAndPublishedAt: "2025-05-14T09:45:30.123Z"
  *                         validatedBy: "6821e20f005c0032d4936c24"
+ *                         categoryId: []
  *                         createdAt: "2025-05-13T15:37:35.011Z"
  *                         updatedAt: "2025-05-14T09:45:30.123Z"
  *                         __v: 0
@@ -166,6 +176,50 @@ const getPublicInformationsRouter = Router()
  *                       hasPrevPage: false
  *                     filters:
  *                       type: "TEXT"
+ *               filteredByCategory:
+ *                 summary: Filtered list of published information entries by category
+ *                 value:
+ *                   success: true
+ *                   code: "informationList"
+ *                   message: "Information list retrieved successfully"
+ *                   data:
+ *                     items:
+ *                       - fileMetadata:
+ *                           filename: "stress-infographic.jpg"
+ *                           contentType: "image/jpeg"
+ *                           size: 73276
+ *                           uploadDate: "2025-05-13T15:39:17.829Z"
+ *                         _id: "682367a522de12d1d3d9b0a6"
+ *                         authorId: "6821e20f005c0032d4936c24"
+ *                         title: "Infographie sur la gestion du stress"
+ *                         descriptionInformation: "Une infographie illustrant les principales techniques de gestion du stress"
+ *                         name: "infographie-stress"
+ *                         type: "IMAGE"
+ *                         status: "PUBLISHED"
+ *                         validatedAndPublishedAt: "2025-05-14T10:23:45.789Z"
+ *                         validatedBy: "6821e20f005c0032d4936c24"
+ *                         fileId: "682367a522de12d1d3d9b0a4"
+ *                         categoryId: [
+ *                           {
+ *                             _id: "6824ac779ca3a43fb48bbeac",
+ *                             name: "Techniques de respiration",
+ *                             id: "6824ac779ca3a43fb48bbeac"
+ *                           }
+ *                         ]
+ *                         createdAt: "2025-05-13T15:39:17.836Z"
+ *                         updatedAt: "2025-05-14T10:23:45.789Z"
+ *                         __v: 0
+ *                         id: "682367a522de12d1d3d9b0a6"
+ *                         mediaUrl: "http://localhost:3000/api/v1/media/682367a522de12d1d3d9b0a6"
+ *                     pagination:
+ *                       currentPage: 1
+ *                       totalPages: 1
+ *                       totalItems: 1
+ *                       itemsPerPage: 10
+ *                       hasNextPage: false
+ *                       hasPrevPage: false
+ *                     filters:
+ *                       categoryId: "6824ac779ca3a43fb48bbeac"
  *               emptyPublishedList:
  *                 summary: No published information entries found
  *                 value:

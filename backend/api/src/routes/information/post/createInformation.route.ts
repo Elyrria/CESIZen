@@ -27,6 +27,7 @@ createInformationRouter.post(
  *         - descriptionInformation
  *         - name
  *         - type
+ *         - categoryId
  *       properties:
  *         title:
  *           type: string
@@ -44,6 +45,10 @@ createInformationRouter.post(
  *           type: string
  *           enum: [TEXT, IMAGE, VIDEO]
  *           description: Type of information content
+ *         categoryId:
+ *           type: string
+ *           description: MongoDB ObjectID of the category this information belongs to
+ *           example: "6824ac779ca3a43fb48bbeac"
  *         status:
  *           type: string
  *           enum: [DRAFT, PUBLISHED]
@@ -54,112 +59,13 @@ createInformationRouter.post(
  *           description: Text content (required only for TEXT type)
  *           example: "La technique de respiration 4-7-8 est une méthode simple mais efficace pour réduire le stress immédiat..."
  *
- *     FileMetadata:
- *       type: object
- *       properties:
- *         filename:
- *           type: string
- *           description: Original filename of the uploaded file
- *         contentType:
- *           type: string
- *           description: MIME type of the file
- *         size:
- *           type: number
- *           description: Size of the file in bytes
- *         uploadDate:
- *           type: string
- *           format: date-time
- *           description: Date when the file was uploaded
- *         dimension:
- *           type: object
- *           properties:
- *             width:
- *               type: number
- *               description: Width of the image in pixels
- *             height:
- *               type: number
- *               description: Height of the image in pixels
- *         format:
- *           type: string
- *           description: Format of the image (jpeg, png, etc.)
- *
- *     InformationResponse:
- *       type: object
- *       properties:
- *         authorId:
- *           type: string
- *           description: MongoDB ObjectID of the author
- *         title:
- *           type: string
- *           description: Title of the information
- *         descriptionInformation:
- *           type: string
- *           description: Brief description of the information
- *         name:
- *           type: string
- *           description: Unique identifier/slug for the information
- *         type:
- *           type: string
- *           enum: [TEXT, IMAGE, VIDEO]
- *           description: Type of information content
- *         content:
- *           type: string
- *           description: Text content (only present for TEXT type)
- *         status:
- *           type: string
- *           enum: [DRAFT, PUBLISHED]
- *           description: Publication status of the information
- *         validatedAndPublishedAt:
- *           type: string
- *           format: date-time
- *           nullable: true
- *           description: Date when the information was published (null for drafts)
- *         fileId:
- *           type: string
- *           description: MongoDB ObjectID of the uploaded file (only present for IMAGE or VIDEO types)
- *         fileMetadata:
- *           $ref: '#/components/schemas/FileMetadata'
- *           description: Metadata about the uploaded file (only present for IMAGE or VIDEO types)
- *         _id:
- *           type: string
- *           description: MongoDB ObjectID of the information
- *         createdAt:
- *           type: string
- *           format: date-time
- *           description: Creation timestamp
- *         updatedAt:
- *           type: string
- *           format: date-time
- *           description: Last update timestamp
- *         __v:
- *           type: number
- *           description: MongoDB version key
- *         id:
- *           type: string
- *           description: MongoDB ObjectID of the information
- *
- *     CreateInformationSuccessResponse:
- *       type: object
- *       properties:
- *         success:
- *           type: boolean
- *           example: true
- *         code:
- *           type: string
- *           example: informationCreated
- *         message:
- *           type: string
- *           example: Information created successfully
- *         data:
- *           type: object
- *           properties:
- *             information:
- *               $ref: '#/components/schemas/InformationResponse'
- *
  * /api/v1/informations/create:
  *   post:
  *     summary: Create a new information entry
- *     description: Creates a new information entry with text content or media file (image, video). Authentication required.
+ *     description: |
+ *       Creates a new information entry with text content or media file (image, video).
+ *       Each information must be assigned to a valid category.
+ *       Authentication required.
  *     tags: [Informations]
  *     security:
  *       - bearerAuth: []
@@ -174,6 +80,7 @@ createInformationRouter.post(
  *               - descriptionInformation
  *               - name
  *               - type
+ *               - categoryId
  *             properties:
  *               title:
  *                 type: string
@@ -188,6 +95,9 @@ createInformationRouter.post(
  *                 type: string
  *                 enum: [TEXT, IMAGE, VIDEO]
  *                 description: Type of information content
+ *               categoryId:
+ *                 type: string
+ *                 description: MongoDB ObjectID of the category this information belongs to
  *               status:
  *                 type: string
  *                 enum: [DRAFT, PUBLISHED]
@@ -205,8 +115,6 @@ createInformationRouter.post(
  *         description: Information successfully created
  *         content:
  *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/CreateInformationSuccessResponse'
  *             examples:
  *               textInformation:
  *                 summary: Text information created
@@ -221,6 +129,7 @@ createInformationRouter.post(
  *                       descriptionInformation: "Découvrez les techniques de respiration pour réduire le stress au quotidien"
  *                       name: "respiration-anti-stress"
  *                       type: "TEXT"
+ *                       categoryId: "6824ac779ca3a43fb48bbeac"
  *                       content: "La technique de respiration 4-7-8 est une méthode simple mais efficace pour réduire le stress immédiat. Inspirez pendant 4 secondes, retenez votre souffle pendant 7 secondes, puis expirez lentement pendant 8 secondes. Répétez ce cycle 3 à 4 fois."
  *                       status: "DRAFT"
  *                       validatedAndPublishedAt: null
@@ -242,6 +151,7 @@ createInformationRouter.post(
  *                       descriptionInformation: "Une infographie illustrant les principales techniques de gestion du stress"
  *                       name: "infographie-stress"
  *                       type: "IMAGE"
+ *                       categoryId: "6824ac779ca3a43fb48bbeac"
  *                       status: "DRAFT"
  *                       validatedAndPublishedAt: null
  *                       fileId: "682367a522de12d1d3d9b0a4"
@@ -317,6 +227,30 @@ createInformationRouter.post(
  *                     location: "body"
  *                     errors:
  *                       - message: "File is required for IMAGE information type"
+ *                         location: "body"
+ *               invalidCategory:
+ *                 summary: Invalid category ID
+ *                 value:
+ *                   success: false
+ *                   error:
+ *                     code: "validationFailed"
+ *                     message: "Validation failed"
+ *                     location: "body"
+ *                     errors:
+ *                       - field: "categoryId"
+ *                         message: "Category with ID 6824ac779ca3a43fb48bbea1 does not exist"
+ *                         location: "body"
+ *               missingCategory:
+ *                 summary: Missing category ID
+ *                 value:
+ *                   success: false
+ *                   error:
+ *                     code: "validationFailed"
+ *                     message: "Validation failed"
+ *                     location: "body"
+ *                     errors:
+ *                       - field: "categoryId"
+ *                         message: "The categoryId is required"
  *                         location: "body"
  *       401:
  *         description: Unauthorized - Authentication required
