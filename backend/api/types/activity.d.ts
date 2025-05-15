@@ -1,9 +1,9 @@
-// @api/types/activity.d.ts
 import { Document, ObjectId } from "mongoose"
 import { MEDIATYPE, STATUS } from "@configs/global.configs.ts"
-
+import mongoose from "mongoose"
 export interface IActivity {
-	authorId: ObjectId
+	authorId: mongoose.Types.ObjectId
+	_id?: ObjectId
 	name: string
 	description: string
 	type: (typeof MEDIATYPE)[number]
@@ -12,7 +12,7 @@ export interface IActivity {
 	parameters?: Record<string, any>
 	validatedBy?: ObjectId
 	validatedAndPublishedAt?: Date
-	fileId?: ObjectId
+	fileId?: mongoose.Types.ObjectId
 	fileMetadata?: {
 		filename?: string
 		contentType?: string
@@ -26,7 +26,7 @@ export interface IActivity {
 		encoding?: string
 		bitrate?: number
 	}
-	categoryId: ObjectId[]
+	categoryId: mongoose.Types.ObjectId
 	createdAt?: Date
 	updatedAt?: Date
 }

@@ -3,8 +3,6 @@ import type { Role } from "@api/types/roles.d.ts"
 import type { Document } from "mongoose"
 import { mongoose } from "mongoose"
 
-type ObjectId = mongoose.Types.ObjectId
-
 // Définition des types pour les formats de contenu
 export type ContentType = (typeof MEDIATYPE)[number]
 // Définition des statuts de publication

@@ -1,6 +1,7 @@
+import type { IActivity } from "@api/types/activity.d.ts"
 import type { IInformation } from "@api/types/information.d.ts"
 import type { IUserDisplay } from "@api/types/user.d.ts"
-import type {ICategory} from "@api/types/category.d.ts"
+import type { ICategory } from "@api/types/category.d.ts"
 import type { ITokens } from "@api/types/tokens.d.ts"
 export interface IData {
 	user?: IUserDisplay
@@ -10,4 +11,6 @@ export interface IData {
 	pagination?: IPagination
 	categories?: ICategory[]
 	category?: ICategory
+	activity?: IActivity
+	activities?: IActivity[]
 }

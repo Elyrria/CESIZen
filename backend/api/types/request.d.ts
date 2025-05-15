@@ -1,11 +1,11 @@
 import { IRefreshTokenRequest } from "@api/types/tokens.d.ts"
 import { IUser } from "@api/types/user.d.ts"
-import { Request } from "express"
 import { mongoose } from "mongoose"
+import { Request } from "express"
 import { Multer } from "multer"
 
-type ObjectId = mongoose.Types.ObjectId
 declare global {
+	type ObjectId = mongoose.Types.ObjectId
 	namespace Express {
 		interface Request {
 			sanitizedQuery: IUser | IRefreshTokenRequest | null

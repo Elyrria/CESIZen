@@ -2,8 +2,6 @@
 import type { Document } from "mongoose"
 import { mongoose } from "mongoose"
 
-type ObjectId = mongoose.Types.ObjectId
-
 /**
  * Interface for Category data
  */
