@@ -10,7 +10,6 @@ type ObjectId = mongoose.Types.ObjectId
 export interface ICategory {
 	_id?: ObjectId
 	name: string
-	description?: string
 	createdBy: ObjectId
 	updatedBy?: ObjectId
 	isActive: boolean
