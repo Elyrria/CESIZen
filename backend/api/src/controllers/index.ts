@@ -20,4 +20,8 @@ export { updateCategory } from "@controllers/category/updateCategory.controller.
 export { deleteCategory } from "@controllers/category/deleteCategory.controller.ts"
 export { getAdminCategories } from "@controllers/category/getAdminCategories.controllers.ts"
 // Activity controllers
+export { getPublicActivities } from "@controllers/activity/getPublicActivities.controller.ts"
 export { createActivity } from "@controllers/activity/createActivity.controller.ts"
+export { getActivities } from "@controllers/activity/getActivities.controller.ts"
+export { deleteActivity } from "@controllers/activity/deleteActivity.controller.ts"
+export { updateActivity } from "@controllers/activity/updateActivity.controller.ts"
