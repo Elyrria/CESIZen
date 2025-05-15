@@ -83,7 +83,7 @@ export const INFORMATION_VALIDATOR = {
 						CONFIG_FIELD.LENGTH.NAME.MAX
 					)
 				)
-				.matches(/^[a-zA-Z0-9-_]+$/)
+				.matches(/^[\p{L}\p{N}\s\-_]+$/u)
 				.withMessage(
 					"The name should only contain alphanumeric characters, dashes, or underscores"
 				)

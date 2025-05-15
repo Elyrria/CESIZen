@@ -21,7 +21,7 @@ const activitySchema = new Schema<IActivityDocument>(
 			required: [true, ACTIVITY_MESSAGE.required(FIELD.NAME)],
 			trim: true,
 		},
-		description: {
+		descriptionActivity: {
 			type: String,
 			required: [true, ACTIVITY_MESSAGE.required(FIELD.DESCRIPTION_ACTIVITY)],
 			trim: true,

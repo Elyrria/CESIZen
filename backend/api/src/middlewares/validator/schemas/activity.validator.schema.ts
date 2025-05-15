@@ -33,7 +33,7 @@ export const ACTIVITY_VALIDATOR = {
 						CONFIG_FIELD.LENGTH.ACTIVITY_NAME.MAX
 					)
 				)
-				.matches(/^[a-zA-Z0-9-_ ]+$/) // Caractères alphanumériques, tirets, underscores et espaces
+				.matches(/^[\p{L}\p{N}\s\-_]+$/u) // Caractères alphanumériques, tirets, underscores et espaces
 				.withMessage(
 					"Le nom ne doit contenir que des caractères alphanumériques, tirets, underscores ou espaces"
 				)
@@ -104,24 +104,15 @@ export const ACTIVITY_VALIDATOR = {
 		 */
 		CATEGORY: () => [
 			body(FIELD.CATEGORY_ID)
-				.exists()
-				.withMessage(ACTIVITY_MESSAGE.required(FIELD.CATEGORY_ID))
-				.isArray()
-				.withMessage(`The ${FIELD.CATEGORY_ID} must be an array`)
+				.optional()
+				.isString()
+				.withMessage(ACTIVITY_MESSAGE.mustBeString(FIELD.CATEGORY_ID))
 				.custom((value) => {
-					// Vérifier que chaque élément est un ID MongoDB valide
-					if (!Array.isArray(value) || value.length === 0) {
+					// Vérifier que c'est un ID MongoDB valide
+					if (!mongoose.Types.ObjectId.isValid(value)) {
 						throw new Error(
-							`The ${FIELD.CATEGORY_ID} must contain at least one element`
+							`The ${FIELD.CATEGORY_ID} must be a valid MongoDB ObjectID`
 						)
-					}
-
-					for (const id of value) {
-						if (!mongoose.Types.ObjectId.isValid(id)) {
-							throw new Error(
-								`Each ${FIELD.CATEGORY_ID} must be a valid MongoDB ObjectID`
-							)
-						}
 					}
 					return true
 				}),
@@ -245,23 +236,14 @@ export const ACTIVITY_VALIDATOR = {
 		CATEGORY: () => [
 			body(FIELD.CATEGORY_ID)
 				.optional()
-				.isArray()
-				.withMessage(`The ${FIELD.CATEGORY_ID} must be an array`)
+				.isString()
+				.withMessage(ACTIVITY_MESSAGE.mustBeString(FIELD.CATEGORY_ID))
 				.custom((value) => {
-					if (value && Array.isArray(value)) {
-						if (value.length === 0) {
-							throw new Error(
-								`The ${FIELD.CATEGORY_ID} must contain at least one element`
-							)
-						}
-
-						for (const id of value) {
-							if (!mongoose.Types.ObjectId.isValid(id)) {
-								throw new Error(
-									`Each ${FIELD.CATEGORY_ID} must be a valid MongoDB ObjectID`
-								)
-							}
-						}
+					// Vérifier que c'est un ID MongoDB valide
+					if (!mongoose.Types.ObjectId.isValid(value)) {
+						throw new Error(
+							`The ${FIELD.CATEGORY_ID} must be a valid MongoDB ObjectID`
+						)
 					}
 					return true
 				}),

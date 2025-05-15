@@ -15,7 +15,7 @@ export function validateRequierdInformationFields(information: Partial<IInformat
 export function validateRequiredActivityFields(activity: Partial<IActivityDocument>): boolean {
 	return Boolean(
 		activity.name &&
-			activity.description &&
+			activity.descriptionActivity &&
 			activity.type &&
 			activity.categoryId &&
 			((activity.type === "TEXT" && activity.content) || activity.type !== "TEXT")

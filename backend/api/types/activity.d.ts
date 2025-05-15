@@ -5,7 +5,7 @@ export interface IActivity {
 	authorId: mongoose.Types.ObjectId
 	_id?: ObjectId
 	name: string
-	description: string
+	descriptionActivity: string
 	type: (typeof MEDIATYPE)[number]
 	content?: string
 	isActive: boolean
