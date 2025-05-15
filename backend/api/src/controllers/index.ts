@@ -18,5 +18,5 @@ export { getPublicCategories } from "@controllers/category/getPublicCategories.c
 export { createCategory } from "@controllers/category/createCategory.controller.ts"
 export { updateCategory } from "@controllers/category/updateCategory.controller.ts"
 export { deleteCategory } from "@controllers/category/deleteCategory.controller.ts"
-export { getAdminCategories } from "@controllers/category/getAdminCategories.ts"
+export { getAdminCategories } from "@controllers/category/getAdminCategories.controllers.ts"
 // Activity controllers
