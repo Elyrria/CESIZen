@@ -1,7 +1,9 @@
 import { INFORMATION_MESSAGE, SHARED_MESSAGES } from "@errorHandler/configs.errorHandler.ts"
 import { CONFIG_FIELD, FIELD } from "@configs/fields.configs.ts"
 import { MEDIATYPE } from "@configs/global.configs.ts"
+import mongoose from "mongoose"
 import { body } from "express-validator"
+
 /**
  * Validation utilities for information validation patterns
  */
@@ -23,7 +25,7 @@ export const INFORMATION_VALIDATOR = {
 				.isLength({
 					min: CONFIG_FIELD.LENGTH.DESCRIPTION_INFORMATION.MIN,
 					max: CONFIG_FIELD.LENGTH.DESCRIPTION_INFORMATION.MAX,
-				}) // Vous pouvez ajuster ces valeurs selon vos besoins
+				})
 				.withMessage(
 					INFORMATION_MESSAGE.length(
 						FIELD.TITLE,
@@ -119,6 +121,26 @@ export const INFORMATION_VALIDATOR = {
 				.notEmpty()
 				.withMessage(INFORMATION_MESSAGE.cannotBeEmpty(FIELD.CONTENT))
 				.trim(),
+		],
+		/**
+		 * Validates the category field (optional)
+		 * @returns Array of express-validator chain methods for category validation
+		 */
+		CATEGORY: () => [
+			body(FIELD.CATEGORY_ID)
+				.exists()
+				.withMessage(INFORMATION_MESSAGE.required(FIELD.CATEGORY_ID))
+				.isString()
+				.withMessage(INFORMATION_MESSAGE.mustBeString(FIELD.CATEGORY_ID))
+				.custom((value) => {
+					// Vérifier que c'est un ID MongoDB valide
+					if (!mongoose.Types.ObjectId.isValid(value)) {
+						throw new Error(
+							`The ${FIELD.CATEGORY_ID} must be a valid MongoDB ObjectID`
+						)
+					}
+					return true
+				}),
 		],
 	},
 
@@ -228,6 +250,26 @@ export const INFORMATION_VALIDATOR = {
 				.withMessage(INFORMATION_MESSAGE.mustBeString(FIELD.CONTENT))
 				.trim(),
 		],
+
+		/**
+		 * Validates the category field (optional)
+		 * @returns Array of express-validator chain methods for category validation
+		 */
+		CATEGORY: () => [
+			body(FIELD.CATEGORY_ID)
+				.optional()
+				.isString()
+				.withMessage(INFORMATION_MESSAGE.mustBeString(FIELD.CATEGORY_ID))
+				.custom((value) => {
+					// Vérifier que c'est un ID MongoDB valide
+					if (!mongoose.Types.ObjectId.isValid(value)) {
+						throw new Error(
+							`The ${FIELD.CATEGORY_ID} must be a valid MongoDB ObjectID`
+						)
+					}
+					return true
+				}),
+		],
 	},
 
 	/**
@@ -245,6 +287,41 @@ export const INFORMATION_VALIDATOR = {
 				}
 				return true
 			}),
+		],
+
+		/**
+		 * Validates that the category exists in the database
+		 * @returns Array of express-validator chain methods for category validation
+		 */
+		CATEGORY_EXISTS: () => [
+			body(FIELD.CATEGORY_ID)
+				.optional()
+				.custom(async (value, { req }) => {
+					if (!value) {
+						return true // La catégorie est optionnelle
+					}
+
+					try {
+						// Import Category model dynamically to avoid circular dependencies
+						const { Category } = await import("@models/index.ts")
+
+						// Check if the category exists and is active
+						const category = await Category.findById(value)
+						if (!category) {
+							throw new Error(`Category with ID ${value} does not exist`)
+						}
+						if (!category.isActive) {
+							throw new Error(`Category with ID ${value} is inactive`)
+						}
+
+						return true
+					} catch (error) {
+						// Re-throw any error for express-validator to handle
+						throw error instanceof Error
+							? error
+							: new Error("Error validating category")
+					}
+				}),
 		],
 	},
 }

@@ -2,7 +2,7 @@ import { addPublicationDateMiddleware } from "@models/utils/middleware.ts"
 import type { IInformationDocument } from "@api/types/information.d.ts"
 import { INFORMATION_MESSAGE } from "@errorHandler/configs.errorHandler.ts"
 import { MEDIATYPE, STATUS } from "@configs/global.configs.ts"
-import { FIELD} from "@configs/fields.configs.ts"
+import { FIELD } from "@configs/fields.configs.ts"
 import mongoose, { Schema } from "mongoose"
 
 /**
@@ -77,6 +77,13 @@ const informationSchema = new Schema<IInformationDocument>(
 			encoding: String,
 			bitrate: Number,
 		},
+		categoryId: [
+			{
+				type: mongoose.Schema.Types.ObjectId,
+				required: [true, INFORMATION_MESSAGE.required(FIELD.CATEGORY_ID)],
+				ref: "Category",
+			},
+		],
 	},
 	{
 		timestamps: true, // Automatically manages createdAt and updatedAt fields
@@ -93,11 +100,9 @@ informationSchema.index({ createdAt: -1 })
 informationSchema.index({ status: 1 })
 informationSchema.index({ type: 1 })
 informationSchema.index({ fileId: 1 }) // Index for GridFS file references
+informationSchema.index({ categories: 1 }) // Index for category lookup
 
 // Add middlewares
 addPublicationDateMiddleware(informationSchema)
-// addUniqueValidationMiddleware(informationSchema)  // Uncomment if needed
-
-
 
 export default informationSchema
