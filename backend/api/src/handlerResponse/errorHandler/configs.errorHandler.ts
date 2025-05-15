@@ -5,77 +5,83 @@ import { FIELD, SPECIAL_CHARS_DISPLAY } from "@configs/fields.configs.ts"
 // Namespace for error codes
 export const ERROR_CODE = {
 	// General errors
-	UNEXPECTED: "unexpectedError",
-	SERVER: "serverError",
-	MISSING_INFO: "missingInfo",
-	NO_CONDITIONS: "noConditions",
-	NO_FIELDS: "noFields",
-	MALFORMED: "malformed",
 	VALIDATION_FAILED: "validationFailed",
+	UNEXPECTED: "unexpectedError",
+	NO_CONDITIONS: "noConditions",
+	MISSING_INFO: "missingInfo",
+	MALFORMED: "malformed",
+	NO_FIELDS: "noFields",
+	SERVER: "serverError",
 
 	// Authentication errors
-	UNAUTHORIZED: "unauthorized",
-	INSUFFICIENT_ACCESS: "insufficientAccess",
 	SECURITY_VALIDATION: "securityValidation",
+	INSUFFICIENT_ACCESS: "insufficientAccess",
+	UNAUTHORIZED: "unauthorized",
 
 	// Token-related errors
+	REFRESH_TOKEN_REQUIRED: "refreshTokenRequired",
+	ALREADY_LOGOUT: "alreadyLoggedOut",
 	INVALID_TOKEN: "invalidToken",
 	EXPIRED_TOKEN: "expiredToken",
 	REVOKED_TOKEN: "revokedToken",
 	SIGN_TOKEN: "signatureInvalid",
-	REFRESH_TOKEN_REQUIRED: "refreshTokenRequired",
-	ALREADY_LOGOUT: "alreadyLoggedOut",
 
 	// User-related errors
-	USER_NOT_FOUND: "userNotFound",
 	UNABLE_CREATE_USER: "unableToCreateUser",
 	UNABLE_MODIFY_USER: "unableToModifyUser",
+	USER_NOT_FOUND: "userNotFound",
 	MIS_MATCH: "userMisMatch",
 
 	// Role-related errors
 	ROLE_UNAVAILABLE: "roleUnavailable",
 
 	// Password-related errors
-	NO_PASSWORD_SET: "noPasswordSet",
 	NEW_PASSWORD_REQUIRED: "newPasswordRequired",
-	PASSWORD_REQUIRED: "passwordRequired",
-	INCORRECT_PASSWORD: "incorrectPassword",
 	INVALID_CREDENTIALS: "invalidCredentials",
+	INCORRECT_PASSWORD: "incorrectPassword",
+	PASSWORD_REQUIRED: "passwordRequired",
+	NO_PASSWORD_SET: "noPasswordSet",
 
 	// Information-related errors
-	INFORMATION_NOT_FOUND: "informationNotFound",
 	UNABLE_CREATE_INFORMATION: "unableToCreateInformation",
 	UNABLE_MODIFY_INFORMATION: "unableToModifyInformation",
-	INACTIVE_USER: "inactiveUser",
-	CONTENT_REQUIRED: "contentRequired",
-	FILE_REQUIRED: "fileRequired",
-	FILE_UPLOAD_FAILED: "fileUploadFailed",
 	INVALID_INFORMATION_TYPE: "invalidInformationType",
-	MISSING_FIELDS: "missingFields",
-	INVALID_FILE_TYPE: "invalidFileType",
-	FILE_NOT_FOUND: "fileNotFound",
+	INFORMATION_NOT_FOUND: "informationNotFound",
 	FILE_STREAMING_ERROR: "fileStreamingError",
+	FILE_UPLOAD_FAILED: "fileUploadFailed",
+	CONTENT_REQUIRED: "contentRequired",
+	INVALID_FILE_TYPE: "invalidFileType",
 	FILE_ACCESS_ERROR: "fileAccessError",
+	MISSING_FIELDS: "missingFields",
+	INACTIVE_USER: "inactiveUser",
+	FILE_REQUIRED: "fileRequired",
+	FILE_NOT_FOUND: "fileNotFound",
 
 	// Category-related errors
-	CATEGORY_NOT_FOUND: "categoryNotFound",
-	UNABLE_CREATE_CATEGORY: "unableToCreateCategory",
 	UNABLE_MODIFY_CATEGORY: "unableToModifyCategory",
+	UNABLE_CREATE_CATEGORY: "unableToCreateCategory",
+	CATEGORY_NOT_FOUND: "categoryNotFound",
 	DUPLICATE_CATEGORY: "duplicateCategory",
+	// Activity-related errors
+	UNABLE_CREATE_ACTIVITY: "unableToCreateActivity",
+	UNABLE_MODIFY_ACTIVITY: "unableToModifyActivity",
+	ACTIVITY_ACCESS_DENIED: "activityAccessDenied",
+	INVALID_ACTIVITY_TYPE: "invalidActivityType",
+	ACTIVITY_NOT_FOUND: "activityNotFound",
 }
 
 // Predefined error messages
 export const ERROR_MESSAGE = {
-	INVALID_CREDENTIALS: "Incorrect username/password!",
-	SERVER_ERROR: "Server error",
-	EXPIRED_TOKEN: "Token expired",
-	REVOKED_TOKEN: "Token has been revoked",
-	UNABLE_TO_CREATE: "Unable to create an account with the provided information",
 	UNABLE_MODIFY_USER: "Unable to modify an account with the provided information",
+	UNABLE_TO_CREATE: "Unable to create an account with the provided information",
+	INVALID_CREDENTIALS: "Incorrect username/password!",
+	ROLE_UNAVAILABLE: `Invalid ${FIELD.ROLE}`,
+	REVOKED_TOKEN: "Token has been revoked",
 	VALIDATION_FAILED: "Validation failed",
 	UNAUTHORIZED: "Unauthorized access",
-	ROLE_UNAVAILABLE: `Invalid ${FIELD.ROLE}`,
 	MISSING_INFO: "Missing information",
+	EXPIRED_TOKEN: "Token expired",
+	SERVER_ERROR: "Server error",
 	// Information-related messages
 	INACTIVE_USER: "User account is inactive",
 	NOT_FOUND: (type: string): string => `${type} not found`,
@@ -93,6 +99,12 @@ export const ERROR_MESSAGE = {
 	UNABLE_CREATE_CATEGORY: "Unable to create category with provided data",
 	UNABLE_MODIFY_CATEGORY: "Unable to modify category with provided data",
 	DUPLICATE_CATEGORY: "A category with this name already exists",
+	// Activity-related messages
+	ACTIVITY_NOT_FOUND: "Activity not found",
+	UNABLE_CREATE_ACTIVITY: "Unable to create activity with provided data",
+	UNABLE_MODIFY_ACTIVITY: "Unable to modify activity with provided data",
+	INVALID_ACTIVITY_TYPE: "Invalid activity type provided",
+	ACTIVITY_ACCESS_DENIED: "You don't have permission to access this activity",
 }
 // Shared message generators
 export const SHARED_MESSAGES = {
@@ -104,6 +116,15 @@ export const SHARED_MESSAGES = {
 	statusInvalid: (roles: string[]): string => `The status must be one of the following: ${roles.join(", ")}`,
 	minLength: (type: string, min: number): string => `The ${type} must contain at least ${min} characters`,
 	maxLength: (type: string, max: number): string => `The ${type} must not contain more than ${max} characters`,
+}
+export const ACTIVITY_MESSAGE = {
+    ...SHARED_MESSAGES,
+    CONTENT_REQUIRED: "Content is required for text activity",
+    FILE_REQUIRED: "File is required for video activity",
+    INVALID_TYPE: (validTypes: string[]): string =>
+        `The activity type must be one of the following: ${validTypes.join(", ")}`,
+    typeInvalid: (type: string[]): string => `The type must be one of the following: ${type.join(", ")}`,
+    fileRequired: (type: string): string => `File is required for ${type} activity type`,
 }
 // Message generator functions for users
 export const USER_MESSAGE = {
@@ -358,5 +379,30 @@ export const ERROR_MAPPING: Record<string, IErrorInfo> = {
 		code: ERROR_CODE.DUPLICATE_CATEGORY,
 		message: ERROR_MESSAGE.DUPLICATE_CATEGORY,
 		statusCode: 409,
+	},
+	[ERROR_CODE.ACTIVITY_NOT_FOUND]: {
+		code: ERROR_CODE.ACTIVITY_NOT_FOUND,
+		message: ERROR_MESSAGE.ACTIVITY_NOT_FOUND,
+		statusCode: 404,
+	},
+	[ERROR_CODE.UNABLE_CREATE_ACTIVITY]: {
+		code: ERROR_CODE.UNABLE_CREATE_ACTIVITY,
+		message: ERROR_MESSAGE.UNABLE_CREATE_ACTIVITY,
+		statusCode: 409,
+	},
+	[ERROR_CODE.UNABLE_MODIFY_ACTIVITY]: {
+		code: ERROR_CODE.UNABLE_MODIFY_ACTIVITY,
+		message: ERROR_MESSAGE.UNABLE_MODIFY_ACTIVITY,
+		statusCode: 409,
+	},
+	[ERROR_CODE.INVALID_ACTIVITY_TYPE]: {
+		code: ERROR_CODE.INVALID_ACTIVITY_TYPE,
+		message: ERROR_MESSAGE.INVALID_ACTIVITY_TYPE,
+		statusCode: 400,
+	},
+	[ERROR_CODE.ACTIVITY_ACCESS_DENIED]: {
+		code: ERROR_CODE.ACTIVITY_ACCESS_DENIED,
+		message: ERROR_MESSAGE.ACTIVITY_ACCESS_DENIED,
+		statusCode: 403,
 	},
 }

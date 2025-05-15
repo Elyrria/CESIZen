@@ -8,13 +8,13 @@ export const SUCCESS_CODE = {
 	USER_CREATED: "userCreated",
 	USER_DELETED: "userDeleted",
 	USER_UPDATED: "userUpdated",
-	USER_FOUND: "userFound",
 	USERS_FOUND: "usersFound",
+	USER_FOUND: "userFound",
 	NO_USER: "noUser",
 
 	// Authentication related success codes
-	LOGIN_SUCCESS: "loginSuccess",
 	LOGOUT_SUCCESS: "logoutSuccess",
+	LOGIN_SUCCESS: "loginSuccess",
 	TOKEN_RENEWED: "tokenRenewed",
 
 	// Content related success codes
@@ -33,36 +33,52 @@ export const SUCCESS_CODE = {
 	CATEGORY_FOUND: "categoryFound",
 	CATEGORY_LIST: "categoryList",
 	NO_CATEGORY: "noCategory",
+	// Activity-related success codes
+	PUBLIC_ACTIVITIES: "publicActivities",
+	ACTIVITY_CREATED: "activityCreated",
+	ACTIVITY_UPDATED: "activityUpdated",
+	ACTIVITY_DELETED: "activityDeleted",
+	ACTIVITY_FOUND: "activityFound",
+	ACTIVITY_LIST: "activityList",
+	NO_ACTIVITY: "noActivity",
 }
 
 /**
  * Predefined success messages
  */
 export const SUCCESS_MESSAGE = {
+	LOGOUT_SUCCESS: "User logged out successfully",
+	COMMENT_CREATED: "Comment created successfully",
 	USER_CREATED: "User created successfully",
 	USER_DELETED: "User deleted successfully",
 	USER_UPDATED: "User updated successfully",
-	USER_FOUND: "User found",
-	USERS_FOUND: "Users found",
-	NO_USER: "No user found",
 	LOGIN_SUCCESS: "Login successful",
-	LOGOUT_SUCCESS: "User logged out successfully",
 	TOKEN_RENEWED: "New token generated",
-	COMMENT_CREATED: "Comment created successfully",
+	USERS_FOUND: "Users found",
+	USER_FOUND: "User found",
+	NO_USER: "No user found",
 	// Information-related success messages
+	INFORMATION_LIST: "Information list retrieved successfully",
 	INFORMATION_CREATED: "Information created successfully",
 	INFORMATION_UPDATED: "Information updated successfully",
 	INFORMATION_DELETED: "Information deleted successfully",
 	INFORMATION_FOUND: "Information retrieved successfully",
-	INFORMATION_LIST: "Information list retrieved successfully",
 	NO_INFORMATION: "No information found",
 	// Category-related success messages
+	CATEGORY_LIST: "Categories list retrieved successfully",
 	CATEGORY_CREATED: "Category created successfully",
 	CATEGORY_UPDATED: "Category updated successfully",
 	CATEGORY_DELETED: "Category deleted successfully",
 	CATEGORY_FOUND: "Category retrieved successfully",
-	CATEGORY_LIST: "Categories list retrieved successfully",
 	NO_CATEGORY: "No category found",
+	// Activity-related success messages
+	PUBLIC_ACTIVITIES: "Public activities retrieved successfully",
+	ACTIVITY_LIST: "Activities list retrieved successfully",
+	ACTIVITY_CREATED: "Activity created successfully",
+	ACTIVITY_UPDATED: "Activity updated successfully",
+	ACTIVITY_DELETED: "Activity deleted successfully",
+	ACTIVITY_FOUND: "Activity retrieved successfully",
+	NO_ACTIVITY: "No activity found",
 }
 
 /**
@@ -178,6 +194,41 @@ export const SUCCESS_MAPPING: Record<string, ISuccessInfo> = {
 	[SUCCESS_CODE.NO_CATEGORY]: {
 		code: SUCCESS_CODE.NO_CATEGORY,
 		message: SUCCESS_MESSAGE.NO_CATEGORY,
+		statusCode: 200,
+	},
+	[SUCCESS_CODE.ACTIVITY_CREATED]: {
+		code: SUCCESS_CODE.ACTIVITY_CREATED,
+		message: SUCCESS_MESSAGE.ACTIVITY_CREATED,
+		statusCode: 201,
+	},
+	[SUCCESS_CODE.ACTIVITY_UPDATED]: {
+		code: SUCCESS_CODE.ACTIVITY_UPDATED,
+		message: SUCCESS_MESSAGE.ACTIVITY_UPDATED,
+		statusCode: 200,
+	},
+	[SUCCESS_CODE.ACTIVITY_DELETED]: {
+		code: SUCCESS_CODE.ACTIVITY_DELETED,
+		message: SUCCESS_MESSAGE.ACTIVITY_DELETED,
+		statusCode: 200,
+	},
+	[SUCCESS_CODE.ACTIVITY_FOUND]: {
+		code: SUCCESS_CODE.ACTIVITY_FOUND,
+		message: SUCCESS_MESSAGE.ACTIVITY_FOUND,
+		statusCode: 200,
+	},
+	[SUCCESS_CODE.ACTIVITY_LIST]: {
+		code: SUCCESS_CODE.ACTIVITY_LIST,
+		message: SUCCESS_MESSAGE.ACTIVITY_LIST,
+		statusCode: 200,
+	},
+	[SUCCESS_CODE.NO_ACTIVITY]: {
+		code: SUCCESS_CODE.NO_ACTIVITY,
+		message: SUCCESS_MESSAGE.NO_ACTIVITY,
+		statusCode: 200,
+	},
+	[SUCCESS_CODE.PUBLIC_ACTIVITIES]: {
+		code: SUCCESS_CODE.PUBLIC_ACTIVITIES,
+		message: SUCCESS_MESSAGE.PUBLIC_ACTIVITIES,
 		statusCode: 200,
 	},
 }
