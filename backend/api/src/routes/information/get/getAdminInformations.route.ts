@@ -1,5 +1,5 @@
 import { auth } from "@middlewares/security/auth.middleware.ts"
-import { getInformations } from "@controllers/index.ts"
+import { getAdminInformations } from "@controllers/index.ts"
 import { Router } from "express"
 
 const getInformationsRouter = Router()
@@ -274,6 +274,6 @@ const getInformationsRouter = Router()
  *             schema:
  *               $ref: '#/components/schemas/ApiErrorResponse'
  */
-getInformationsRouter.get("/get-informations", auth, getInformations)
+getInformationsRouter.get("/get-informations", auth, getAdminInformations)
 
 export default getInformationsRouter
