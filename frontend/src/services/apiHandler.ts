@@ -70,7 +70,6 @@ class ApiService {
 						const refreshToken = this.getRefreshTokenFromCookie()
 
 						if (!refreshToken) {
-							this.redirectToLogin()
 							return Promise.reject(error)
 						}
 
@@ -245,8 +244,8 @@ class ApiService {
 	// API specific methods with types
 
 	// AUTH
-	public async login(email: string, password: string): Promise<ApiResponse<IAuthResponse>> {
-		return this.post<IAuthResponse>("/users/login", { email, password })
+	public async login(email: string, password: string): Promise<ApiResponse<IAuthResponse | IApiErrorResponse>> {
+		return this.post<IAuthResponse>("v1/users/login", { email: email, password: password })
 	}
 
 	public async register(userData: {
@@ -256,7 +255,7 @@ class ApiService {
 		firstName: string
 		birthDate: string
 	}): Promise<ApiResponse<IAuthResponse>> {
-		return this.post<IAuthResponse>("/users/create", userData)
+		return this.post<IAuthResponse>("v1/users/create", userData)
 	}
 
 	public async logout(refreshToken: string): Promise<ApiResponse<void>> {
