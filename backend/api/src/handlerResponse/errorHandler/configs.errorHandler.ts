@@ -73,89 +73,89 @@ export const ERROR_CODE = {
 
 // Predefined error messages
 export const ERROR_MESSAGE = {
-	UNABLE_MODIFY_USER: "Unable to modify an account with the provided information",
-	UNABLE_TO_CREATE: "Unable to create an account with the provided information",
-	INVALID_CREDENTIALS: "Incorrect username/password!",
-	ROLE_UNAVAILABLE: `Invalid ${FIELD.ROLE}`,
-	REVOKED_TOKEN: "Token has been revoked",
-	VALIDATION_FAILED: "Validation failed",
-	UNAUTHORIZED: "Unauthorized access",
-	MISSING_INFO: "Missing information",
-	EXPIRED_TOKEN: "Token expired",
-	SERVER_ERROR: "Server error",
+	UNABLE_MODIFY_USER: "Impossible de modifier un compte avec les informations fournies",
+	UNABLE_TO_CREATE: "Impossible de créer un compte avec les informations fournies",
+	INVALID_CREDENTIALS: "Nom d'utilisateur/mot de passe incorrect !",
+	ROLE_UNAVAILABLE: `${FIELD.ROLE} invalide`,
+	REVOKED_TOKEN: "Le jeton a été révoqué",
+	VALIDATION_FAILED: "La validation a échoué",
+	UNAUTHORIZED: "Accès non autorisé",
+	MISSING_INFO: "Informations manquantes",
+	EXPIRED_TOKEN: "Jeton expiré",
+	SERVER_ERROR: "Erreur serveur",
 	// Information-related messages
-	INACTIVE_USER: "User account is inactive",
-	NOT_FOUND: (type: string): string => `${type} not found`,
-	CONTENT_REQUIRED: "Content is required for text-based information",
-	FILE_REQUIRED: "File is required for media-based information",
-	FILE_UPLOAD_FAILED: "Failed to upload file to storage",
-	INVALID_INFORMATION_TYPE: "Invalid information type provided",
-	MISSING_FIELDS: "Required fields are missing",
-	INVALID_FILE_TYPE: "The uploaded file type is not allowed",
-	FILE_NOT_FOUND: "The requested file could not be found in the storage",
-	FILE_STREAMING_ERROR: "An error occurred while streaming the file",
-	FILE_ACCESS_ERROR: "Unable to access the requested file",
+	INACTIVE_USER: "Le compte utilisateur est inactif",
+	NOT_FOUND: (type: string): string => `${type} non trouvé`,
+	CONTENT_REQUIRED: "Le contenu est requis pour les informations textuelles",
+	FILE_REQUIRED: "Un fichier est requis pour les informations multimédias",
+	FILE_UPLOAD_FAILED: "Échec du téléchargement du fichier vers le stockage",
+	INVALID_INFORMATION_TYPE: "Type d'information fourni invalide",
+	MISSING_FIELDS: "Des champs obligatoires sont manquants",
+	INVALID_FILE_TYPE: "Le type de fichier téléchargé n'est pas autorisé",
+	FILE_NOT_FOUND: "Le fichier demandé n'a pas pu être trouvé dans le stockage",
+	FILE_STREAMING_ERROR: "Une erreur s'est produite lors de la diffusion du fichier",
+	FILE_ACCESS_ERROR: "Impossible d'accéder au fichier demandé",
 	// Category-related messages
-	CATEGORY_NOT_FOUND: "Category not found",
-	UNABLE_CREATE_CATEGORY: "Unable to create category with provided data",
-	UNABLE_MODIFY_CATEGORY: "Unable to modify category with provided data",
-	DUPLICATE_CATEGORY: "A category with this name already exists",
-	INVALID_CATEGORY: "Invalid category",
+	CATEGORY_NOT_FOUND: "Catégorie non trouvée",
+	UNABLE_CREATE_CATEGORY: "Impossible de créer une catégorie avec les données fournies",
+	UNABLE_MODIFY_CATEGORY: "Impossible de modifier la catégorie avec les données fournies",
+	DUPLICATE_CATEGORY: "Une catégorie avec ce nom existe déjà",
+	INVALID_CATEGORY: "Catégorie invalide",
 	// Activity-related messages
-	ACTIVITY_NOT_FOUND: "Activity not found",
-	UNABLE_CREATE_ACTIVITY: "Unable to create activity with provided data",
-	UNABLE_MODIFY_ACTIVITY: "Unable to modify activity with provided data",
-	INVALID_ACTIVITY_TYPE: "Invalid activity type provided",
-	ACTIVITY_ACCESS_DENIED: "You don't have permission to access this activity",
+	ACTIVITY_NOT_FOUND: "Activité non trouvée",
+	UNABLE_CREATE_ACTIVITY: "Impossible de créer une activité avec les données fournies",
+	UNABLE_MODIFY_ACTIVITY: "Impossible de modifier l'activité avec les données fournies",
+	INVALID_ACTIVITY_TYPE: "Type d'activité fourni invalide",
+	ACTIVITY_ACCESS_DENIED: "Vous n'avez pas la permission d'accéder à cette activité",
 }
 // Shared message generators
 export const SHARED_MESSAGES = {
-	required: (type: string): string => `The ${type} is required`,
-	mustBeString: (type: string): string => `The ${type} must be a string`,
+	required: (type: string): string => `Le ${type} est requis`,
+	mustBeString: (type: string): string => `Le ${type} doit être une chaîne de caractères`,
 	length: (type: string, min: number, max: number): string =>
-		`The ${type} must contain between ${min} and ${max} characters`,
-	cannotBeEmpty: (type: string): string => `The ${type} cannot be empty`,
-	statusInvalid: (roles: string[]): string => `The status must be one of the following: ${roles.join(", ")}`,
-	minLength: (type: string, min: number): string => `The ${type} must contain at least ${min} characters`,
-	maxLength: (type: string, max: number): string => `The ${type} must not contain more than ${max} characters`,
+		`Le ${type} doit contenir entre ${min} et ${max} caractères`,
+	cannotBeEmpty: (type: string): string => `Le ${type} ne peut pas être vide`,
+	statusInvalid: (roles: string[]): string => `Le statut doit être l'un des suivants : ${roles.join(", ")}`,
+	minLength: (type: string, min: number): string => `Le ${type} doit contenir au moins ${min} caractères`,
+	maxLength: (type: string, max: number): string => `Le ${type} ne doit pas contenir plus de ${max} caractères`,
 }
 export const ACTIVITY_MESSAGE = {
 	...SHARED_MESSAGES,
-	CONTENT_REQUIRED: "Content is required for text activity",
-	FILE_REQUIRED: "File is required for video activity",
+	CONTENT_REQUIRED: "Le contenu est requis pour l'activité textuelle",
+	FILE_REQUIRED: "Un fichier est requis pour l'activité vidéo",
 	INVALID_TYPE: (validTypes: string[]): string =>
-		`The activity type must be one of the following: ${validTypes.join(", ")}`,
-	typeInvalid: (type: string[]): string => `The type must be one of the following: ${type.join(", ")}`,
-	fileRequired: (type: string): string => `File is required for ${type} activity type`,
+		`Le type d'activité doit être l'un des suivants : ${validTypes.join(", ")}`,
+	typeInvalid: (type: string[]): string => `Le type doit être l'un des suivants : ${type.join(", ")}`,
+	fileRequired: (type: string): string => `Un fichier est requis pour le type d'activité ${type}`,
 }
 // Message generator functions for users
 export const USER_MESSAGE = {
 	...SHARED_MESSAGES,
-	emailInvalid: `The ${FIELD.EMAIL} must be a valid email address`,
-	passwordRequirements: `The ${FIELD.PASSWORD} must contain at least one uppercase letter, one lowercase letter, one number, and one special character in ${SPECIAL_CHARS_DISPLAY}`,
-	roleInvalid: (roles: string[]): string => `The role must be one of the following: ${roles.join(", ")}`,
+	emailInvalid: `Le ${FIELD.EMAIL} doit être une adresse email valide`,
+	passwordRequirements: `Le ${FIELD.PASSWORD} doit contenir au moins une lettre majuscule, une lettre minuscule, un chiffre et un caractère spécial parmi ${SPECIAL_CHARS_DISPLAY}`,
+	roleInvalid: (roles: string[]): string => `Le rôle doit être l'un des suivants : ${roles.join(", ")}`,
 }
 
 export const INFORMATION_MESSAGE = {
 	...SHARED_MESSAGES,
-	CONTENT_REQUIRED: "Content is required for text information",
-	FILE_REQUIRED: "File is required for media information",
+	CONTENT_REQUIRED: "Le contenu est requis pour les informations textuelles",
+	FILE_REQUIRED: "Un fichier est requis pour les informations multimédias",
 	INVALID_TYPE: (validTypes: string[]): string =>
-		`The information type must be one of the following: ${validTypes.join(", ")}`,
-	typeInvalid: (type: string[]): string => `The type must be one of the following: ${type.join(", ")}`,
-	fileRequired: (type: string): string => `File is required for ${type} information type`,
+		`Le type d'information doit être l'un des suivants : ${validTypes.join(", ")}`,
+	typeInvalid: (type: string[]): string => `Le type doit être l'un des suivants : ${type.join(", ")}`,
+	fileRequired: (type: string): string => `Un fichier est requis pour le type d'information ${type}`,
 }
 export const CATEGORY_MESSAGE = {
 	...SHARED_MESSAGES,
-	duplicateName: "A category with this name already exists",
+	duplicateName: "Une catégorie avec ce nom existe déjà",
 }
 
 // Message generator functions for tokens
 export const TOKEN_MESSAGE = {
 	cannotBeEmpty: SHARED_MESSAGES.cannotBeEmpty,
 	mustBeString: SHARED_MESSAGES.mustBeString,
-	invalidFormat: (type: string): string => `The ${type} must be a valid format: MongoDB ObjectID`,
-	refreshTokenRequired: "The refresh token is required",
+	invalidFormat: (type: string): string => `Le ${type} doit avoir un format valide : MongoDB ObjectID`,
+	refreshTokenRequired: "Le jeton d'actualisation est requis",
 }
 
 /**
@@ -168,7 +168,7 @@ export const ERROR_MAPPING: Record<string, IErrorInfo> = {
 		statusCode: 400,
 		location: "body",
 	},
-	[ERROR_CODE.MISSING_INFO]: {
+	[ERROR_CODE.VALIDATION_FAILED]: {
 		code: ERROR_CODE.VALIDATION_FAILED,
 		message: ERROR_MESSAGE.VALIDATION_FAILED,
 		statusCode: 400,
@@ -176,7 +176,7 @@ export const ERROR_MAPPING: Record<string, IErrorInfo> = {
 	},
 	[ERROR_CODE.NO_CONDITIONS]: {
 		code: ERROR_CODE.NO_CONDITIONS,
-		message: "No conditions met",
+		message: "Aucune condition remplie",
 		statusCode: 400,
 	},
 	[ERROR_CODE.ROLE_UNAVAILABLE]: {
@@ -186,32 +186,32 @@ export const ERROR_MAPPING: Record<string, IErrorInfo> = {
 	},
 	[ERROR_CODE.NO_FIELDS]: {
 		code: ERROR_CODE.NO_FIELDS,
-		message: "No fields provided for update",
+		message: "Aucun champ fourni pour la mise à jour",
 		statusCode: 400,
 	},
 	[ERROR_CODE.REFRESH_TOKEN_REQUIRED]: {
 		code: ERROR_CODE.REFRESH_TOKEN_REQUIRED,
-		message: "Refresh token is required",
+		message: "Le jeton d'actualisation est requis",
 		statusCode: 400,
 	},
 	[ERROR_CODE.ALREADY_LOGOUT]: {
 		code: ERROR_CODE.ALREADY_LOGOUT,
-		message: "Refresh token already removed",
+		message: "Le jeton d'actualisation a déjà été supprimé",
 		statusCode: 400,
 	},
 	[ERROR_CODE.NO_PASSWORD_SET]: {
 		code: ERROR_CODE.NO_PASSWORD_SET,
-		message: `No ${FIELD.PASSWORD} set for this account. ${FIELD.PASSWORD} update is not possible`,
+		message: `Aucun ${FIELD.PASSWORD} défini pour ce compte. La mise à jour du ${FIELD.PASSWORD} n'est pas possible`,
 		statusCode: 400,
 	},
 	[ERROR_CODE.NEW_PASSWORD_REQUIRED]: {
 		code: ERROR_CODE.NEW_PASSWORD_REQUIRED,
-		message: `'newPassword' is required to update the ${FIELD.PASSWORD}`,
+		message: `'newPassword' est requis pour mettre à jour le ${FIELD.PASSWORD}`,
 		statusCode: 400,
 	},
 	[ERROR_CODE.PASSWORD_REQUIRED]: {
 		code: ERROR_CODE.PASSWORD_REQUIRED,
-		message: `'${FIELD.PASSWORD}' is required to confirm your identity before modification`,
+		message: `'${FIELD.PASSWORD}' est requis pour confirmer votre identité avant modification`,
 		statusCode: 400,
 	},
 	[ERROR_CODE.INVALID_FILE_TYPE]: {
@@ -228,22 +228,22 @@ export const ERROR_MAPPING: Record<string, IErrorInfo> = {
 	},
 	[ERROR_CODE.INVALID_TOKEN]: {
 		code: ERROR_CODE.INVALID_TOKEN,
-		message: "Invalid token",
+		message: "Jeton invalide",
 		statusCode: 401,
 	},
 	[ERROR_CODE.SECURITY_VALIDATION]: {
 		code: ERROR_CODE.SECURITY_VALIDATION,
-		message: "Security validation failed",
+		message: "La validation de sécurité a échoué",
 		statusCode: 401,
 	},
 	[ERROR_CODE.MALFORMED]: {
 		code: ERROR_CODE.MALFORMED,
-		message: "Invalid token format",
+		message: "Format de jeton invalide",
 		statusCode: 403,
 	},
 	[ERROR_CODE.SIGN_TOKEN]: {
 		code: ERROR_CODE.SIGN_TOKEN,
-		message: "Invalid token signature",
+		message: "Signature de jeton invalide",
 		statusCode: 403,
 	},
 	[ERROR_CODE.EXPIRED_TOKEN]: {
@@ -258,7 +258,7 @@ export const ERROR_MAPPING: Record<string, IErrorInfo> = {
 	},
 	[ERROR_CODE.INCORRECT_PASSWORD]: {
 		code: ERROR_CODE.INCORRECT_PASSWORD,
-		message: `Incorrect ${FIELD.PASSWORD}. Please try again`,
+		message: `${FIELD.PASSWORD} incorrect. Veuillez réessayer`,
 		statusCode: 401,
 	},
 	[ERROR_CODE.INVALID_CREDENTIALS]: {
@@ -269,12 +269,12 @@ export const ERROR_MAPPING: Record<string, IErrorInfo> = {
 	},
 	[ERROR_CODE.INSUFFICIENT_ACCESS]: {
 		code: ERROR_CODE.INSUFFICIENT_ACCESS,
-		message: "Insufficient access",
+		message: "Accès insuffisant",
 		statusCode: 403,
 	},
 	[ERROR_CODE.USER_NOT_FOUND]: {
 		code: ERROR_CODE.USER_NOT_FOUND,
-		message: `User not found. Please check the provided ${FIELD.EMAIL}`,
+		message: `Utilisateur non trouvé. Veuillez vérifier le ${FIELD.EMAIL} fourni`,
 		statusCode: 404,
 	},
 	[ERROR_CODE.UNABLE_CREATE_USER]: {
@@ -289,7 +289,7 @@ export const ERROR_MAPPING: Record<string, IErrorInfo> = {
 	},
 	[ERROR_CODE.MIS_MATCH]: {
 		code: ERROR_CODE.MIS_MATCH,
-		message: "User identity mismatch",
+		message: "Non-correspondance d'identité utilisateur",
 		statusCode: 409,
 	},
 	[ERROR_CODE.SERVER]: {
@@ -299,7 +299,7 @@ export const ERROR_MAPPING: Record<string, IErrorInfo> = {
 	},
 	[ERROR_CODE.UNEXPECTED]: {
 		code: ERROR_CODE.UNEXPECTED,
-		message: "An unexpected error occurred",
+		message: "Une erreur inattendue s'est produite",
 		statusCode: 500,
 	},
 	[ERROR_CODE.INFORMATION_NOT_FOUND]: {
@@ -309,12 +309,12 @@ export const ERROR_MAPPING: Record<string, IErrorInfo> = {
 	},
 	[ERROR_CODE.UNABLE_CREATE_INFORMATION]: {
 		code: ERROR_CODE.UNABLE_CREATE_INFORMATION,
-		message: "Unable to create information with provided data",
+		message: "Impossible de créer l'information avec les données fournies",
 		statusCode: 409,
 	},
 	[ERROR_CODE.UNABLE_MODIFY_INFORMATION]: {
 		code: ERROR_CODE.UNABLE_MODIFY_INFORMATION,
-		message: "Unable to modify information with provided data",
+		message: "Impossible de modifier l'information avec les données fournies",
 		statusCode: 409,
 	},
 	[ERROR_CODE.INACTIVE_USER]: {
