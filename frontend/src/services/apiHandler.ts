@@ -11,7 +11,20 @@ import type {
 
 export type ApiResponse<T = unknown> = IApiSuccessResponse<T> | IApiErrorResponse
 
-// Classe principale pour gérer les appels API
+/**
+ * Main class to handle API calls.
+ *
+ * This service wraps axios to provide:
+ * - Base URL and default headers configuration
+ * - Request interceptor to add authorization token from cookies
+ * - Response interceptor to handle token refresh on 401 errors
+ * - Generic methods for GET, POST, PUT, DELETE requests
+ * - Helper methods for cookie management (tokens)
+ * - Specific API methods for authentication, user management,
+ *   information and activities handling with typed responses.
+ * - File upload support (multipart/form-data)
+ * - Media URL getters
+ */
 class ApiService {
 	private baseURL: string
 	private instance: ReturnType<typeof axios.create>
@@ -30,7 +43,7 @@ class ApiService {
 	}
 
 	private setupInterceptors(): void {
-		// Intercepteur de requêtes pour ajouter le token d'authentification
+		// Request interceptor to add authentication token
 		this.instance.interceptors.request.use(
 			(config) => {
 				const token = this.getTokenFromCookie()
@@ -43,13 +56,13 @@ class ApiService {
 			(error) => Promise.reject(error)
 		)
 
-		// Intercepteur de réponses pour gérer les tokens expirés
+		// Response interceptor to handle expired tokens
 		this.instance.interceptors.response.use(
 			(response) => response,
 			async (error: AxiosError) => {
 				const originalRequest = error.config as AxiosRequestConfig & { _retry?: boolean }
 
-				// Si l'erreur est 401 (non autorisé) et que nous n'avons pas déjà tenté de refresh
+				// If error is 401 (Unauthorized) and we haven't retried yet
 				if (error.response?.status === 401 && !originalRequest._retry && originalRequest) {
 					originalRequest._retry = true
 
@@ -61,7 +74,7 @@ class ApiService {
 							return Promise.reject(error)
 						}
 
-						// Appeler l'API pour obtenir un nouveau token
+						// Call API to get new tokens
 						const response = await axios.post<
 							IApiSuccessResponse<{
 								tokens: { accessToken: string; refreshToken: string }
@@ -74,11 +87,11 @@ class ApiService {
 							response.data.data?.tokens || {}
 
 						if (accessToken && newRefreshToken) {
-							// Stocker les nouveaux tokens dans les cookies
+							// Store new tokens in cookies
 							this.setTokenCookie(accessToken)
 							this.setRefreshTokenCookie(newRefreshToken)
 
-							// Réessayer la requête originale avec le nouveau token
+							// Retry original request with new token
 							if (originalRequest.headers) {
 								originalRequest.headers.Authorization = `Bearer ${accessToken}`
 							}
@@ -87,7 +100,7 @@ class ApiService {
 
 						throw new Error("Invalid refresh token response")
 					} catch (refreshError) {
-						// En cas d'échec du refresh, rediriger vers la page de connexion
+						// On refresh failure, clear cookies and redirect to login
 						this.clearAuthCookies()
 						this.redirectToLogin()
 						return Promise.reject(refreshError)
@@ -99,7 +112,7 @@ class ApiService {
 		)
 	}
 
-	// Méthodes auxiliaires pour la gestion des cookies
+	// Helper methods for cookie management
 	private getTokenFromCookie(): string | undefined {
 		return document.cookie
 			.split("; ")
@@ -115,12 +128,12 @@ class ApiService {
 	}
 
 	private setTokenCookie(token: string): void {
-		// Token valide pour 15 minutes (900 secondes)
+		// Token valid for 15 minutes (900 seconds)
 		document.cookie = `token=${token}; path=/; max-age=900`
 	}
 
 	private setRefreshTokenCookie(refreshToken: string): void {
-		// RefreshToken valide pour 7 jours (604800 secondes)
+		// RefreshToken valid for 7 days (604800 seconds)
 		document.cookie = `refreshToken=${refreshToken}; path=/; max-age=604800`
 	}
 
@@ -133,7 +146,7 @@ class ApiService {
 		window.location.href = "/auth/login"
 	}
 
-	// Méthodes génériques pour les appels API
+	// Generic methods for API calls
 	public async get<T = unknown>(
 		url: string,
 		params?: Record<string, unknown>,
@@ -185,7 +198,7 @@ class ApiService {
 		}
 	}
 
-	// Gestion des erreurs
+	// Error handling
 	private handleError(error: unknown): IApiErrorResponse {
 		if (axios.isAxiosError(error)) {
 			const axiosError = error as AxiosError<IApiErrorResponse>
@@ -198,12 +211,12 @@ class ApiService {
 			success: false,
 			error: {
 				code: "unexpectedError",
-				message: "Une erreur inattendue est survenue",
+				message: "An unexpected error occurred",
 			},
 		}
 	}
 
-	// Méthode spécifique pour upload de fichiers (multipart/form-data)
+	// Specific method for file upload (multipart/form-data)
 	public async uploadFile<T = unknown>(
 		url: string,
 		formData: FormData,
@@ -219,17 +232,18 @@ class ApiService {
 		return this.post<T>(url, formData, uploadConfig)
 	}
 
-	// Méthode pour obtenir l'URL d'un média
+	// Method to get media URL
 	public getMediaUrl(id: string): string {
 		return `${this.baseURL}/informations/media/${id}`
 	}
 
-	// Méthode pour télécharger un média
+	// Method to get media download URL
 	public getMediaDownloadUrl(id: string): string {
 		return `${this.baseURL}/informations/media/${id}?download=true`
 	}
 
-	// Implémentation des méthodes spécifiques de l'API avec types
+	// API specific methods with types
+
 	// AUTH
 	public async login(email: string, password: string): Promise<ApiResponse<IAuthResponse>> {
 		return this.post<IAuthResponse>("/users/login", { email, password })
@@ -380,6 +394,6 @@ class ApiService {
 	}
 }
 
-// Exporter une instance singleton
+// Export a singleton instance
 const api = new ApiService()
 export default api
