@@ -1,0 +1,169 @@
+/* DSFR-inspired utility classes */
+
+/* Boutons */
+.fr-btn {
+    @apply font-marianne font-medium py-2 px-6 rounded-fr-md inline-flex items-center justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-fr-blue focus:ring-offset-2;
+  }
+  
+  .fr-btn--primary {
+    @apply bg-fr-blue text-white hover:bg-blue-800 active:bg-blue-900;
+  }
+  
+  .fr-btn--secondary {
+    @apply bg-fr-blue-light text-fr-blue hover:bg-blue-100 active:bg-blue-200;
+  }
+  
+  .fr-btn--danger {
+    @apply bg-fr-red text-white hover:bg-red-700 active:bg-red-800;
+  }
+  
+  .fr-btn--sm {
+    @apply text-sm py-1 px-4;
+  }
+  
+  .fr-btn--lg {
+    @apply text-lg py-3 px-8;
+  }
+  
+  /* Cards (adaptées pour le style Bento) */
+  .fr-card {
+    @apply bg-white border border-gray-200 rounded-fr-md shadow-fr-sm overflow-hidden transition-all;
+  }
+  
+  .fr-card--bento {
+    @apply fr-card h-full hover:shadow-fr-md;
+  }
+  
+  .fr-card__body {
+    @apply p-fr-6v;
+  }
+  
+  .fr-card__title {
+    @apply text-lg font-bold mb-fr-4v text-fr-black;
+  }
+  
+  .fr-card__desc {
+    @apply text-fr-grey;
+  }
+  
+  .fr-card__footer {
+    @apply p-fr-6v border-t border-gray-200 bg-fr-grey-light;
+  }
+  
+  /* Headers & Text */
+  .fr-h1 {
+    @apply text-4xl font-bold text-fr-black mb-fr-8v;
+  }
+  
+  .fr-h2 {
+    @apply text-3xl font-bold text-fr-black mb-fr-6v;
+  }
+  
+  .fr-h3 {
+    @apply text-2xl font-bold text-fr-black mb-fr-5v;
+  }
+  
+  .fr-h4 {
+    @apply text-xl font-bold text-fr-black mb-fr-4v;
+  }
+  
+  .fr-h5 {
+    @apply text-lg font-bold text-fr-black mb-fr-3v;
+  }
+  
+  .fr-h6 {
+    @apply text-base font-bold text-fr-black mb-fr-2v;
+  }
+  
+  .fr-text {
+    @apply text-base text-fr-black;
+  }
+  
+  .fr-text--sm {
+    @apply text-sm;
+  }
+  
+  .fr-text--lg {
+    @apply text-lg;
+  }
+  
+  /* Bento Grid */
+  .fr-bento-grid {
+    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-fr-6v;
+  }
+  
+  .fr-bento-grid-wide {
+    @apply grid grid-cols-1 md:grid-cols-2 gap-fr-6v;
+  }
+  
+  .fr-bento-item {
+    @apply col-span-1 row-span-1;
+  }
+  
+  .fr-bento-item--wide {
+    @apply md:col-span-2;
+  }
+  
+  .fr-bento-item--tall {
+    @apply row-span-2;
+  }
+  
+  /* Forms */
+  .fr-input {
+    @apply block w-full rounded-fr-sm border-gray-300 shadow-sm focus:border-fr-blue focus:ring focus:ring-fr-blue-light focus:ring-opacity-50;
+  }
+  
+  .fr-label {
+    @apply block font-medium text-fr-black mb-fr-2v;
+  }
+  
+  .fr-form-group {
+    @apply mb-fr-6v;
+  }
+  
+  /* DSFR Navigation */
+  .fr-nav {
+    @apply bg-fr-blue text-white;
+  }
+  
+  .fr-header {
+    @apply border-b border-gray-200 bg-white;
+  }
+  
+  .fr-footer {
+    @apply bg-fr-blue text-white py-fr-8v;
+  }
+  
+  /* Mobile Nav adaptation */
+  .fr-bottom-nav {
+    @apply fixed bottom-0 left-0 right-0 flex justify-around items-center h-16 bg-white border-t border-gray-200 md:hidden z-40;
+  }
+  
+  .fr-bottom-nav__item {
+    @apply flex flex-col items-center justify-center w-1/4 py-1 text-fr-grey;
+  }
+  
+  .fr-bottom-nav__item--active {
+    @apply text-fr-blue;
+  }
+  
+  /* Badge */
+  .fr-badge {
+    @apply inline-flex items-center px-fr-3v py-fr-1v rounded-full text-sm font-medium;
+  }
+  
+  .fr-badge--info {
+    @apply bg-fr-info-light text-fr-info;
+  }
+  
+  .fr-badge--success {
+    @apply bg-fr-success-light text-fr-success;
+  }
+  
+  .fr-badge--warning {
+    @apply bg-fr-warning-light text-fr-warning;
+  }
+  
+  .fr-badge--error {
+    @apply bg-fr-red-light text-fr-red;
+  }

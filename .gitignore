@@ -1,10 +1,16 @@
- Dépendances
+# Dépendances
 node_modules/
 .pnp/
 .pnp.js
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
 
 # Fichiers de production/build
 dist/
+dist-ssr/
 build/
 out/
 .next/
@@ -19,6 +25,7 @@ out/
 .env*.local
 
 # Logs
+logs/
 filesLogs/
 *.log
 npm-debug.log*
@@ -30,3 +37,25 @@ lerna-debug.log*
 # Fichiers temporaires
 tmp/
 temp/
+
+# Fichiers d’éditeur
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Testing
+coverage/
+
+# Misc
+*.pem
+.vercel
+
+# Typescript
+*.tsbuildinfo
+next-env.d.ts

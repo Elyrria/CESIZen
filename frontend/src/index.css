@@ -1,0 +1,27 @@
+@import '@styles/fonts.css';
+@import '@styles/dsfr.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Variables CSS globales */
+:root {
+  --toastify-color-success: #18753C;
+  --toastify-color-error: #E1000F;
+  --toastify-color-info: #0063CB;
+  --toastify-color-warning: #D64D00;
+}
+
+body {
+  @apply font-marianne bg-fr-grey-light min-h-screen text-base text-fr-black;
+}
+
+/* Classes de base */
+a {
+  @apply text-fr-blue hover:underline focus:outline-none focus:ring-2 focus:ring-fr-blue focus:ring-offset-2;
+}
+
+/* Accessibilité */
+.fr-sr-only {
+  @apply sr-only;
+}

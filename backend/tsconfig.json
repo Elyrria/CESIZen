@@ -8,6 +8,11 @@
 		"outDir": "./dist",
 		"baseUrl": ".",
 		"types": ["node", "jest"],
+		"strict": true,
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true, 
+		"noEmit": true,
+		"allowImportingTsExtensions" : true,
 		"paths": {
 			"@mongoQueryBuilders/*": ["api/src/controllers/mongoQueryBuilders/*"],
 			"@successHandler/*": ["api/src/handlerResponse/successHandler/*"],
