@@ -8,6 +8,13 @@ import type {
 	IActivitiesListResponse,
 	IUsersListResponse,
 } from "@/types/apiHandler"
+import {
+	getTokenFromCookie,
+	getRefreshTokenFromCookie,
+	getUserIdFromCookie,
+	setAuthCookies,
+	clearAuthCookies,
+} from "@utils/authCookies"
 
 export type ApiResponse<T = unknown> = IApiSuccessResponse<T> | IApiErrorResponse
 
@@ -19,7 +26,6 @@ export type ApiResponse<T = unknown> = IApiSuccessResponse<T> | IApiErrorRespons
  * - Request interceptor to add authorization token from cookies
  * - Response interceptor to handle token refresh on 401 errors
  * - Generic methods for GET, POST, PUT, DELETE requests
- * - Helper methods for cookie management (tokens)
  * - Specific API methods for authentication, user management,
  *   information and activities handling with typed responses.
  * - File upload support (multipart/form-data)
@@ -30,7 +36,7 @@ class ApiService {
 	private instance: ReturnType<typeof axios.create>
 
 	constructor() {
-		this.baseURL = import.meta.env.VITE_API_URL || "http://localhost:3000/api/v1"
+		this.baseURL = import.meta.env.VITE_API_URL || "http://localhost:3000/api/"
 		this.instance = axios.create({
 			baseURL: this.baseURL,
 			timeout: 10000,
@@ -46,7 +52,7 @@ class ApiService {
 		// Request interceptor to add authentication token
 		this.instance.interceptors.request.use(
 			(config) => {
-				const token = this.getTokenFromCookie()
+				const token = getTokenFromCookie()
 
 				if (token && config.headers) {
 					config.headers.Authorization = `Bearer ${token}`
@@ -67,28 +73,31 @@ class ApiService {
 					originalRequest._retry = true
 
 					try {
-						const refreshToken = this.getRefreshTokenFromCookie()
+						const refreshToken = getRefreshTokenFromCookie()
+						const userId = getUserIdFromCookie()
 
-						if (!refreshToken) {
+						if (!refreshToken || !userId) {
+							this.redirectToLogin()
 							return Promise.reject(error)
 						}
 
 						// Call API to get new tokens
-						const response = await axios.post<
-							IApiSuccessResponse<{
-								tokens: { accessToken: string; refreshToken: string }
-							}>
-						>(`${this.baseURL}/refresh-token`, {
+						const response = await axios.post(`${this.baseURL}/refresh-token`, {
 							refreshToken,
+							userId,
 						})
 
+						// Puis accédez aux données
+						const responseData = response.data as IApiSuccessResponse<{
+							tokens: { accessToken: string; refreshToken: string }
+						}>
+
 						const { accessToken, refreshToken: newRefreshToken } =
-							response.data.data?.tokens || {}
+							responseData.data?.tokens || {}
 
 						if (accessToken && newRefreshToken) {
-							// Store new tokens in cookies
-							this.setTokenCookie(accessToken)
-							this.setRefreshTokenCookie(newRefreshToken)
+							// Update tokens while maintaining the same user ID
+							setAuthCookies(userId, accessToken, newRefreshToken)
 
 							// Retry original request with new token
 							if (originalRequest.headers) {
@@ -100,7 +109,7 @@ class ApiService {
 						throw new Error("Invalid refresh token response")
 					} catch (refreshError) {
 						// On refresh failure, clear cookies and redirect to login
-						this.clearAuthCookies()
+						clearAuthCookies()
 						this.redirectToLogin()
 						return Promise.reject(refreshError)
 					}
@@ -111,38 +120,8 @@ class ApiService {
 		)
 	}
 
-	// Helper methods for cookie management
-	private getTokenFromCookie(): string | undefined {
-		return document.cookie
-			.split("; ")
-			.find((row) => row.startsWith("token="))
-			?.split("=")[1]
-	}
-
-	private getRefreshTokenFromCookie(): string | undefined {
-		return document.cookie
-			.split("; ")
-			.find((row) => row.startsWith("refreshToken="))
-			?.split("=")[1]
-	}
-
-	private setTokenCookie(token: string): void {
-		// Token valid for 15 minutes (900 seconds)
-		document.cookie = `token=${token}; path=/; max-age=900`
-	}
-
-	private setRefreshTokenCookie(refreshToken: string): void {
-		// RefreshToken valid for 7 days (604800 seconds)
-		document.cookie = `refreshToken=${refreshToken}; path=/; max-age=604800`
-	}
-
-	private clearAuthCookies(): void {
-		document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
-		document.cookie = "refreshToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
-	}
-
 	private redirectToLogin(): void {
-		window.location.href = "/auth/login"
+		window.location.href = "/login"
 	}
 
 	// Generic methods for API calls
@@ -261,7 +240,7 @@ class ApiService {
 	public async logout(refreshToken: string): Promise<ApiResponse<void>> {
 		const response = await this.post<void>("/users/logout", { refreshToken })
 		if (response.success) {
-			this.clearAuthCookies()
+			clearAuthCookies()
 		}
 		return response
 	}

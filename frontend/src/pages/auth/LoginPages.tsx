@@ -1,12 +1,13 @@
-import React, { useState } from "react"
-import { Link, useNavigate } from "react-router-dom"
-import { toast } from "react-toastify"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
-import { zodResolver } from "@hookform/resolvers/zod"
-import api from "../../services/apiHandler"
 import type { IApiErrorResponse } from "@/types/apiHandler"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { Link, useNavigate } from "react-router-dom"
 import { CONFIG_FIELD } from "@configs/field.configs"
+import { setAuthCookies } from "@/utils/authCookies"
+import api from "@/services/apiHandler"
+import { useForm } from "react-hook-form"
+import { toast } from "react-toastify"
+import React, { useState } from "react"
+import { z } from "zod"
 
 /**
  * LoginPage Component – User authentication page.
@@ -36,11 +37,6 @@ const loginSchema = z.object({
 // Type inferred from schema
 type LoginFormValues = z.infer<typeof loginSchema>
 
-// Cookie utilities
-const setCookie = (name: string, value: string, maxAgeInSeconds: number) => {
-	document.cookie = `${name}=${value}; path=/; max-age=${maxAgeInSeconds}; SameSite=Strict`
-}
-
 const LoginPage: React.FC = () => {
 	const [showPassword, setShowPassword] = useState(false)
 	const [loading, setLoading] = useState(false)
@@ -68,17 +64,13 @@ const LoginPage: React.FC = () => {
 			const response = await api.login(data.email, data.password)
 
 			if (response.success === true) {
-				if (response.data && "tokens" in response.data) {
-					// Extract tokens from the API response
+				if (response.data && "tokens" in response.data && response.data.user) {
+					// Extract tokens and user data from the API response
 					const { accessToken, refreshToken } = response.data.tokens
+					const userId = response.data.user.id || response.data.user._id
 
-					// Define cookie expiration times
-					const accessTokenMaxAge = data.rememberMe ? 900 : 900 // 15 minutes
-					const refreshTokenMaxAge = data.rememberMe ? 7 * 24 * 60 * 60 : 24 * 60 * 60 // 7 days or 1 day
-
-					// Store tokens in cookies
-					setCookie("token", accessToken, accessTokenMaxAge)
-					setCookie("refreshToken", refreshToken, refreshTokenMaxAge)
+					// Use our utility function to set cookies and manage sessions
+					setAuthCookies(userId, accessToken, refreshToken, data.rememberMe || false)
 
 					toast.success("Login successful")
 					navigate("/")
@@ -209,12 +201,28 @@ const LoginPage: React.FC = () => {
 
 					<div className='flex justify-between items-center mb-6'>
 						<div className='flex items-center space-x-2'>
-							<input
-								type='checkbox'
-								id='rememberMe'
-								className='form-checkbox h-5 w-5 text-indigo-600 rounded focus:ring-indigo-500'
-								{...register("rememberMe")}
-							/>
+							<div className='relative flex items-center'>
+								<input
+									type='checkbox'
+									id='rememberMe'
+									className='peer w-5 h-5 appearance-none rounded border border-gray-300 bg-white checked:bg-white focus:outline-none focus:ring-2 focus:ring-fr-blue focus:border-fr-blue'
+									{...register("rememberMe")}
+								/>
+								{/* Symbole de validation custom qui apparaît lorsque la checkbox est cochée */}
+								<svg
+									className='absolute left-0.5 top-0.5 w-4 h-4 text-fr-blue pointer-events-none opacity-0 peer-checked:opacity-100'
+									fill='none'
+									viewBox='0 0 24 24'
+									stroke='currentColor'
+									strokeWidth={2}
+								>
+									<path
+										strokeLinecap='round'
+										strokeLinejoin='round'
+										d='M5 13l4 4L19 7'
+									/>
+								</svg>
+							</div>
 							<label htmlFor='rememberMe' className='text-gray-700'>
 								Se souvenir de moi
 							</label>
