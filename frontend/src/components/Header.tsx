@@ -1,19 +1,30 @@
 // src/components/layout/Header.tsx
-import { Link } from "react-router-dom"
-import React, { useState } from "react"
+import useAuthStore from "@/store/authStore"
 import logo from "@assets/cesizen_logo.svg"
+import React, { useState } from "react"
+import { Link } from "react-router-dom"
 
 const Header: React.FC = () => {
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
-	// État temporaire pour la démo - à remplacer par un vrai système d'auth
-	const [isLoggedIn, setIsLoggedIn] = useState(false)
+	// Using the authentication store
+	const { user, isAuthenticated, isAdmin, logout } = useAuthStore()
+
+	// Function to handle logout
+	const handleLogout = async () => {
+		await logout()
+		// Close mobile menu after logout
+		setMobileMenuOpen(false)
+	}
+
+	// Get the first name for personalized display
+	const firstName = user?.firstName || "Utilisateur"
 
 	return (
 		<header className='fr-header shadow-sm'>
 			<div className='container mx-auto px-fr-4v'>
 				<div className='flex justify-between items-center h-16'>
-					{/* Logo et titre */}
+					{/* Logo and title */}
 					<div className='flex items-center'>
 						<Link to='/' className='flex items-center'>
 							<img src={logo} alt='CESIZen' className='h-8 w-auto mr-fr-2v' />
@@ -21,7 +32,7 @@ const Header: React.FC = () => {
 						</Link>
 					</div>
 
-					{/* Navigation desktop */}
+					{/* Desktop navigation */}
 					<nav className='hidden md:flex space-x-fr-4v'>
 						<Link to='/' className='fr-text hover:text-fr-blue transition-colors'>
 							Accueil
@@ -33,13 +44,13 @@ const Header: React.FC = () => {
 							Informations
 						</Link>
 						<Link
-							to='/activités'
+							to='/activites'
 							className='fr-text hover:text-fr-blue transition-colors'
 						>
 							Activités
 						</Link>
 
-						{isLoggedIn ? (
+						{isAuthenticated ? (
 							<>
 								<Link
 									to='/profil'
@@ -47,8 +58,19 @@ const Header: React.FC = () => {
 								>
 									Mon profil
 								</Link>
+
+								{/* Link to dashboard for admins */}
+								{isAdmin && (
+									<Link
+										to='/admin'
+										className='fr-text text-fr-red hover:text-fr-red-dark transition-colors'
+									>
+										Tableau de bord
+									</Link>
+								)}
+
 								<button
-									onClick={() => setIsLoggedIn(false)}
+									onClick={handleLogout}
 									className='fr-btn fr-btn--secondary fr-btn--sm'
 								>
 									Déconnexion
@@ -61,7 +83,7 @@ const Header: React.FC = () => {
 						)}
 					</nav>
 
-					{/* Bouton menu mobile */}
+					{/* Mobile menu button */}
 					<button
 						onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
 						className='md:hidden text-fr-black p-fr-2v'
@@ -84,10 +106,22 @@ const Header: React.FC = () => {
 				</div>
 			</div>
 
-			{/* Menu mobile */}
+			{/* Mobile menu */}
 			{mobileMenuOpen && (
 				<div className='md:hidden bg-white border-t border-gray-200 absolute z-20 w-full'>
 					<div className='container mx-auto px-fr-4v py-fr-4v space-y-fr-4v'>
+						{/* Section for logged-in user - visible only if authenticated */}
+						{isAuthenticated && (
+							<div className='py-3 border-b border-gray-100 mb-4'>
+								<p className='text-fr-blue font-medium'>
+									Hello, {firstName}
+								</p>
+								<p className='text-sm text-fr-grey-dark'>
+									{isAdmin ? "Adminitrateur" : "Utilisateur"}
+								</p>
+							</div>
+						)}
+
 						<Link
 							to='/'
 							className='block py-fr-2v'
@@ -110,7 +144,7 @@ const Header: React.FC = () => {
 							Activités
 						</Link>
 
-						{isLoggedIn ? (
+						{isAuthenticated ? (
 							<>
 								<Link
 									to='/profil'
@@ -119,11 +153,20 @@ const Header: React.FC = () => {
 								>
 									Mon profil
 								</Link>
+
+								{/* Admin dashboard link in mobile - visible only for admins */}
+								{isAdmin && (
+									<Link
+										to='/admin'
+										className='block py-fr-2v text-fr-red'
+										onClick={() => setMobileMenuOpen(false)}
+									>
+										Tableau de bord
+									</Link>
+								)}
+
 								<button
-									onClick={() => {
-										setIsLoggedIn(false)
-										setMobileMenuOpen(false)
-									}}
+									onClick={handleLogout}
 									className='fr-btn fr-btn--secondary w-full'
 								>
 									Déconnexion
@@ -142,8 +185,8 @@ const Header: React.FC = () => {
 				</div>
 			)}
 
-			{/* Navigation bottom mobile */}
-			<div className='fr-bottom-nav'>
+			{/* Mobile bottom navigation */}
+			<div className='fr-bottom-nav md:hidden'>
 				<Link to='/' className='fr-bottom-nav__item'>
 					<svg className='h-6 w-6' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
 						<path
@@ -166,7 +209,7 @@ const Header: React.FC = () => {
 					</svg>
 					<span className='text-xs'>Infos</span>
 				</Link>
-				<Link to='/exercices' className='fr-bottom-nav__item'>
+				<Link to='/activites' className='fr-bottom-nav__item'>
 					<svg className='h-6 w-6' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
 						<path
 							strokeLinecap='round'
@@ -175,19 +218,67 @@ const Header: React.FC = () => {
 							d='M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z'
 						/>
 					</svg>
-					<span className='text-xs'>Exercices</span>
+					<span className='text-xs'>Activités</span>
 				</Link>
-				<Link to={isLoggedIn ? "/profil" : "/login"} className='fr-bottom-nav__item'>
-					<svg className='h-6 w-6' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
-						<path
-							strokeLinecap='round'
-							strokeLinejoin='round'
-							strokeWidth={2}
-							d='M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z'
-						/>
-					</svg>
-					<span className='text-xs'>{isLoggedIn ? "Profil" : "Connexion"}</span>
-				</Link>
+
+				{isAuthenticated ? (
+					// Conditional for the last mobile button
+					isAdmin ? (
+						// For admins, display a link to the dashboard
+						<Link to='/admin' className='fr-bottom-nav__item'>
+							<svg
+								className='h-6 w-6'
+								fill='none'
+								viewBox='0 0 24 24'
+								stroke='currentColor'
+							>
+								<path
+									strokeLinecap='round'
+									strokeLinejoin='round'
+									strokeWidth={2}
+									d='M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4'
+								/>
+							</svg>
+							<span className='text-xs'>Admin</span>
+						</Link>
+					) : (
+						// For regular users, display a link to the profile
+						<Link to='/profil' className='fr-bottom-nav__item'>
+							<svg
+								className='h-6 w-6'
+								fill='none'
+								viewBox='0 0 24 24'
+								stroke='currentColor'
+							>
+								<path
+									strokeLinecap='round'
+									strokeLinejoin='round'
+									strokeWidth={2}
+									d='M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z'
+								/>
+							</svg>
+							<span className='text-xs'>Profil</span>
+						</Link>
+					)
+				) : (
+					// For non-logged-in visitors, display a link to login
+					<Link to='/login' className='fr-bottom-nav__item'>
+						<svg
+							className='h-6 w-6'
+							fill='none'
+							viewBox='0 0 24 24'
+							stroke='currentColor'
+						>
+							<path
+								strokeLinecap='round'
+								strokeLinejoin='round'
+								strokeWidth={2}
+								d='M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1'
+							/>
+						</svg>
+						<span className='text-xs'>Connexion</span>
+					</Link>
+				)}
 			</div>
 		</header>
 	)
