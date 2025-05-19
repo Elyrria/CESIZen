@@ -1,0 +1,8 @@
+export { AbstractEntityFactory } from "@/factories/AbstractFactory"
+export { ImageInformation } from "@/factories/ImageInformation"
+export { VideoInformation } from "@/factories/VideoInformation"
+export { TextInformation } from "@/factories/TextInformation"
+export { VideoActivity } from "@/factories/VideoActivity"
+export { TextActivity } from "@/factories/TextActivity"
+export { CategoryImpl } from "@/factories/Category"
+export { UserImpl } from "@factories/User"
