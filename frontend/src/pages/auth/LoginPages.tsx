@@ -1,9 +1,7 @@
-import type { IApiErrorResponse } from "@/types/apiHandler"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Link, useNavigate } from "react-router-dom"
 import { CONFIG_FIELD } from "@configs/field.configs"
-import { setAuthCookies } from "@/utils/authCookies"
-import api from "@/services/apiHandler"
+import useAuthStore from "@/store/authStore"
 import { useForm } from "react-hook-form"
 import { toast } from "react-toastify"
 import React, { useState } from "react"
@@ -39,8 +37,9 @@ type LoginFormValues = z.infer<typeof loginSchema>
 
 const LoginPage: React.FC = () => {
 	const [showPassword, setShowPassword] = useState(false)
-	const [loading, setLoading] = useState(false)
 	const navigate = useNavigate()
+
+	const { login, isLoading } = useAuthStore()
 
 	// React Hook Form configuration with Zod
 	const {
@@ -58,51 +57,23 @@ const LoginPage: React.FC = () => {
 	})
 
 	const onSubmit = async (data: LoginFormValues) => {
-		setLoading(true)
-
 		try {
-			const response = await api.login(data.email, data.password)
+			// Use the login function from the store
+			const success = await login(data.email, data.password, data.rememberMe || false)
 
-			if (response.success === true) {
-				if (response.data && "tokens" in response.data && response.data.user) {
-					// Extract tokens and user data from the API response
-					const { accessToken, refreshToken } = response.data.tokens
-					const userId = response.data.user.id || response.data.user._id
-
-					// Use our utility function to set cookies and manage sessions
-					setAuthCookies(userId, accessToken, refreshToken, data.rememberMe || false)
-
-					toast.success("Login successful")
-					navigate("/")
-				} else {
-					toast.error("Invalid response format")
-				}
+			if (success) {
+				toast.success("Connexion réussie")
+				navigate("/")
 			} else {
-				const errorResponse = response as IApiErrorResponse
-
-				// Display a general error message if no field-specific errors are returned
-				if (!errorResponse.error?.errors || errorResponse.error.errors.length === 0) {
-					toast.error(errorResponse.error?.message || "Invalid credentials")
-					return
-				}
-
-				// Display specific field errors
-				errorResponse.error.errors.forEach((fieldError) => {
-					if (fieldError.field && fieldError.message) {
-						// Set the error on the corresponding field
-						setError(
-							fieldError.field as "email" | "password",
-							{ message: fieldError.message },
-							{ shouldFocus: true }
-						)
-					}
-				})
+				// In case of failure, display a general error message
+				toast.error("Identifiants incorrects ou compte inexistant")
 			}
 		} catch (error) {
 			console.error("Login error:", error)
-			toast.error("Server connection error")
-		} finally {
-			setLoading(false)
+			toast.error("Erreur de connexion au serveur")
+
+			// You can also set field-specific errors if you have more information
+			setError("email", { message: "Veuillez vérifier vos identifiants" }, { shouldFocus: true })
 		}
 	}
 
@@ -208,7 +179,7 @@ const LoginPage: React.FC = () => {
 									className='peer w-5 h-5 appearance-none rounded border border-gray-300 bg-white checked:bg-white focus:outline-none focus:ring-2 focus:ring-fr-blue focus:border-fr-blue'
 									{...register("rememberMe")}
 								/>
-								{/* Symbole de validation custom qui apparaît lorsque la checkbox est cochée */}
+								{/* Custom validation symbol that appears when the checkbox is checked */}
 								<svg
 									className='absolute left-0.5 top-0.5 w-4 h-4 text-fr-blue pointer-events-none opacity-0 peer-checked:opacity-100'
 									fill='none'
@@ -238,9 +209,9 @@ const LoginPage: React.FC = () => {
 					<button
 						type='submit'
 						className='w-full bg-indigo-600 text-white py-3 rounded-md font-medium hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
-						disabled={loading}
+						disabled={isLoading}
 					>
-						{loading ? "Connexion dans..." : "Connexion"}
+						{isLoading ? "Connexion en cours..." : "Connexion"}
 					</button>
 
 					<div className='text-center mt-6'>
