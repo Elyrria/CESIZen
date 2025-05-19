@@ -1,104 +1,17 @@
-// User
+
 export interface IUser {
-	_id: string
-	id: string
+	id?: string
+	_id?: string
 	email: string
 	name: string
-	firstName: string
+	firstName?: string
 	role: "user" | "administrator"
-	birthDate: string
-	active: boolean
-	createdAt: string
-	updatedAt: string
-	__v: number
+	birthDate?: string
+	active?: boolean
+	createdAt?: string
+	updatedAt?: string
 }
 
-// RefreshToken
-export interface IRefreshToken {
-	refreshToken: string
-	userId: string
-	userAgent?: string
-	ipAddress?: string
-	isRevoked: boolean
-	expiresAt: string
-	createdAt: string
-	updatedAt: string
-}
-
-// Information
-export interface IFileMetadata {
-	filename: string
-	contentType: string
-	size: number
-	uploadDate: string
-	duration?: number
-	dimensions?: {
-		width: number
-		height: number
-	}
-	encoding?: string
-	bitrate?: number
-}
-
-export interface IInformation {
-	_id: string
-	id: string
-	authorId: string | User
-	title: string
-	descriptionInformation: string
-	name: string
-	type: "TEXT" | "IMAGE" | "VIDEO"
-	content?: string
-	status: "DRAFT" | "PENDING" | "PUBLISHED"
-	validatedBy?: string | User
-	validatedAndPublishedAt?: string | null
-	fileId?: string
-	fileMetadata?: FileMetadata
-	categoryId: Array<string | Category>
-	createdAt: string
-	updatedAt: string
-	__v: number
-	mediaUrl?: string
-	thumbnailUrl?: string
-}
-
-// Category
-export interface ICategory {
-	_id: string
-	id: string
-	name: string
-	createdBy: string | User
-	updatedBy?: string | User
-	isActive: boolean
-	createdAt: string
-	updatedAt: string
-	__v: number
-}
-
-// Activity
-export interface IActivity {
-	_id: string
-	id: string
-	authorId: string | User
-	name: string
-	descriptionActivity: string
-	type: "TEXT" | "VIDEO"
-	content?: string
-	isActive: boolean
-	parameters: Record<string>
-	validatedBy?: string | User
-	validatedAndPublishedAt?: string | null
-	fileId?: string
-	fileMetadata?: FileMetadata
-	categoryId: Array<string | Category>
-	createdAt: string
-	updatedAt: string
-	__v: number
-	mediaUrl?: string
-	thumbnailUrl?: string
-}
-
-// Types pour la pagination
 export interface IPagination {
 	currentPage: number
 	totalPages: number
@@ -106,4 +19,72 @@ export interface IPagination {
 	itemsPerPage: number
 	hasNextPage: boolean
 	hasPrevPage: boolean
+}
+
+export interface IActivity {
+	id?: string
+	_id?: string
+	name: string
+	descriptionActivity: string
+	type: "TEXT" | "VIDEO"
+	content?: string
+	isActive: boolean
+	authorId: string | { _id: string; name: string; id: string }
+	categoryId: string[] | { _id: string; name: string; id: string }[]
+	parameters?: {
+		breathingPatterns?: {
+			name: string
+			description: string
+			inspiration: number
+			retention: number
+			expiration: number
+		}[]
+		defaultPattern?: string
+		recommendedDuration?: number
+		benefits?: string[]
+		instructions?: {
+			before?: string
+			during?: string
+			after?: string
+		}
+	}
+	validatedAndPublishedAt?: string | null
+	validatedBy?: string | null
+	fileId?: string
+	fileMetadata?: {
+		filename: string
+		contentType: string
+		size: number
+		uploadDate: string
+	}
+	createdAt?: string
+	updatedAt?: string
+	mediaUrl?: string
+	thumbnailUrl?: string
+}
+
+export interface IInformation {
+	id?: string
+	_id?: string
+	title: string
+	descriptionInformation: string
+	name: string
+	type: "TEXT" | "IMAGE" | "VIDEO"
+	content?: string
+	status: "DRAFT" | "PENDING" | "PUBLISHED"
+	authorId: string | { _id: string; name: string; id: string }
+	categoryId: string[] | { _id: string; name: string; id: string }[]
+	validatedAndPublishedAt?: string | null
+	validatedBy?: string | null
+	fileId?: string
+	fileMetadata?: {
+		filename: string
+		contentType: string
+		size: number
+		uploadDate: string
+	}
+	createdAt?: string
+	updatedAt?: string
+	mediaUrl?: string
+	thumbnailUrl?: string
 }

@@ -47,3 +47,18 @@ export interface IUsersListResponse {
 	users: IUSer[]
 	pagination: IPagination
 }
+
+export interface GetUserResponse {
+	user: {
+		_id?: string
+		id?: string
+		email: string
+		name: string
+		firstName?: string
+		role: "user" | "administrator"
+		birthDate?: string
+		active?: boolean
+		createdAt?: string
+		updatedAt?: string
+	}
+}
