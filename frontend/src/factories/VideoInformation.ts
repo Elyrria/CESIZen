@@ -1,13 +1,13 @@
-import type { Information, InformationStatus, InformationType } from "@/types/factory"
+import type { IInformation, InformationType, InformationStatus } from "@/factories/Factory"
 
-export class VideoInformation implements Information {
-	id?: string
+export class VideoInformation implements IInformation {
+	id: string
 	title: string
 	descriptionInformation: string
 	name: string
 	type: InformationType
 	status: InformationStatus
-	authorId: string
+	authorId: string | { _id: string; name: string; id: string }
 	categoryId: string[] | { _id: string; name: string; id: string }[]
 	validatedAndPublishedAt?: string | null
 	validatedBy?: string | null
@@ -22,8 +22,8 @@ export class VideoInformation implements Information {
 	updatedAt?: string
 	mediaUrl?: string
 
-	constructor(data: Partial<Information>) {
-		this.id = data.id
+	constructor(data: Partial<IInformation>) {
+		this.id = data.id || data._id || ""
 		this.title = data.title || ""
 		this.descriptionInformation = data.descriptionInformation || ""
 		this.name = data.name || ""
