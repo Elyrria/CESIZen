@@ -1,5 +1,5 @@
 // src/components/layout/Header.tsx
-import useAuthStore from "@/store/authStore"
+import useAuthStore from "@/stores/useAuthStore"
 import logo from "@assets/cesizen_logo.svg"
 import React, { useState } from "react"
 import { Link } from "react-router-dom"
@@ -18,7 +18,7 @@ const Header: React.FC = () => {
 	}
 
 	// Get the first name for personalized display
-	const firstName = user?.firstName || "Utilisateur"
+	const firstName = user?.name || "Utilisateur"
 
 	return (
 		<header className='fr-header shadow-sm'>

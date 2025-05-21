@@ -1,6 +1,6 @@
 // src/components/auth/AuthInitializer.tsx
+import useAuthStore from "@/stores/useAuthStore"
 import { useEffect } from "react"
-import useAuthStore from "@/store/authStore"
 
 interface AuthInitializerProps {
 	children: React.ReactNode
