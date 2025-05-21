@@ -58,11 +58,21 @@ export const getAllUsers = async (req: Request, res: Response): Promise<void> =>
 		}
 		// Get total count for pagination
 		const total: number = await User.countDocuments(query)
+
+		const totalPages = total > 0 ? Math.ceil(total / limit) : 0
+
 		if (total === 0) {
 			okHandler(res, SUCCESS_CODE.NO_USER, { users: [], pagination: {} })
 			return
 		}
-		const pagination = { total: total, page: page, limit: limit, totalPages: Math.ceil(total / limit) }
+		const pagination = {
+			currentPage: page,
+			totalPages: totalPages,
+			totalItems: total,
+			itemsPerPage: limit,
+			hasNextPage: page < totalPages,
+			hasPrevPage: page > 1,
+		}
 		// List of fields to decrypt
 		const ENCRYPTED_FIELDS = ["name", "firstName", "birthDate"]
 
