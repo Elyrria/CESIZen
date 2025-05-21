@@ -1,8 +1,8 @@
-import type { User, Information, Activity, Category } from "@/types/factory"
+import type { IUser, IInformation, IActivity, ICategory } from "@/factories/Factory"
 
 export abstract class AbstractEntityFactory {
-    abstract createUser(data: Partial<User>): User
-    abstract createInformation(data: Partial<Information>): Information
-    abstract createActivity(data: Partial<Activity>): Activity
-    abstract createCategory(data: Partial<Category>): Category
+    abstract createUser(data: Partial<IUser>): IUser
+    abstract createInformation(data: Partial<IInformation>): IInformation
+    abstract createActivity(data: Partial<IActivity>): IActivity
+    abstract createCategory(data: Partial<ICategory>): ICategory
 }
