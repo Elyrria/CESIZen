@@ -1,33 +1,23 @@
-import type { ActivityType, BreathingPattern, Activity } from "@/types/factory"
+import type { IActivity, AuthorId, CategoryId, InformationType } from "@/factories/Factory"
 
-export class TextActivity implements Activity {
-	id?: string
+export class TextActivity implements IActivity {
+	id: string
 	name: string
 	descriptionActivity: string
-	type: ActivityType
+	type: Extract<InformationType, "TEXT">
 	content?: string
 	isActive: boolean
-	authorId: string
-	categoryId: string[] | { _id: string; name: string; id: string }[]
-	parameters?: {
-		breathingPatterns?: BreathingPattern[]
-		defaultPattern?: string
-		recommendedDuration?: number
-		benefits?: string[]
-		instructions?: {
-			before?: string
-			during?: string
-			after?: string
-		}
-	}
+	authorId: AuthorId
+	categoryId: CategoryId
+	parameters?: object
 	validatedAndPublishedAt?: string | null
 	validatedBy?: string | null
 	createdAt?: string
 	updatedAt?: string
 	thumbnailUrl?: string
 
-	constructor(data: Partial<Activity>) {
-		this.id = data.id
+	constructor(data: Partial<IActivity>) {
+		this.id = data.id || ""
 		this.name = data.name || ""
 		this.descriptionActivity = data.descriptionActivity || ""
 		this.type = "TEXT"
