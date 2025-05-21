@@ -1,13 +1,6 @@
+import type { IUser, IPagination, IActivity, IInformation, ICategory } from "@/factories/Factory"
 import axios, { AxiosError, type AxiosRequestConfig, type AxiosResponse } from "axios"
-import type { IUser, IActivity, IInformation } from "@/types/data"
-import type {
-	IApiSuccessResponse,
-	IApiErrorResponse,
-	IAuthResponse,
-	IInformationsListResponse,
-	IActivitiesListResponse,
-	IUsersListResponse,
-} from "@/types/apiHandler"
+
 import {
 	getTokenFromCookie,
 	getRefreshTokenFromCookie,
@@ -16,7 +9,75 @@ import {
 	clearAuthCookies,
 } from "@utils/authCookies"
 
-export type ApiResponse<T = unknown> = IApiSuccessResponse<T> | IApiErrorResponse
+export interface IApiSuccessResponse<T> {
+	success: true
+	code: string
+	message: string
+	data?: T
+}
+
+export interface IApiErrorResponse {
+	success: false
+	error: {
+		code: string
+		message: string
+		location?: string
+		errors?: Array<{
+			field?: string
+			message: string
+			location?: string
+		}>
+	}
+}
+
+export interface IAuthResponse {
+	user: IUser
+	tokens: {
+		accessToken: string
+		refreshToken: string
+	}
+}
+
+export interface IFilters {
+	[key: string]: string | number | boolean | undefined
+}
+
+export interface IInformationsListResponse {
+	items: IInformation[]
+	pagination: IPagination
+	filters: IFilters
+}
+
+export interface IInformationResponse {
+	items: IInformation
+	pagination: IPagination
+	filters: IFilters
+}
+
+export interface ICreateInformationResponse {
+	information: IInformation
+}
+
+export interface IActivitiesListResponse {
+	items: IActivity[]
+	pagination: IPagination
+	filters: IFilters
+}
+
+export interface ICategoryListResponse {
+	categories: ICategory[]
+}
+
+export interface ICategoryResponse {
+	category: ICategory
+}
+
+export interface IUsersListResponse {
+	users: IUser[]
+	pagination: IPagination
+}
+
+export type ApiResponse<T> = IApiSuccessResponse<T> | IApiErrorResponse
 
 /**
  * Main class to handle API calls.
@@ -82,7 +143,7 @@ class ApiService {
 						}
 
 						// Call API to get new tokens
-						const response = await axios.post(`${this.baseURL}/refresh-token`, {
+						const response = await axios.post(`${this.baseURL}v1/refresh-token`, {
 							refreshToken,
 							userId,
 						})
@@ -106,7 +167,7 @@ class ApiService {
 							return this.instance(originalRequest)
 						}
 
-						throw new Error("Invalid refresh token response")
+						throw new Error("Réponse de token de rafraîchissement invalide")
 					} catch (refreshError) {
 						// On refresh failure, clear cookies and redirect to login
 						clearAuthCookies()
@@ -189,7 +250,7 @@ class ApiService {
 			success: false,
 			error: {
 				code: "unexpectedError",
-				message: "An unexpected error occurred",
+				message: "Une erreur inattendue s'est produite",
 			},
 		}
 	}
@@ -212,18 +273,18 @@ class ApiService {
 
 	// Method to get media URL
 	public getMediaUrl(id: string): string {
-		return `${this.baseURL}/informations/media/${id}`
+		return `${this.baseURL}v1/informations/media/${id}`
 	}
 
 	// Method to get media download URL
 	public getMediaDownloadUrl(id: string): string {
-		return `${this.baseURL}/informations/media/${id}?download=true`
+		return `${this.baseURL}v1/informations/media/${id}?download=true`
 	}
 
 	// API specific methods with types
 
 	// AUTH
-	public async login(email: string, password: string): Promise<ApiResponse<IAuthResponse | IApiErrorResponse>> {
+	public async login(email: string, password: string): Promise<ApiResponse<IAuthResponse>> {
 		return this.post<IAuthResponse>("v1/users/login", { email: email, password: password })
 	}
 
@@ -238,7 +299,7 @@ class ApiService {
 	}
 
 	public async logout(refreshToken: string): Promise<ApiResponse<void>> {
-		const response = await this.post<void>("/users/logout", { refreshToken })
+		const response = await this.post<void>("v1/users/logout", { refreshToken })
 		if (response.success) {
 			clearAuthCookies()
 		}
@@ -256,7 +317,11 @@ class ApiService {
 		sort?: string
 		order?: "asc" | "desc"
 	}): Promise<ApiResponse<IUsersListResponse>> {
-		return this.get<IUsersListResponse>("/users/get-users", params)
+		return this.get<IUsersListResponse>("v1/users/get-users", params)
+	}
+
+	public async getUser(id: string): Promise<ApiResponse<{ user: IUser }>> {
+		return this.get<{ user: IUser }>(`v1/users/get-user/${id}`)
 	}
 
 	public async updateUser(
@@ -271,7 +336,7 @@ class ApiService {
 			role?: "user" | "administrator"
 		}
 	): Promise<ApiResponse<IUser>> {
-		return this.put<IUser>(`/users/update/${id}`, userData)
+		return this.put<IUser>(`v1/users/update/${id}`, userData)
 	}
 
 	public async adminCreateUser(userData: {
@@ -282,7 +347,37 @@ class ApiService {
 		birthDate: string
 		role: "user" | "administrator"
 	}): Promise<ApiResponse<IUser>> {
-		return this.post<IUser>("/users/admin-create", userData)
+		return this.post<IUser>("v1/users/admin-create", userData)
+	}
+
+	// CATEGORIES
+	public async getAdminCategories(): Promise<ApiResponse<ICategoryListResponse>> {
+		return this.get<ICategoryListResponse>("v1/category/get-categories")
+	}
+
+	public async getPublicCategories(): Promise<ApiResponse<ICategoryListResponse>> {
+		return this.get<ICategoryListResponse>("v1/category/get-public-categories")
+	}
+
+	public async createCategory(categoryData: {
+		name: string
+		isActive?: boolean
+	}): Promise<ApiResponse<ICategoryResponse>> {
+		return this.post<ICategoryResponse>("v1/category/create", categoryData)
+	}
+
+	public async updateCategory(
+		id: string,
+		categoryData: {
+			name?: string
+			isActive?: boolean
+		}
+	): Promise<ApiResponse<ICategoryResponse>> {
+		return this.put<ICategoryResponse>(`v1/category/update/${id}`, categoryData)
+	}
+
+	public async deleteCategory(id: string): Promise<ApiResponse<ICategoryResponse | void>> {
+		return this.delete<ICategoryResponse | void>(`v1/category/delete/${id}`)
 	}
 
 	// INFORMATIONS
@@ -299,7 +394,7 @@ class ApiService {
 		page?: number
 		limit?: number
 	}): Promise<ApiResponse<IInformationsListResponse>> {
-		return this.get<IInformationsListResponse>("/informations/get-informations", params)
+		return this.get<IInformationsListResponse>("v1/informations/get-informations", params)
 	}
 
 	public async getPublicInformations(params?: {
@@ -313,19 +408,25 @@ class ApiService {
 		page?: number
 		limit?: number
 	}): Promise<ApiResponse<IInformationsListResponse>> {
-		return this.get<IInformationsListResponse>("/informations/get-public-informations", params)
+		return this.get<IInformationsListResponse>("v1/informations/get-public-informations", params)
 	}
 
-	public async createInformation(formData: FormData): Promise<ApiResponse<{ information: IInformation }>> {
-		return this.uploadFile<{ information: IInformation }>("/informations/create", formData)
+	public async createInformation(formData: FormData): Promise<ApiResponse<ICreateInformationResponse>> {
+		return this.uploadFile<ICreateInformationResponse>("v1/informations/create", formData)
 	}
 
-	public async updateInformation(id: string, formData: FormData): Promise<ApiResponse<IInformation>> {
-		return this.uploadFile<IInformation>(`/informations/update/${id}`, formData)
+	public async updateInformation(
+		id: string,
+		formData: FormData
+	): Promise<ApiResponse<ICreateInformationResponse>> {
+		return this.uploadFile<ICreateInformationResponse>(
+			`v1/informations/update/${id}`,
+			formData
+		)
 	}
 
 	public async deleteInformation(id: string): Promise<ApiResponse<void>> {
-		return this.delete<void>(`/informations/delete/${id}`)
+		return this.delete<void>(`v1/informations/delete/${id}`)
 	}
 
 	// ACTIVITIES
@@ -342,7 +443,7 @@ class ApiService {
 		page?: number
 		limit?: number
 	}): Promise<ApiResponse<IActivitiesListResponse>> {
-		return this.get<IActivitiesListResponse>("/activities/get-activities", params)
+		return this.get<IActivitiesListResponse>("v1/activities/get-activities", params)
 	}
 
 	public async getPublicActivities(params?: {
@@ -356,19 +457,19 @@ class ApiService {
 		page?: number
 		limit?: number
 	}): Promise<ApiResponse<IActivitiesListResponse>> {
-		return this.get<IActivitiesListResponse>("/activities/get-public-activities", params)
+		return this.get<IActivitiesListResponse>("v1/activities/get-public-activities", params)
 	}
 
 	public async createActivity(formData: FormData): Promise<ApiResponse<{ activity: IActivity }>> {
-		return this.uploadFile<{ activity: IActivity }>("/activities/create", formData)
+		return this.uploadFile<{ activity: IActivity }>("v1/activities/create", formData)
 	}
 
 	public async updateActivity(id: string, formData: FormData): Promise<ApiResponse<IActivity>> {
-		return this.uploadFile<IActivity>(`/activities/update/${id}`, formData)
+		return this.uploadFile<IActivity>(`v1/activities/update/${id}`, formData)
 	}
 
 	public async deleteActivity(id: string): Promise<ApiResponse<void>> {
-		return this.delete<void>(`/activities/delete/${id}`)
+		return this.delete<void>(`v1/activities/delete/${id}`)
 	}
 }
 
