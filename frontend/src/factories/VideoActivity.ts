@@ -1,24 +1,14 @@
-import type { Activity, ActivityType, BreathingPattern } from "@/types/factory"
+import type { IActivity, AuthorId, CategoryId, InformationType } from "@/factories/Factory"
 
-export class VideoActivity implements Activity {
-	id?: string
+export class VideoActivity implements IActivity {
+	id: string
 	name: string
 	descriptionActivity: string
-	type: ActivityType
+	type: Extract<InformationType, "VIDEO">
 	isActive: boolean
-	authorId: string
-	categoryId: string[] | { _id: string; name: string; id: string }[]
-	parameters?: {
-		breathingPatterns?: BreathingPattern[]
-		defaultPattern?: string
-		recommendedDuration?: number
-		benefits?: string[]
-		instructions?: {
-			before?: string
-			during?: string
-			after?: string
-		}
-	}
+	authorId: AuthorId
+	categoryId: CategoryId
+	parameters?: object
 	validatedAndPublishedAt?: string | null
 	validatedBy?: string | null
 	fileId?: string
@@ -33,8 +23,8 @@ export class VideoActivity implements Activity {
 	mediaUrl?: string
 	thumbnailUrl?: string
 
-	constructor(data: Partial<Activity>) {
-		this.id = data.id
+	constructor(data: Partial<IActivity>) {
+		this.id = data.id || ""
 		this.name = data.name || ""
 		this.descriptionActivity = data.descriptionActivity || ""
 		this.type = "VIDEO"
