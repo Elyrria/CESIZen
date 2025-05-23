@@ -1,20 +1,38 @@
-// src/components/layout/Header.tsx
-import useAuthStore from "@/stores/useAuthStore"
+import useStore from "@/stores/useStore" // Utiliser le store centralisé
 import logo from "@assets/cesizen_logo.svg"
 import React, { useState } from "react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
+import { toast } from "react-toastify"
 
 const Header: React.FC = () => {
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+	const navigate = useNavigate()
 
-	// Using the authentication store
-	const { user, isAuthenticated, isAdmin, logout } = useAuthStore()
+	// Utiliser le store centralisé
+	const { auth } = useStore()
+	const { user, logout, isLoading } = auth
+
+	// Calcul des valeurs isAuthenticated et isAdmin
+	const isAuthenticated = !!user
+	const isAdmin = user?.role === "administrator"
 
 	// Function to handle logout
 	const handleLogout = async () => {
-		await logout()
-		// Close mobile menu after logout
-		setMobileMenuOpen(false)
+		try {
+			const success = await logout()
+
+			if (success) {
+				toast.success("Vous avez été déconnecté avec succès")
+				// Close mobile menu after logout
+				setMobileMenuOpen(false)
+				navigate("/")
+			} else {
+				toast.error("Erreur lors de la déconnexion")
+			}
+		} catch (error) {
+			console.error("Erreur lors de la déconnexion:", error)
+			toast.error("Une erreur inattendue s'est produite")
+		}
 	}
 
 	// Get the first name for personalized display
@@ -71,8 +89,12 @@ const Header: React.FC = () => {
 
 								<button
 									onClick={handleLogout}
-									className='fr-btn fr-btn--secondary fr-btn--sm'
+									disabled={isLoading}
+									className='fr-btn fr-btn--secondary fr-btn--sm flex items-center'
 								>
+									{isLoading ? (
+										<span className='inline-block w-4 h-4 mr-2 border-2 border-gray-400 border-t-transparent rounded-full animate-spin'></span>
+									) : null}
 									Déconnexion
 								</button>
 							</>
@@ -167,8 +189,12 @@ const Header: React.FC = () => {
 
 								<button
 									onClick={handleLogout}
-									className='fr-btn fr-btn--secondary w-full'
+									disabled={isLoading}
+									className='fr-btn fr-btn--secondary w-full flex items-center justify-center'
 								>
+									{isLoading ? (
+										<span className='inline-block w-4 h-4 mr-2 border-2 border-gray-400 border-t-transparent rounded-full animate-spin'></span>
+									) : null}
 									Déconnexion
 								</button>
 							</>
