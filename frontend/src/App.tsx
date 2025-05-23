@@ -1,14 +1,19 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom"
-import "react-toastify/dist/ReactToastify.css"
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
+import 'react-toastify/dist/ReactToastify.css'
 
-import AuthInitializer from "@/components/auth/AuthInitializer"
-import Layout from "@/layouts/Layout"
+import AuthInitializer from '@/components/auth/AuthInitializer'
+import Layout from '@/layouts/Layout'
 
-import React, { Suspense, lazy } from "react"
+import React, { Suspense, lazy } from 'react'
 
-const RegisterPage = lazy(() => import("@/pages/auth/RegisterPage"))
-const LoginPage = lazy(() => import("@/pages/auth/LoginPages"))
-const HomePage = lazy(() => import("@/pages/home/HomePage"))
+// Pages d'authentification
+const RegisterPage = lazy(() => import('@/pages/auth/RegisterPage'))
+const LoginPage = lazy(() => import('@/pages/auth/LoginPages'))
+
+// Pages publiques
+const HomePage = lazy(() => import('@/pages/home/HomePage'))
+const InformationsPage = lazy(() => import('@/pages/information/InformationsPage'))
+const InformationDetailPage = lazy(() => import('@/pages/information/InformationDetailPage'))
 
 const App: React.FC = () => {
 	return (
@@ -27,6 +32,14 @@ const App: React.FC = () => {
 							<Route path='/register' element={<RegisterPage />} />
 							<Route path='/login' element={<LoginPage />} />
 							<Route path='/' element={<HomePage />} />
+
+							{/* Routes des informations */}
+							<Route path='/informations' element={<InformationsPage />} />
+							<Route
+								path='/informations/:id'
+								element={<InformationDetailPage />}
+							/>
+
 							{/* Redirection par défaut */}
 							<Route path='*' element={<Navigate to='/' replace />} />
 						</Routes>

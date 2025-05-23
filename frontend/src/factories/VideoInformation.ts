@@ -22,6 +22,7 @@ export class VideoInformation implements IInformation {
 	createdAt?: string
 	updatedAt?: string
 	mediaUrl?: string
+	thumbnailUrl?: string
 
 	constructor(data: Partial<IInformation>) {
 		this.id = data.id || data._id || ""
@@ -39,5 +40,6 @@ export class VideoInformation implements IInformation {
 		this.createdAt = data.createdAt
 		this.updatedAt = data.updatedAt
 		this.mediaUrl = data.mediaUrl
+		this.thumbnailUrl = data.thumbnailUrl
 	}
 }
