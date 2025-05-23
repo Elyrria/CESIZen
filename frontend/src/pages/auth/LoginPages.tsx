@@ -1,11 +1,13 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Link, useNavigate } from "react-router-dom"
 import { CONFIG_FIELD } from "@configs/field.configs"
-import useStore from "@/stores/useStore" // Importation du store centralisé au lieu de useAuthStore
+import useStore from "@/stores/useStore"
 import { useForm } from "react-hook-form"
 import { toast } from "react-toastify"
 import React, { useState } from "react"
+import api from "@/services/apiHandler"
 import { z } from "zod"
+import { handleValidationErrors, getApiErrorMessage } from "@/utils/errorUtils"
 
 /**
  * LoginPage Component – User authentication page.
@@ -15,8 +17,7 @@ import { z } from "zod"
  * - Sending login credentials to the API for authentication
  * - Securely storing access and refresh tokens in cookies
  * - Displaying success and error feedback via `react-toastify`
- * - Field-specific error display and focus using form error handling
- * - "Remember me" functionality to extend session duration
+ * - Field-specific error display from backend validation
  * - Toggle password visibility (show/hide)
  *
  * Dependencies:
@@ -37,11 +38,12 @@ type LoginFormValues = z.infer<typeof loginSchema>
 
 const LoginPage: React.FC = () => {
 	const [showPassword, setShowPassword] = useState(false)
+	const [isLoading, setIsLoading] = useState(false)
 	const navigate = useNavigate()
 
-	// Utilisation du store centralisé
+	// Use the centralized store
 	const { auth } = useStore()
-	const { login, isLoading } = auth
+	const { login } = auth
 
 	// React Hook Form configuration with Zod
 	const {
@@ -59,23 +61,60 @@ const LoginPage: React.FC = () => {
 	})
 
 	const onSubmit = async (data: LoginFormValues) => {
-		try {
-			// Use the login function from the store
-			const success = await login(data.email, data.password)
+		setIsLoading(true)
 
-			if (success) {
-				toast.success("Connexion réussie")
-				navigate("/")
+		try {
+			// Directly call the API for better error handling
+			const response = await api.login(data.email, data.password)
+
+			if (response.success && response.data) {
+				// Use the store's login method to update the authentication state
+				const loginSuccess = await login(data.email, data.password)
+
+				if (loginSuccess) {
+					toast.success("Connexion réussie")
+					navigate("/")
+				} else {
+					toast.error("Identifiants incorrects ou compte inexistant")
+				}
 			} else {
-				// In case of failure, display a general error message
-				toast.error("Identifiants incorrects ou compte inexistant")
+				// Handle server-side validation errors
+				if (!response.success) {
+					// Use the utility to map errors to fields
+					const hasFieldErrors = handleValidationErrors(
+						response,
+						setError,
+						["email", "password"] as const, // Valid form fields with strict typing
+						{
+							// Custom messages for specific fields
+							credentials: "Identifiant incorrects",
+						}
+					)
+
+					// If no specific field errors, display the general message
+					if (!hasFieldErrors) {
+						const errorMessage = getApiErrorMessage(
+							response,
+							"Identifiants incorrects ou compte inexistant"
+						)
+						toast.error(errorMessage)
+					}
+				}
 			}
 		} catch (error) {
 			console.error("Login error:", error)
-			toast.error("Erreur de connexion au serveur")
+			toast.error("Veuillez vérifier vos identifiants")
 
-			// You can also set field-specific errors if you have more information
-			setError("email", { message: "Veuillez vérifier vos identifiants" }, { shouldFocus: true })
+			// In case of network error, suggest checking credentials
+			setError(
+				"email",
+				{
+					message: "Veuillez vérifier vos identifiants",
+				},
+				{ shouldFocus: true }
+			)
+		} finally {
+			setIsLoading(false)
 		}
 	}
 
@@ -204,7 +243,7 @@ const LoginPage: React.FC = () => {
 						</div>
 						<Link
 							to='/mot-de-passe-oublie'
-							className='text-indigo-600 hover:underline'
+							className='text-fr-blue hover:underline'
 						>
 							Mot de passe oublié?
 						</Link>
@@ -212,10 +251,17 @@ const LoginPage: React.FC = () => {
 
 					<button
 						type='submit'
-						className='w-full bg-indigo-600 text-white py-3 rounded-md font-medium hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
+						className='w-full bg-fr-blue text-white py-3 rounded-md font-medium hover:bg-blue-800 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-fr-blue disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center'
 						disabled={isLoading}
 					>
-						{isLoading ? "Connexion en cours..." : "Connexion"}
+						{isLoading ? (
+							<>
+								<span className='inline-block w-4 h-4 mr-2 border-2 border-white border-t-transparent rounded-full animate-spin'></span>
+								Connexion en cours...
+							</>
+						) : (
+							"Connexion"
+						)}
 					</button>
 
 					<div className='text-center mt-6'>

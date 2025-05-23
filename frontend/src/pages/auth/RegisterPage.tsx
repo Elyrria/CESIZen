@@ -1,4 +1,4 @@
-// src/pages/RegisterPage.tsx
+import { handleValidationErrors, getApiErrorMessage } from "@/utils/errorUtils"
 import { Link, useNavigate } from "react-router-dom"
 import { zodResolver } from "@hookform/resolvers/zod"
 import useStore from "@/stores/useStore"
@@ -37,7 +37,7 @@ const RegisterPage: React.FC = () => {
 	const [isLoading, setIsLoading] = useState(false)
 	const navigate = useNavigate()
 
-	// Utiliser le store centralisé
+	// Use the centralized store
 	const { auth } = useStore()
 	const { login } = auth
 
@@ -62,73 +62,50 @@ const RegisterPage: React.FC = () => {
 		setIsLoading(true)
 
 		try {
-			// Créer l'objet userData pour l'inscription avec le role inclus
+			// Create userData object for registration with role included
 			const userData = {
 				email: data.email,
 				password: data.password,
 				name: data.name,
 				firstName: data.firstName,
 				birthDate: data.birthDate,
-				role: "user" as const, // Inclure explicitement le rôle
+				role: "user" as const,
 			}
 
-			// Appeler directement l'API d'inscription
+			// Directly call the registration API
 			const response = await api.register(userData)
 
 			if (response.success && response.data) {
 				toast.success("Compte créé avec succès !")
 
-				// Connecter automatiquement l'utilisateur après l'inscription
+				// Automatically log in the user after registration
 				const loginSuccess = await login(data.email, data.password)
 
 				if (loginSuccess) {
 					navigate("/")
 				} else {
-					// Si la connexion automatique échoue, rediriger vers la page de connexion
 					navigate("/login")
 				}
 			} else {
-				// Gérer les erreurs de validation côté serveur
+				// Handle server-side validation errors with the utility
 				if (!response.success) {
-					// Vérifier s'il y a des erreurs de validation spécifiques aux champs
-					if (response.error?.errors && response.error.errors.length > 0) {
-						// Afficher les erreurs sur les champs correspondants
-						response.error.errors.forEach((fieldError) => {
-							if (fieldError.field) {
-								const fieldName =
-									fieldError.field as keyof RegisterFormValues
+					const hasFieldErrors = handleValidationErrors(
+						response,
+						setError,
+						["email", "password", "name", "firstName", "birthDate"] as const, // Valid form fields with strict typing
+						{
+							// Custom messages for specific fields
+							role: "Erreur de configuration du compte. Veuillez réessayer.",
+						}
+					)
 
-								// Mapper les champs du backend vers les champs du formulaire
-								if (
-									[
-										"email",
-										"password",
-										"name",
-										"firstName",
-										"birthDate",
-									].includes(fieldName)
-								) {
-									setError(
-										fieldName,
-										{
-											message: fieldError.message,
-										},
-										{ shouldFocus: true }
-									)
-								} else if (fieldError.field === "role") {
-									// Pour les erreurs de rôle, afficher un toast car ce n'est pas un champ visible
-									toast.error(
-										"Erreur de configuration du compte. Veuillez réessayer."
-									)
-								}
-							}
-						})
-					} else {
-						// Afficher le message d'erreur général
-						toast.error(
-							response.error?.message ||
-								"Erreur lors de la création du compte"
+					// If no specific field errors, display the general message
+					if (!hasFieldErrors) {
+						const errorMessage = getApiErrorMessage(
+							response,
+							"Erreur lors de la création du compte"
 						)
+						toast.error(errorMessage)
 					}
 				}
 			}
