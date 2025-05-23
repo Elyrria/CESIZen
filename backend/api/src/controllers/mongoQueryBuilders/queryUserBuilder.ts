@@ -44,10 +44,20 @@ export const buildUserQuery = (req: Request, userRoleIndex: number): IQueryInter
 export const buildInformationQuery = (req: Request): IQueryInterface => {
 	const query: IQueryInterface = {}
 
-	// Text-based filters
-	getRegexFilter(req, query, FIELD.TITLE as keyof IQueryInterface)
-	getRegexFilter(req, query, FIELD.DESCRIPTION_INFORMATION as keyof IQueryInterface)
-	getRegexFilter(req, query, FIELD.NAME as keyof IQueryInterface)
+	// Global search parameter - searches across multiple fields
+	if (req.query.search) {
+		const searchTerm = req.query.search as string
+		query.$or = [
+			{ title: { $regex: searchTerm, $options: "i" } },
+			{ descriptionInformation: { $regex: searchTerm, $options: "i" } },
+			{ name: { $regex: searchTerm, $options: "i" } }
+		]
+	} else {
+		// Text-based filters (only if no global search)
+		getRegexFilter(req, query, FIELD.TITLE as keyof IQueryInterface)
+		getRegexFilter(req, query, FIELD.DESCRIPTION_INFORMATION as keyof IQueryInterface)
+		getRegexFilter(req, query, FIELD.NAME as keyof IQueryInterface)
+	}
 
 	// Type filter (exact match)
 	if (req.query.type) {

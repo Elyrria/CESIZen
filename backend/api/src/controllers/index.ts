@@ -8,6 +8,7 @@ export { getAllUsers } from "@controllers/user/getUsers.controller.ts"
 export { loginUser } from "@controllers/user/loginUser.controller.ts"
 export {getUserById} from "@controllers/user/getUserById.controller.ts"
 // Infroamtion controllers
+export { getPublicInformationById } from "@controllers/information/getPublicInformationById.controller.ts"
 export { getPublicInformations } from "@controllers/information/getPublicInformations.controller.ts"
 export { createInformation } from "@controllers/information/createInformation.controller.ts"
 export { updateInformation } from "@controllers/information/updateInformation.controller.ts"

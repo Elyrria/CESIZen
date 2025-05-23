@@ -30,6 +30,8 @@ export interface IQueryInterface {
 	email?: { $regex: string; $options: string }
 	name?: { $regex: string; $options: string }
 	firstname?: { $regex: string; $options: string }
+	title?: { $regex: string; $options: string }
+	descriptionInformation?: { $regex: string; $options: string }
 	createdAt?: { $lte?: Date; $gte?: Date }
 	updatedAt?: { $lte?: Date; $gte?: Date }
 	type?: { $in?: string[] }
@@ -38,6 +40,11 @@ export interface IQueryInterface {
 	validatedAndPublishedAt?: null | { $ne?: null }
 	isActive?: boolean
 	categoryId?: ObjectId
+	$or?: Array<{
+		title?: { $regex: string; $options: string }
+		descriptionInformation?: { $regex: string; $options: string }
+		name?: { $regex: string; $options: string }
+	}>
 }
 
 export interface IAuthRequest extends Request {
