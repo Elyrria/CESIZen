@@ -206,7 +206,7 @@ describeIfFunctional("User API Functional Tests", () => {
 			expect(updateResponse.status).toBe(200)
 			expect(updateResponse.body).toHaveProperty("success", true)
 			expect(updateResponse.body).toHaveProperty("code", "userUpdated")
-			expect(updateResponse.body).toHaveProperty("message", "User updated successfully")
+			expect(updateResponse.body).toHaveProperty("message", "Utilisateur mis à jour avec succès")
 
 			expect(updateResponse.body).toHaveProperty("data")
 			expect(updateResponse.body.data).toHaveProperty("user")
@@ -231,7 +231,7 @@ describeIfFunctional("User API Functional Tests", () => {
 			expect(logoutResponse.status).toBe(200)
 			expect(logoutResponse.body).toHaveProperty("success", true)
 			expect(logoutResponse.body).toHaveProperty("code", "logoutSuccess")
-			expect(logoutResponse.body).toHaveProperty("message", "User logged out successfully")
+			expect(logoutResponse.body).toHaveProperty("message", "Utilisateur déconnecté avec succès")
 
 			// Verify refresh token is removed from database
 			const refreshTokenExists = await RefreshToken.findOne({ refreshToken: userRefreshToken })
@@ -253,7 +253,7 @@ describeIfFunctional("User API Functional Tests", () => {
 			expect(deleteResponse.status).toBe(200)
 			expect(deleteResponse.body).toHaveProperty("success", true)
 			expect(deleteResponse.body).toHaveProperty("code", "userDeleted")
-			expect(deleteResponse.body).toHaveProperty("message", "User deleted successfully")
+			expect(deleteResponse.body).toHaveProperty("message", "Utilisateur supprimé avec succès")
 
 			// Verify user is deleted from database
 			const deletedUser = await User.findOne({ email: testUser.email })

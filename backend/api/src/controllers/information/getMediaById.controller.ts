@@ -21,7 +21,6 @@ import chalk from "chalk"
 export const getMediaById = async (req: Request, res: Response): Promise<void> => {
 	try {
 		const informationId = req.params.id
-
 		logger.info(`Retrieving media for information: ${chalk.blue(informationId)}`)
 
 		// Find the information document to get the fileId
@@ -46,8 +45,8 @@ export const getMediaById = async (req: Request, res: Response): Promise<void> =
 		try {
 			// Use the streamFile function from gridFSService to get file stream and metadata
 			const { stream, metadata } = await streamFile(fileId)
-
-			// Set content type header based on the file metadata
+			res.setHeader('Access-Control-Allow-Origin', '*')
+			res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin')
 			res.set("Content-Type", metadata.contentType || "application/octet-stream")
 
 			// Set cache control headers for better performance
@@ -62,6 +61,7 @@ export const getMediaById = async (req: Request, res: Response): Promise<void> =
 				].includes(metadata.contentType)
 			) {
 				res.set("Cache-Control", "public, max-age=86400") // Cache for 1 day
+				res.set("ETag", fileId.toString())
 			} else {
 				res.set("Cache-Control", "no-cache") // Don't cache other file types
 			}
@@ -69,8 +69,18 @@ export const getMediaById = async (req: Request, res: Response): Promise<void> =
 			// Set content disposition header for download if requested
 			if (req.query.download === "true") {
 				res.set("Content-Disposition", `attachment; filename="${metadata.filename}"`)
+			} else {
+				res.set("Content-Disposition", `inline; filename="${metadata.filename}"`)
+			}
+			if (metadata.length) {
+				res.set("Content-Length", metadata.length.toString())
 			}
 
+			const clientETag = req.headers['if-none-match']
+			if (clientETag === fileId.toString()) {
+				res.status(304).end()
+				return
+			}
 			// Log successful streaming start
 			logger.info(`Streaming ${chalk.green(metadata.filename)} (${metadata.contentType}) to client`)
 
@@ -87,6 +97,9 @@ export const getMediaById = async (req: Request, res: Response): Promise<void> =
 				} else {
 					res.end() // End the response if headers were already sent
 				}
+			})
+			stream.on("end", () => {
+				logger.info(`Successfully streamed ${chalk.green(metadata.filename)} to client`)
 			})
 		} catch (streamError) {
 			logger.error(

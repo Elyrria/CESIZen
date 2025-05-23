@@ -87,7 +87,7 @@ export const fetchInformationWithQuery = async (
 
 			// Add media URL if it's an IMAGE or VIDEO
 			if (["IMAGE", "VIDEO"].includes(info.type) && info.fileId) {
-				infoObj.mediaUrl = `${baseUrl}/api/v1/media/${info._id}`
+				infoObj.mediaUrl = `${baseUrl}/api/v1/informations/media/${info._id}`
 
 				// Use a default thumbnail for videos
 				if (info.type === "VIDEO") {

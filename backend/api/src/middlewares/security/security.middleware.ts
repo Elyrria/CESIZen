@@ -6,6 +6,7 @@ import rateLimit from "express-rate-limit"
 import express from "express"
 import helmet from "helmet"
 import hpp from "hpp"
+import path from "path"
 
 /**
  * Configures security middleware for the Express application
@@ -23,9 +24,10 @@ export const setupSecurityMiddleware = (app: express.Application): void => {
 		res.setHeader("Access-Control-Allow-Origin", "*") // Allows access to the API from any origin
 		res.setHeader(
 			"Access-Control-Allow-Headers",
-			"Origin, X-Requested-With, Content, Accept, Content-Type, Authorization, userid"
-		) // Allows the specified headers in requests to the API
-		res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS") // Allows the specified HTTP methods in requests to the API
+			"Origin, X-Requested-With, Content, Accept, Content-Type, Authorization, userid, Cache-Control, If-None-Match"
+		)
+		res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS, HEAD")
+		res.setHeader("Access-Control-Expose-Headers", "Content-Length, Content-Type, ETag")
 		next()
 	})
 
@@ -40,7 +42,7 @@ export const setupSecurityMiddleware = (app: express.Application): void => {
 				scriptSrc: ["'self'", "'unsafe-inline'", "cdnjs.cloudflare.com"],
 				styleSrc: ["'self'", "'unsafe-inline'", "fonts.googleapis.com"],
 				fontSrc: ["'self'", "fonts.gstatic.com"],
-				imgSrc: ["'self'", "data:"],
+				imgSrc: ["'self'", "data:", "blob:", "http://localhost:*"],
 				connectSrc: ["'self'"],
 			},
 		})
@@ -69,11 +71,57 @@ export const setupSecurityMiddleware = (app: express.Application): void => {
 	// Apply rate limiting to all API routes
 	app.use("/api/", apiLimiter)
 
-	app.use(mongoSanitizerMiddleware)
-	// Data sanitization against XSS
-	app.use(xssSanitizerMiddleware)
-	// Prevent parameter pollution
-	app.use(hpp())
+	app.use((req: Request, _res: Response, next: NextFunction) => {
+		// Si c'est une route de média, on skip certains sanitizers
+		if (req.path.includes('/media/')) {
+			return next()
+		}
+		mongoSanitizerMiddleware(req, _res, next)
+	})
 
-	app.use(useSanitizedData)
+	// Data sanitization against XSS (avec exemption pour les médias)
+	app.use((req: Request, res: Response, next: NextFunction) => {
+		if (req.path.includes('/media/')) {
+			return next()
+		}
+		xssSanitizerMiddleware(req, res, next)
+	})
+	// Prevent parameter pollution
+	app.use(hpp({
+		whitelist: ['download']
+	}))
+
+	app.use((req: Request, res: Response, next: NextFunction) => {
+		if (req.path.includes('/media/')) {
+			return next()
+		}
+		useSanitizedData(req, res, next)
+	})
+
+
+	if (process.env.NODE_ENV !== "test") {
+		let __dirname
+		try {
+			const mainFilePath = require.main?.filename || ""
+			__dirname = path.dirname(mainFilePath)
+		} catch (error) {
+			__dirname = process.cwd()
+		}
+
+		app.use('/assets', (req: Request, res: Response, next: NextFunction) => {
+
+			res.setHeader('Access-Control-Allow-Origin', '*')
+			res.setHeader('Access-Control-Allow-Methods', 'GET, HEAD, OPTIONS')
+			res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
+			
+			res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin')
+			res.setHeader('X-Content-Type-Options', 'nosniff')
+			res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin')
+		
+			res.setHeader('Cache-Control', 'public, max-age=86400')
+			
+			next()
+		})
+		app.use(express.static(path.join(__dirname, 'public')))
+	}
 }
