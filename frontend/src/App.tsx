@@ -5,6 +5,8 @@ import AuthInitializer from '@/components/auth/AuthInitializer'
 import Layout from '@/layouts/Layout'
 
 import React, { Suspense, lazy } from 'react'
+import ProfilePage from '@/pages/profile/ProfilePage'
+import ProtectedRoute from '@/components/auth/ProtectedRoute'
 
 // Pages d'authentification
 const RegisterPage = lazy(() => import('@/pages/auth/RegisterPage'))
@@ -38,6 +40,16 @@ const App: React.FC = () => {
 							<Route
 								path='/informations/:id'
 								element={<InformationDetailPage />}
+							/>
+
+							{/* Routes protégées */}
+							<Route
+								path='/profile'
+								element={
+									<ProtectedRoute>
+										<ProfilePage />
+									</ProtectedRoute>
+								}
 							/>
 
 							{/* Redirection par défaut */}

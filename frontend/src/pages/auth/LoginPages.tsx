@@ -1,3 +1,4 @@
+import { handleValidationErrors, getApiErrorMessage } from "@/utils/errorUtils"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Link, useNavigate } from "react-router-dom"
 import { CONFIG_FIELD } from "@configs/field.configs"
@@ -7,7 +8,6 @@ import { toast } from "react-toastify"
 import React, { useState } from "react"
 import api from "@/services/apiHandler"
 import { z } from "zod"
-import { handleValidationErrors, getApiErrorMessage } from "@/utils/errorUtils"
 
 /**
  * LoginPage Component – User authentication page.
@@ -28,8 +28,8 @@ import { handleValidationErrors, getApiErrorMessage } from "@/utils/errorUtils"
 
 // Zod validation schema
 const loginSchema = z.object({
-	email: z.string().email("Invalid email").min(1, "Email is required"),
-	password: z.string().min(CONFIG_FIELD.LENGTH.PASSWORD.MIN, "Password is required"),
+	email: z.string().email("Invalid email").min(1, "Email est requis"),
+	password: z.string().min(CONFIG_FIELD.LENGTH.PASSWORD.MIN, "Le mot de passe est requis"),
 	rememberMe: z.boolean().optional(),
 })
 

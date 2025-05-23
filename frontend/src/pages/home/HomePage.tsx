@@ -18,7 +18,7 @@ const HomePage: React.FC = () => {
 			>
 				<div className='py-8 text-center'>
 					<h1 className='text-3xl md:text-4xl font-bold mb-4'>
-						{user ? `Bonjour, ${user.name} !` : "Prenez soin de vous"}
+						{user ? `Bonjour, ${user.firstName} !` : "Prenez soin de vous"}
 					</h1>
 					<p className='text-lg opacity-90'>
 						Découvrez nos outils et ressources pour votre bien-être

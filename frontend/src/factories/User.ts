@@ -1,5 +1,5 @@
 import type { IUser, UserRole } from "@/factories/Factory"
-
+import { parseToFrenchDate } from "@/utils/dateUtils"
 export class UserImpl implements IUser {
 	id: string
 	email: string
@@ -18,7 +18,7 @@ export class UserImpl implements IUser {
 		this.name = data.name || ""
 		this.firstName = data.firstName || ""
 		this.role = data.role || "user"
-		this.birthDate = data.birthDate
+		this.birthDate = parseToFrenchDate(data.birthDate)
 		this.active = data.active !== undefined ? data.active : true
 		this.createdAt = data.createdAt
 		this.updatedAt = data.updatedAt

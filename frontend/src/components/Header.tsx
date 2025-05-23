@@ -1,21 +1,19 @@
-import useStore from "@/stores/useStore"
-import logo from "@assets/cesizen_logo.svg"
-import React, { useState } from "react"
-import { Link, useNavigate } from "react-router-dom"
-import { toast } from "react-toastify"
-import Button from "@/components/ui/Button"
+import useStore from '@/stores/useStore'
+import logo from '@assets/cesizen_logo.svg'
+import React, { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
+import Button from '@/components/ui/Button'
 
 const Header: React.FC = () => {
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 	const navigate = useNavigate()
 
-
 	const { auth } = useStore()
 	const { user, logout, isLoading } = auth
 
-
 	const isAuthenticated = !!user
-	const isAdmin = user?.role === "administrator"
+	const isAdmin = user?.role === 'administrator'
 
 	// Function to handle logout
 	const handleLogout = async () => {
@@ -23,21 +21,21 @@ const Header: React.FC = () => {
 			const success = await logout()
 
 			if (success) {
-				toast.success("Vous avez été déconnecté avec succès")
+				toast.success('Vous avez été déconnecté avec succès')
 				// Close mobile menu after logout
 				setMobileMenuOpen(false)
-				navigate("/")
+				navigate('/')
 			} else {
-				toast.error("Erreur lors de la déconnexion")
+				toast.error('Erreur lors de la déconnexion')
 			}
 		} catch (error) {
-			console.error("Erreur lors de la déconnexion:", error)
+			console.error('Erreur lors de la déconnexion:', error)
 			toast.error("Une erreur inattendue s'est produite")
 		}
 	}
 
 	// Get the first name for personalized display
-	const firstName = user?.name || "Utilisateur"
+	const firstName = user?.name || 'Utilisateur'
 
 	return (
 		<header className='fr-header shadow-sm'>
@@ -72,7 +70,7 @@ const Header: React.FC = () => {
 						{isAuthenticated ? (
 							<>
 								<Link
-									to='/profil'
+									to='/profile'
 									className='fr-text hover:text-fr-blue transition-colors'
 								>
 									Mon profil
@@ -140,7 +138,7 @@ const Header: React.FC = () => {
 									Hello, {firstName}
 								</p>
 								<p className='text-sm text-fr-grey-dark'>
-									{isAdmin ? "Adminitrateur" : "Utilisateur"}
+									{isAdmin ? 'Adminitrateur' : 'Utilisateur'}
 								</p>
 							</div>
 						)}
@@ -170,7 +168,7 @@ const Header: React.FC = () => {
 						{isAuthenticated ? (
 							<>
 								<Link
-									to='/profil'
+									to='/profile'
 									className='block py-fr-2v'
 									onClick={() => setMobileMenuOpen(false)}
 								>
@@ -270,7 +268,7 @@ const Header: React.FC = () => {
 						</Link>
 					) : (
 						// For regular users, display a link to the profile
-						<Link to='/profil' className='fr-bottom-nav__item'>
+						<Link to='/profile' className='fr-bottom-nav__item'>
 							<svg
 								className='h-6 w-6'
 								fill='none'
