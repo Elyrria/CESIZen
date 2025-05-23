@@ -6,88 +6,165 @@ import { create } from "zustand"
 
 export interface AuthState {
 	user: IUser | null
-	isAuthenticated: boolean
-	isAdmin: boolean
 	isLoading: boolean
-	login: (email: string, password: string, rememberMe?: boolean) => Promise<boolean>
-	logout: () => Promise<void>
+	error: string | null
+	isAuthInitialized: boolean // Nouvel état pour suivre l'initialisation
+
+	// Méthodes d'authentification
+	initializeAuth: () => Promise<void>
+	login: (email: string, password: string) => Promise<boolean>
+	logout: () => Promise<boolean>
 	fetchUserProfile: () => Promise<boolean>
+
+	// Méthodes utilitaires
+	clearError: () => void
+	isAuthenticated: () => boolean
+	isAdmin: () => boolean
 	setUser: (user: IUser | null) => void
-	initializeAuth: () => Promise<boolean>
 }
 
 const useAuthStore = create<AuthState>()(
 	persist(
 		(set, get) => ({
 			user: null,
-			isAuthenticated: false,
-			isAdmin: false,
 			isLoading: false,
+			error: null,
+			isAuthInitialized: false,
+
+			// Méthode pour initialiser l'authentification
+			initializeAuth: async () => {
+				const state = get()
+
+				// Si déjà initialisé et utilisateur présent, ne rien faire
+				if (state.isAuthInitialized && state.user) {
+					return
+				}
+
+				try {
+					// Récupérer les tokens et ID depuis les cookies
+					const token = getTokenFromCookie()
+					const userId = getUserIdFromCookie()
+
+					if (token && userId) {
+						try {
+							// Obtenir les informations de l'utilisateur depuis l'API
+							const response = await api.getUser(userId)
+
+							if (response.success && response.data?.user) {
+								const user = entityFactory.createUser(
+									response.data.user
+								)
+								set({ user, isAuthInitialized: true })
+								return
+							} else {
+								// Si la requête échoue, effacer les cookies
+								clearAuthCookies()
+								set({ user: null, isAuthInitialized: true })
+							}
+						} catch (error) {
+							console.error(
+								"Erreur lors de la récupération de l'utilisateur:",
+								error
+							)
+							// En cas d'erreur, on efface les cookies et on continue
+							clearAuthCookies()
+							set({
+								user: null,
+								isAuthInitialized: true,
+								error: "Erreur d'authentification",
+							})
+						}
+					} else {
+						// Pas de token ou d'ID utilisateur
+						set({ user: null, isAuthInitialized: true })
+					}
+				} catch (error) {
+					console.error("Erreur dans initializeAuth:", error)
+					set({ user: null, isAuthInitialized: true, error: "Erreur d'initialisation" })
+				}
+			},
 
 			setUser: (user) => {
 				set({
 					user,
-					isAuthenticated: !!user,
-					isAdmin: user?.role === "administrator",
+					isAuthInitialized: true, // Mise à jour de l'état d'initialisation
 				})
 			},
 
-			login: async (email, password, rememberMe = false) => {
-				set({ isLoading: true })
+			login: async (email, password) => {
+				set({ isLoading: true, error: null })
 
 				try {
 					const response = await api.login(email, password)
 
-					if (response.success && response.data && response.data.user) {
-						const responseData = response.data
+					if (response.success && response.data) {
+						const { user, tokens } = response.data
 
-						if (responseData && responseData.user && responseData.tokens) {
-							const userData = responseData.user
-							const userId = userData.id
-							const { accessToken, refreshToken } = responseData.tokens
+						// Stocker les tokens dans les cookies
+						setAuthCookies(user.id, tokens.accessToken, tokens.refreshToken)
 
-							// Store tokens in cookies
-							setAuthCookies(userId, accessToken, refreshToken, rememberMe)
+						// Mettre à jour l'état
+						set({
+							user: entityFactory.createUser(user),
+							isLoading: false,
+							isAuthInitialized: true,
+						})
 
-							// Create a user instance with our factory
-							const user = entityFactory.createUser(userData)
-
-							// Update state
+						return true
+					} else {
+						if (!response.success) {
 							set({
-								user,
-								isAuthenticated: true,
-								isAdmin: user.role === "administrator",
+								error: response.error.message,
+								isLoading: false,
+								isAuthInitialized: true,
 							})
-
-							return true
+						} else {
+							set({
+								error: "Échec de la connexion : réponse invalide",
+								isLoading: false,
+								isAuthInitialized: true,
+							})
 						}
+						return false
 					}
-
-					return false
 				} catch (error) {
-					console.error("Erreur de connexion:", error)
+					console.error("Erreur lors de la connexion:", error)
+					set({
+						error: "Une erreur inattendue s'est produite",
+						isLoading: false,
+						isAuthInitialized: true,
+					})
 					return false
-				} finally {
-					set({ isLoading: false })
 				}
 			},
 
 			logout: async () => {
+				set({ isLoading: true, error: null })
+
 				try {
-					// API call for logout if needed
+					// Effacer les cookies
 					clearAuthCookies()
+
 					set({
 						user: null,
-						isAuthenticated: false,
-						isAdmin: false,
+						isLoading: false,
+						isAuthInitialized: true,
 					})
+
+					return true
 				} catch (error) {
-					console.error("Erreur de déconnexion:", error)
+					console.error("Erreur lors de la déconnexion:", error)
+					set({
+						error: "Une erreur s'est produite lors de la déconnexion",
+						isLoading: false,
+						isAuthInitialized: true,
+					})
+					return false
 				}
 			},
 
 			fetchUserProfile: async () => {
-				set({ isLoading: true })
+				set({ isLoading: true, error: null })
 
 				try {
 					// Check if we have a token and userId
@@ -95,62 +172,77 @@ const useAuthStore = create<AuthState>()(
 					const userId = getUserIdFromCookie()
 
 					if (!token || !userId) {
+						set({
+							isLoading: false,
+							error: "Aucun token d'authentification trouvé",
+							isAuthInitialized: true,
+						})
 						return false
 					}
 
-					// Use the new get-user/:id route
+					// Use the get-user/:id route
 					const response = await api.getUser(userId)
 
 					if (response.success && response.data && response.data.user) {
-						// Ensure the user object has all necessary properties
-						const rawUser = response.data.user
+						const user = entityFactory.createUser(response.data.user)
 
-						// Create an object that matches createUser expectations
-						const userData = {
-							id: rawUser._id || rawUser.id,
-							email: rawUser.email,
-							name: rawUser.name,
-							firstName: rawUser.firstName,
-							role: rawUser.role,
-						}
+						set({
+							user,
+							isLoading: false,
+							isAuthInitialized: true,
+							error: null,
+						})
 
-						if (userData.id && userData.email && userData.name) {
-							const user = entityFactory.createUser(userData)
-
+						return true
+					} else {
+						if (!response.success) {
 							set({
-								user,
-								isAuthenticated: true,
-								isAdmin: user.role === "administrator",
+								error: response.error.message,
+								isLoading: false,
+								isAuthInitialized: true,
+								user: null,
 							})
-
-							return true
+						} else {
+							set({
+								error: "Données utilisateur invalides",
+								isLoading: false,
+								isAuthInitialized: true,
+								user: null,
+							})
 						}
+						return false
 					}
-
-					return false
 				} catch (error) {
 					console.error("Erreur lors de la récupération du profil utilisateur:", error)
+					set({
+						error: "Erreur lors de la récupération du profil",
+						isLoading: false,
+						isAuthInitialized: true,
+						user: null,
+					})
 					return false
-				} finally {
-					set({ isLoading: false })
 				}
 			},
 
-			// Function to initialize auth state from cookies
-			initializeAuth: async () => {
-				const token = getTokenFromCookie()
-				const userId = getUserIdFromCookie()
+			clearError: () => {
+				set({ error: null })
+			},
 
-				if (token && userId) {
-					return await get().fetchUserProfile()
-				}
+			isAuthenticated: () => {
+				const { user } = get()
+				return !!user
+			},
 
-				return false
+			isAdmin: () => {
+				const { user } = get()
+				return user?.role === "administrator"
 			},
 		}),
 		{
 			name: "auth-storage",
-			partialize: (state) => ({ user: state.user }),
+			partialize: (state) => ({
+				user: state.user,
+			}),
 		}
 	)
 )

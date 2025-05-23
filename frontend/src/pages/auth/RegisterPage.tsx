@@ -1,12 +1,11 @@
 // src/pages/RegisterPage.tsx
-import type { IApiErrorResponse } from "@/types/apiHandler"
 import { Link, useNavigate } from "react-router-dom"
 import { zodResolver } from "@hookform/resolvers/zod"
-import useAuthStore from "@/store/authStore"
+import useStore from "@/stores/useStore"
 import { useForm } from "react-hook-form"
 import React, { useState } from "react"
-import api from "@/services/apiHandler"
 import { toast } from "react-toastify"
+import api from "@/services/apiHandler"
 import { z } from "zod"
 
 // Validation schema
@@ -26,7 +25,6 @@ const registerSchema = z.object({
 		.refine((date) => !isNaN(Date.parse(date)), {
 			message: "Date de naissance invalide",
 		}),
-	role: z.literal("user"),
 	terms: z.boolean().refine((val) => val === true, {
 		message: "Vous devez accepter les conditions générales",
 	}),
@@ -36,9 +34,12 @@ type RegisterFormValues = z.infer<typeof registerSchema>
 
 const RegisterPage: React.FC = () => {
 	const [showPassword, setShowPassword] = useState(false)
-	const [loading, setLoading] = useState(false)
+	const [isLoading, setIsLoading] = useState(false)
 	const navigate = useNavigate()
-	const { login } = useAuthStore()
+
+	// Utiliser le store centralisé
+	const { auth } = useStore()
+	const { login } = auth
 
 	const {
 		register,
@@ -53,54 +54,89 @@ const RegisterPage: React.FC = () => {
 			name: "",
 			firstName: "",
 			birthDate: "",
-			role: "user",
 			terms: false,
 		},
 	})
 
 	const onSubmit = async (data: RegisterFormValues) => {
-		setLoading(true)
-
-		// The "terms" field is not required by the API
-		const { ...registerData } = data
+		setIsLoading(true)
 
 		try {
-			const response = await api.register(registerData)
+			// Créer l'objet userData pour l'inscription avec le role inclus
+			const userData = {
+				email: data.email,
+				password: data.password,
+				name: data.name,
+				firstName: data.firstName,
+				birthDate: data.birthDate,
+				role: "user" as const, // Inclure explicitement le rôle
+			}
 
-			if (response.success && "data" in response) {
+			// Appeler directement l'API d'inscription
+			const response = await api.register(userData)
+
+			if (response.success && response.data) {
 				toast.success("Compte créé avec succès !")
 
-				// Automatically log the user in
+				// Connecter automatiquement l'utilisateur après l'inscription
 				const loginSuccess = await login(data.email, data.password)
 
 				if (loginSuccess) {
 					navigate("/")
 				} else {
+					// Si la connexion automatique échoue, rediriger vers la page de connexion
 					navigate("/login")
 				}
 			} else {
-				const errorResponse = response as IApiErrorResponse
+				// Gérer les erreurs de validation côté serveur
+				if (!response.success) {
+					// Vérifier s'il y a des erreurs de validation spécifiques aux champs
+					if (response.error?.errors && response.error.errors.length > 0) {
+						// Afficher les erreurs sur les champs correspondants
+						response.error.errors.forEach((fieldError) => {
+							if (fieldError.field) {
+								const fieldName =
+									fieldError.field as keyof RegisterFormValues
 
-				// Show field-level validation errors if any
-				if (errorResponse.error?.errors && errorResponse.error.errors.length > 0) {
-					errorResponse.error.errors.forEach((fieldError) => {
-						if (fieldError.field) {
-							setError(
-								fieldError.field as keyof RegisterFormValues,
-								{ message: fieldError.message },
-								{ shouldFocus: true }
-							)
-						}
-					})
-				} else {
-					toast.error(errorResponse.error?.message || "Une erreur est survenue")
+								// Mapper les champs du backend vers les champs du formulaire
+								if (
+									[
+										"email",
+										"password",
+										"name",
+										"firstName",
+										"birthDate",
+									].includes(fieldName)
+								) {
+									setError(
+										fieldName,
+										{
+											message: fieldError.message,
+										},
+										{ shouldFocus: true }
+									)
+								} else if (fieldError.field === "role") {
+									// Pour les erreurs de rôle, afficher un toast car ce n'est pas un champ visible
+									toast.error(
+										"Erreur de configuration du compte. Veuillez réessayer."
+									)
+								}
+							}
+						})
+					} else {
+						// Afficher le message d'erreur général
+						toast.error(
+							response.error?.message ||
+								"Erreur lors de la création du compte"
+						)
+					}
 				}
 			}
 		} catch (error) {
 			console.error("Registration error:", error)
 			toast.error("Erreur de connexion au serveur")
 		} finally {
-			setLoading(false)
+			setIsLoading(false)
 		}
 	}
 
@@ -118,6 +154,7 @@ const RegisterPage: React.FC = () => {
 							id='email'
 							type='email'
 							placeholder='exemple@email.com'
+							autoComplete='username'
 							className={`w-full px-4 py-3 rounded-md bg-white text-fr-blue border border-gray-300 focus:outline-none focus:ring-2 focus:ring-fr-blue focus:border-fr-blue ${
 								errors.email ? "ring-2 ring-fr-red" : ""
 							}`}
@@ -139,6 +176,7 @@ const RegisterPage: React.FC = () => {
 								id='name'
 								type='text'
 								placeholder='Nom'
+								autoComplete='family-name'
 								className={`w-full px-4 py-3 rounded-md bg-white text-fr-blue border border-gray-300 focus:outline-none focus:ring-2 focus:ring-fr-blue focus:border-fr-blue ${
 									errors.name ? "ring-2 ring-fr-red" : ""
 								}`}
@@ -159,6 +197,7 @@ const RegisterPage: React.FC = () => {
 								id='firstName'
 								type='text'
 								placeholder='Prénom'
+								autoComplete='given-name'
 								className={`w-full px-4 py-3 rounded-md bg-white text-fr-blue border border-gray-300 focus:outline-none focus:ring-2 focus:ring-fr-blue focus:border-fr-blue ${
 									errors.firstName ? "ring-2 ring-fr-red" : ""
 								}`}
@@ -179,6 +218,7 @@ const RegisterPage: React.FC = () => {
 						<input
 							id='birthDate'
 							type='date'
+							autoComplete='bday'
 							className={`w-full px-4 py-3 rounded-md bg-white text-fr-blue border border-gray-300 focus:outline-none focus:ring-2 focus:ring-fr-blue focus:border-fr-blue ${
 								errors.birthDate ? "ring-2 ring-fr-red" : ""
 							}`}
@@ -200,6 +240,7 @@ const RegisterPage: React.FC = () => {
 								id='password'
 								type={showPassword ? "text" : "password"}
 								placeholder='Mot de passe'
+								autoComplete='new-password'
 								className={`w-full px-4 py-3 rounded-md bg-white text-fr-blue border border-gray-300 focus:outline-none focus:ring-2 focus:ring-fr-blue focus:border-fr-blue ${
 									errors.password
 										? "ring-2 ring-fr-red border-fr-red"
@@ -212,7 +253,6 @@ const RegisterPage: React.FC = () => {
 								className='absolute right-3 top-1/2 transform -translate-y-1/2 text-fr-blue'
 								onClick={() => setShowPassword(!showPassword)}
 							>
-								{/* Eye icons toggle */}
 								{showPassword ? (
 									<svg
 										xmlns='http://www.w3.org/2000/svg'
@@ -299,10 +339,17 @@ const RegisterPage: React.FC = () => {
 
 					<button
 						type='submit'
-						className='w-full bg-fr-blue text-white py-3 rounded-md font-medium hover:bg-blue-800 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-fr-blue disabled:opacity-50 disabled:cursor-not-allowed'
-						disabled={loading}
+						className='w-full bg-fr-blue text-white py-3 rounded-md font-medium hover:bg-blue-800 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-fr-blue disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center'
+						disabled={isLoading}
 					>
-						{loading ? "Création en cours..." : "Créer mon compte"}
+						{isLoading ? (
+							<>
+								<span className='inline-block w-4 h-4 mr-2 border-2 border-white border-t-transparent rounded-full animate-spin'></span>
+								Création en cours...
+							</>
+						) : (
+							"Créer mon compte"
+						)}
 					</button>
 
 					<div className='text-center mt-4'>

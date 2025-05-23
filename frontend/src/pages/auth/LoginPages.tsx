@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Link, useNavigate } from "react-router-dom"
 import { CONFIG_FIELD } from "@configs/field.configs"
-import useAuthStore from "@/store/authStore"
+import useStore from "@/stores/useStore" // Importation du store centralisé au lieu de useAuthStore
 import { useForm } from "react-hook-form"
 import { toast } from "react-toastify"
 import React, { useState } from "react"
@@ -39,7 +39,9 @@ const LoginPage: React.FC = () => {
 	const [showPassword, setShowPassword] = useState(false)
 	const navigate = useNavigate()
 
-	const { login, isLoading } = useAuthStore()
+	// Utilisation du store centralisé
+	const { auth } = useStore()
+	const { login, isLoading } = auth
 
 	// React Hook Form configuration with Zod
 	const {
@@ -59,7 +61,7 @@ const LoginPage: React.FC = () => {
 	const onSubmit = async (data: LoginFormValues) => {
 		try {
 			// Use the login function from the store
-			const success = await login(data.email, data.password, data.rememberMe || false)
+			const success = await login(data.email, data.password)
 
 			if (success) {
 				toast.success("Connexion réussie")
@@ -91,6 +93,7 @@ const LoginPage: React.FC = () => {
 							id='email'
 							type='email'
 							placeholder='example@email.com'
+							autoComplete='username'
 							className={`w-full px-4 py-3 rounded-md bg-white text-fr-blue border border-gray-300 focus:outline-none focus:ring-2 focus:ring-fr-blue focus:border-fr-blue ${
 								errors.email ? "ring-2 ring-fr-red" : ""
 							}`}
@@ -112,6 +115,7 @@ const LoginPage: React.FC = () => {
 								id='password'
 								type={showPassword ? "text" : "password"}
 								placeholder='Votre mot de passe'
+								autoComplete='current-password'
 								className={`w-full px-4 py-3 rounded-md bg-white text-fr-blue border border-gray-300 focus:outline-none focus:ring-2 focus:ring-fr-blue focus:border-fr-blue ${
 									errors.password
 										? "ring-2 ring-fr-red border-fr-red"
