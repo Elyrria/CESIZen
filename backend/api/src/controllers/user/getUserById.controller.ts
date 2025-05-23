@@ -50,7 +50,7 @@ export const getUserById = async (req: Request, res: Response): Promise<void> =>
 
 		// Find user by ID
 		const foundUser = await User.findById(userId)
-			.select("_id email firstName name role createdAt updatedAt")
+			.select("_id email firstName name birthDate role createdAt updatedAt")
 			.lean()
 
 		if (!foundUser) {
