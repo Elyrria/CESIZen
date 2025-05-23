@@ -50,6 +50,7 @@ export interface IInformationsListResponse {
 
 export interface IInformationResponse {
 	items: IInformation
+	information: IInformation
 	pagination: IPagination
 	filters: IFilters
 }
@@ -410,7 +411,9 @@ class ApiService {
 	}): Promise<ApiResponse<IInformationsListResponse>> {
 		return this.get<IInformationsListResponse>("v1/informations/get-public-informations", params)
 	}
-
+	public async getPublicInformationById(id: string): Promise<ApiResponse<IInformationResponse>> {
+		return this.get<IInformationResponse>(`v1/informations/get-public-information/${id}`)
+	}
 	public async createInformation(formData: FormData): Promise<ApiResponse<ICreateInformationResponse>> {
 		return this.uploadFile<ICreateInformationResponse>("v1/informations/create", formData)
 	}

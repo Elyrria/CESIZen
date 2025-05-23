@@ -1,32 +1,33 @@
-import { handleValidationErrors, getApiErrorMessage } from "@/utils/errorUtils"
-import { Link, useNavigate } from "react-router-dom"
-import { zodResolver } from "@hookform/resolvers/zod"
-import useStore from "@/stores/useStore"
-import { useForm } from "react-hook-form"
-import React, { useState } from "react"
-import { toast } from "react-toastify"
-import api from "@/services/apiHandler"
-import { z } from "zod"
+import { handleValidationErrors, getApiErrorMessage } from '@/utils/errorUtils'
+import { Link, useNavigate } from 'react-router-dom'
+import { zodResolver } from '@hookform/resolvers/zod'
+import useStore from '@/stores/useStore'
+import { useForm } from 'react-hook-form'
+import React, { useState } from 'react'
+import { toast } from 'react-toastify'
+import api from '@/services/apiHandler'
+import { z } from 'zod'
+import Button from '@/components/ui/Button'
 
 // Validation schema
 const registerSchema = z.object({
-	email: z.string().email("Email invalide").min(1, "Email requis"),
+	email: z.string().email('Email invalide').min(1, 'Email requis'),
 	password: z
 		.string()
-		.min(8, "Le mot de passe doit contenir au moins 8 caractères")
-		.regex(/[A-Z]/, "Le mot de passe doit contenir au moins une majuscule")
-		.regex(/[0-9]/, "Le mot de passe doit contenir au moins un chiffre")
-		.regex(/[!@#$%^&*(),.?":{}|<>]/, "Le mot de passe doit contenir au moins un caractère spécial"),
-	name: z.string().min(1, "Nom requis"),
-	firstName: z.string().min(1, "Prénom requis"),
+		.min(8, 'Le mot de passe doit contenir au moins 8 caractères')
+		.regex(/[A-Z]/, 'Le mot de passe doit contenir au moins une majuscule')
+		.regex(/[0-9]/, 'Le mot de passe doit contenir au moins un chiffre')
+		.regex(/[!@#$%^&*(),.?":{}|<>]/, 'Le mot de passe doit contenir au moins un caractère spécial'),
+	name: z.string().min(1, 'Nom requis'),
+	firstName: z.string().min(1, 'Prénom requis'),
 	birthDate: z
 		.string()
-		.min(1, "Date de naissance requise")
+		.min(1, 'Date de naissance requise')
 		.refine((date) => !isNaN(Date.parse(date)), {
-			message: "Date de naissance invalide",
+			message: 'Date de naissance invalide',
 		}),
 	terms: z.boolean().refine((val) => val === true, {
-		message: "Vous devez accepter les conditions générales",
+		message: 'Vous devez accepter les conditions générales',
 	}),
 })
 
@@ -49,11 +50,11 @@ const RegisterPage: React.FC = () => {
 	} = useForm<RegisterFormValues>({
 		resolver: zodResolver(registerSchema),
 		defaultValues: {
-			email: "",
-			password: "",
-			name: "",
-			firstName: "",
-			birthDate: "",
+			email: '',
+			password: '',
+			name: '',
+			firstName: '',
+			birthDate: '',
 			terms: false,
 		},
 	})
@@ -69,22 +70,22 @@ const RegisterPage: React.FC = () => {
 				name: data.name,
 				firstName: data.firstName,
 				birthDate: data.birthDate,
-				role: "user" as const,
+				role: 'user' as const,
 			}
 
 			// Directly call the registration API
 			const response = await api.register(userData)
 
 			if (response.success && response.data) {
-				toast.success("Compte créé avec succès !")
+				toast.success('Compte créé avec succès !')
 
 				// Automatically log in the user after registration
 				const loginSuccess = await login(data.email, data.password)
 
 				if (loginSuccess) {
-					navigate("/")
+					navigate('/')
 				} else {
-					navigate("/login")
+					navigate('/login')
 				}
 			} else {
 				// Handle server-side validation errors with the utility
@@ -92,10 +93,10 @@ const RegisterPage: React.FC = () => {
 					const hasFieldErrors = handleValidationErrors(
 						response,
 						setError,
-						["email", "password", "name", "firstName", "birthDate"] as const, // Valid form fields with strict typing
+						['email', 'password', 'name', 'firstName', 'birthDate'] as const, // Valid form fields with strict typing
 						{
 							// Custom messages for specific fields
-							role: "Erreur de configuration du compte. Veuillez réessayer.",
+							role: 'Erreur de configuration du compte. Veuillez réessayer.',
 						}
 					)
 
@@ -103,15 +104,15 @@ const RegisterPage: React.FC = () => {
 					if (!hasFieldErrors) {
 						const errorMessage = getApiErrorMessage(
 							response,
-							"Erreur lors de la création du compte"
+							'Erreur lors de la création du compte'
 						)
 						toast.error(errorMessage)
 					}
 				}
 			}
 		} catch (error) {
-			console.error("Registration error:", error)
-			toast.error("Erreur de connexion au serveur")
+			console.error('Registration error:', error)
+			toast.error('Erreur de connexion au serveur')
 		} finally {
 			setIsLoading(false)
 		}
@@ -133,9 +134,9 @@ const RegisterPage: React.FC = () => {
 							placeholder='exemple@email.com'
 							autoComplete='username'
 							className={`w-full px-4 py-3 rounded-md bg-white text-fr-blue border border-gray-300 focus:outline-none focus:ring-2 focus:ring-fr-blue focus:border-fr-blue ${
-								errors.email ? "ring-2 ring-fr-red" : ""
+								errors.email ? 'ring-2 ring-fr-red' : ''
 							}`}
-							{...register("email")}
+							{...register('email')}
 						/>
 						{errors.email && (
 							<p className='text-fr-red text-sm mt-1'>
@@ -155,9 +156,9 @@ const RegisterPage: React.FC = () => {
 								placeholder='Nom'
 								autoComplete='family-name'
 								className={`w-full px-4 py-3 rounded-md bg-white text-fr-blue border border-gray-300 focus:outline-none focus:ring-2 focus:ring-fr-blue focus:border-fr-blue ${
-									errors.name ? "ring-2 ring-fr-red" : ""
+									errors.name ? 'ring-2 ring-fr-red' : ''
 								}`}
-								{...register("name")}
+								{...register('name')}
 							/>
 							{errors.name && (
 								<p className='text-fr-red text-sm mt-1'>
@@ -176,9 +177,9 @@ const RegisterPage: React.FC = () => {
 								placeholder='Prénom'
 								autoComplete='given-name'
 								className={`w-full px-4 py-3 rounded-md bg-white text-fr-blue border border-gray-300 focus:outline-none focus:ring-2 focus:ring-fr-blue focus:border-fr-blue ${
-									errors.firstName ? "ring-2 ring-fr-red" : ""
+									errors.firstName ? 'ring-2 ring-fr-red' : ''
 								}`}
-								{...register("firstName")}
+								{...register('firstName')}
 							/>
 							{errors.firstName && (
 								<p className='text-fr-red text-sm mt-1'>
@@ -197,9 +198,9 @@ const RegisterPage: React.FC = () => {
 							type='date'
 							autoComplete='bday'
 							className={`w-full px-4 py-3 rounded-md bg-white text-fr-blue border border-gray-300 focus:outline-none focus:ring-2 focus:ring-fr-blue focus:border-fr-blue ${
-								errors.birthDate ? "ring-2 ring-fr-red" : ""
+								errors.birthDate ? 'ring-2 ring-fr-red' : ''
 							}`}
-							{...register("birthDate")}
+							{...register('birthDate')}
 						/>
 						{errors.birthDate && (
 							<p className='text-fr-red text-sm mt-1'>
@@ -215,15 +216,15 @@ const RegisterPage: React.FC = () => {
 						<div className='relative'>
 							<input
 								id='password'
-								type={showPassword ? "text" : "password"}
+								type={showPassword ? 'text' : 'password'}
 								placeholder='Mot de passe'
 								autoComplete='new-password'
 								className={`w-full px-4 py-3 rounded-md bg-white text-fr-blue border border-gray-300 focus:outline-none focus:ring-2 focus:ring-fr-blue focus:border-fr-blue ${
 									errors.password
-										? "ring-2 ring-fr-red border-fr-red"
-										: ""
+										? 'ring-2 ring-fr-red border-fr-red'
+										: ''
 								}`}
-								{...register("password")}
+								{...register('password')}
 							/>
 							<button
 								type='button'
@@ -286,7 +287,7 @@ const RegisterPage: React.FC = () => {
 								type='checkbox'
 								id='terms'
 								className='peer w-5 h-5 appearance-none rounded border border-gray-300 bg-white checked:bg-white focus:outline-none focus:ring-2 focus:ring-fr-blue focus:border-fr-blue'
-								{...register("terms")}
+								{...register('terms')}
 							/>
 							<svg
 								className='absolute left-0.5 top-0.5 w-4 h-4 text-fr-blue pointer-events-none opacity-0 peer-checked:opacity-100'
@@ -303,7 +304,7 @@ const RegisterPage: React.FC = () => {
 							</svg>
 						</div>
 						<label htmlFor='terms' className='text-gray-700'>
-							J'accepte les{" "}
+							J'accepte les{' '}
 							<Link
 								to='/conditions-generales'
 								className='text-fr-blue hover:underline'
@@ -314,9 +315,9 @@ const RegisterPage: React.FC = () => {
 					</div>
 					{errors.terms && <p className='text-fr-red text-sm'>{errors.terms.message}</p>}
 
-					<button
+					<Button
 						type='submit'
-						className='w-full bg-fr-blue text-white py-3 rounded-md font-medium hover:bg-blue-800 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-fr-blue disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center'
+						className='w-full flex items-center justify-center'
 						disabled={isLoading}
 					>
 						{isLoading ? (
@@ -325,13 +326,13 @@ const RegisterPage: React.FC = () => {
 								Création en cours...
 							</>
 						) : (
-							"Créer mon compte"
+							'Créer mon compte'
 						)}
-					</button>
+					</Button>
 
 					<div className='text-center mt-4'>
 						<p className='text-gray-700'>
-							Vous avez déjà un compte?{" "}
+							Vous avez déjà un compte?{' '}
 							<Link to='/login' className='text-fr-blue hover:underline'>
 								Connexion
 							</Link>

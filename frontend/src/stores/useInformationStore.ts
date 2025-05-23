@@ -38,6 +38,8 @@ export interface InformationState {
 		limit?: number
 	}) => Promise<boolean>
 
+	fetchPublicInformationById: (id: string) => Promise<boolean>
+
 	// CRUD methods
 	createInformation: (formData: FormData) => Promise<IInformation | null>
 	updateInformation: (id: string, formData: FormData) => Promise<boolean>
@@ -137,6 +139,57 @@ const useInformationStore = create<InformationState>()(
 				} catch (error) {
 					console.error("Error fetching public informations:", error)
 					set({ error: "Une erreur inattendue s'est produite" })
+					return false
+				} finally {
+					set({ isLoading: false })
+				}
+			},
+
+			fetchPublicInformationById: async (id) => {
+				set({ isLoading: true, error: null })
+
+				try {
+					const response = await api.getPublicInformationById(id)
+
+					if (response.success && response.data) {
+						const informationData = response.data
+						console.log(informationData)
+						if (informationData) {
+							// Convert raw data to entity using Factory
+							const information = entityFactory.createInformation(informationData.information)
+							console.log(information)
+							set({
+								selectedInformation: information,
+							})
+
+							return true
+						} else {
+							set({
+								error: "Information non trouvée ou non publiée",
+								selectedInformation: null,
+							})
+							return false
+						}
+					} else {
+						if (!response.success) {
+							set({
+								error: response.error.message,
+								selectedInformation: null,
+							})
+						} else {
+							set({
+								error: "Impossible de récupérer l'information",
+								selectedInformation: null,
+							})
+						}
+						return false
+					}
+				} catch (error) {
+					console.error("Error fetching public information by ID:", error)
+					set({
+						error: "Une erreur inattendue s'est produite",
+						selectedInformation: null,
+					})
 					return false
 				} finally {
 					set({ isLoading: false })

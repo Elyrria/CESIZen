@@ -1,18 +1,19 @@
-import useStore from "@/stores/useStore" // Utiliser le store centralisé
+import useStore from "@/stores/useStore"
 import logo from "@assets/cesizen_logo.svg"
 import React, { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { toast } from "react-toastify"
+import Button from "@/components/ui/Button"
 
 const Header: React.FC = () => {
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 	const navigate = useNavigate()
 
-	// Utiliser le store centralisé
+
 	const { auth } = useStore()
 	const { user, logout, isLoading } = auth
 
-	// Calcul des valeurs isAuthenticated et isAdmin
+
 	const isAuthenticated = !!user
 	const isAdmin = user?.role === "administrator"
 
@@ -87,16 +88,16 @@ const Header: React.FC = () => {
 									</Link>
 								)}
 
-								<button
+								<Button
 									onClick={handleLogout}
 									disabled={isLoading}
-									className='fr-btn fr-btn--secondary fr-btn--sm flex items-center'
+									className='fr-btn--secondary fr-btn--sm flex items-center'
 								>
 									{isLoading ? (
 										<span className='inline-block w-4 h-4 mr-2 border-2 border-gray-400 border-t-transparent rounded-full animate-spin'></span>
 									) : null}
 									Déconnexion
-								</button>
+								</Button>
 							</>
 						) : (
 							<Link to='/login' className='fr-btn fr-btn--primary fr-btn--sm'>
@@ -187,7 +188,7 @@ const Header: React.FC = () => {
 									</Link>
 								)}
 
-								<button
+								<Button
 									onClick={handleLogout}
 									disabled={isLoading}
 									className='fr-btn fr-btn--secondary w-full flex items-center justify-center'
@@ -196,7 +197,7 @@ const Header: React.FC = () => {
 										<span className='inline-block w-4 h-4 mr-2 border-2 border-gray-400 border-t-transparent rounded-full animate-spin'></span>
 									) : null}
 									Déconnexion
-								</button>
+								</Button>
 							</>
 						) : (
 							<Link

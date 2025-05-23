@@ -5,6 +5,7 @@ import useCategoryStore from '@/stores/useCategoryStore'
 import Select from '@/components/ui/Select'
 import SearchBar from '@/components/ui/SearchBar'
 import InformationCard from '@/components/ui/InformationCard'
+import Button from '@/components/ui/Button'
 import type { CategoryId } from '@/factories/Factory'
 
 const typeOptions = [
@@ -18,8 +19,9 @@ const InformationsPage: React.FC = () => {
 	const { fetchPublicInformations, informations, pagination, isLoading } = useInformationStore()
 	const { fetchPublicCategories, publicCategories: categories } = useCategoryStore()
 	const [selectedCategory, setSelectedCategory] = useState<string>('')
-	const [searchQuery, setSearchQuery] = useState<string>('')
 	const [selectedType, setSelectedType] = useState<'' | 'TEXT' | 'IMAGE' | 'VIDEO'>('')
+	const [searchInput, setSearchInput] = useState<string>('')
+	const [searchQuery, setSearchQuery] = useState<string>('')
 
 	useEffect(() => {
 		fetchPublicCategories()
@@ -44,6 +46,16 @@ const InformationsPage: React.FC = () => {
 			search: searchQuery || undefined,
 			page,
 		})
+	}
+
+	const handleSearch = () => {
+		setSearchQuery(searchInput)
+	}
+
+	const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+		if (e.key === 'Enter') {
+			handleSearch()
+		}
 	}
 
 	const getCategoryName = (categoryId: CategoryId): string => {
@@ -94,17 +106,27 @@ const InformationsPage: React.FC = () => {
 					label='Types'
 					value={selectedType}
 					onChange={(v) => setSelectedType(v as '' | 'TEXT' | 'IMAGE' | 'VIDEO')}
-					options={typeOptions}
+					options={[{ value: '', label: 'Tous les types' }, ...typeOptions]}
 					placeholder='Types'
 				/>
-				<div className='md:col-span-2 lg:col-span-2'>
-					<SearchBar
-						label='Rechercher'
-						value={searchQuery}
-						onChange={setSearchQuery}
-						placeholder='Rechercher par titre...'
-						onReset={() => setSearchQuery('')}
-					/>
+				<div className='md:col-span-2 lg:col-span-2 flex items-end gap-2'>
+					<div className='flex-1'>
+						<SearchBar
+							label='Rechercher'
+							value={searchInput}
+							onChange={setSearchInput}
+							placeholder='Rechercher par titre...'
+							onReset={() => setSearchInput('')}
+							onKeyDown={handleSearchKeyDown}
+						/>
+					</div>
+					<Button
+						className='h-10 px-4'
+						onClick={handleSearch}
+						aria-label='Lancer la recherche'
+					>
+						Rechercher
+					</Button>
 				</div>
 			</div>
 
@@ -128,20 +150,18 @@ const InformationsPage: React.FC = () => {
 			{/* Pagination */}
 			{tablePagination && tablePagination.totalPages > 1 && (
 				<div className='flex justify-center gap-4 mt-6'>
-					<button
-						className='fr-btn'
+					<Button
 						disabled={tablePagination.currentPage === 1}
 						onClick={() => handlePageChange(tablePagination.currentPage - 1)}
 					>
 						Précédent
-					</button>
-					<button
-						className='fr-btn'
+					</Button>
+					<Button
 						disabled={tablePagination.currentPage === tablePagination.totalPages}
 						onClick={() => handlePageChange(tablePagination.currentPage + 1)}
 					>
 						Suivant
-					</button>
+					</Button>
 				</div>
 			)}
 		</div>

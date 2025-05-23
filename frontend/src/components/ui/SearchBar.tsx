@@ -7,6 +7,7 @@ interface SearchBarProps {
 	placeholder?: string
 	className?: string
 	onReset?: () => void
+	onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({
@@ -16,6 +17,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
 	placeholder = 'Rechercher...',
 	className = '',
 	onReset,
+	onKeyDown,
 }) => {
 	return (
 		<div className={`flex flex-col ${className}`}>
@@ -27,6 +29,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
 					value={value}
 					onChange={(e) => onChange(e.target.value)}
 					placeholder={placeholder}
+					onKeyDown={onKeyDown}
 				/>
 				{value && (
 					<button
