@@ -1,4 +1,5 @@
 import type { IInformation, InformationType, InformationStatus } from "@/factories/Factory"
+import { cleanText } from "@/utils/textUtils"
 
 export class VideoInformation implements IInformation {
 	id: string
@@ -24,9 +25,9 @@ export class VideoInformation implements IInformation {
 
 	constructor(data: Partial<IInformation>) {
 		this.id = data.id || data._id || ""
-		this.title = data.title || ""
-		this.descriptionInformation = data.descriptionInformation || ""
-		this.name = data.name || ""
+		this.title = cleanText(data.title) || ""
+		this.descriptionInformation = cleanText(data.descriptionInformation) || ""
+		this.name = cleanText(data.name) || ""
 		this.type = "VIDEO"
 		this.status = data.status || "DRAFT"
 		this.authorId = data.authorId || ""

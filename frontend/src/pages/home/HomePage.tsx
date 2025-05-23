@@ -37,8 +37,7 @@ const HomePage: React.FC = () => {
 							title='Derniers Articles'
 							viewAllText='Voir tous les articles →'
 						/>
-
-						{/* Section Activités (remplace l'ancienne section Ressources) */}
+						{/* Section Activités */}
 						<LatestItems
 							type='activity'
 							limit={3}

@@ -1,4 +1,5 @@
 import type { IInformation, InformationType, InformationStatus, AuthorId, CategoryId } from "@/factories/Factory"
+import { cleanText } from "@/utils/textUtils"
 
 export class TextInformation implements IInformation {
 	id: string
@@ -18,11 +19,11 @@ export class TextInformation implements IInformation {
 
 	constructor(data: Partial<IInformation>) {
 		this.id = data.id || ""
-		this.title = data.title || ""
-		this.descriptionInformation = data.descriptionInformation || ""
+		this.title = cleanText(data.title) || ""
+		this.descriptionInformation = cleanText(data.descriptionInformation) || ""
 		this.name = data.name || ""
 		this.type = "TEXT"
-		this.content = data.content || ""
+		this.content = cleanText(data.content) || ""
 		this.status = data.status || "DRAFT"
 		this.authorId = data.authorId || ""
 		this.categoryId = data.categoryId || []

@@ -1,4 +1,5 @@
 import type { IActivity, AuthorId, CategoryId, InformationType } from "@/factories/Factory"
+import { cleanText } from "@/utils/textUtils"
 
 export class TextActivity implements IActivity {
 	id: string
@@ -18,10 +19,10 @@ export class TextActivity implements IActivity {
 
 	constructor(data: Partial<IActivity>) {
 		this.id = data.id || ""
-		this.name = data.name || ""
-		this.descriptionActivity = data.descriptionActivity || ""
+		this.name = cleanText(data.name) || ""
+		this.descriptionActivity = cleanText(data.descriptionActivity) || ""
 		this.type = "TEXT"
-		this.content = data.content || ""
+		this.content = cleanText(data.content) || ""
 		this.isActive = data.isActive !== undefined ? data.isActive : true
 		this.authorId = data.authorId || ""
 		this.categoryId = data.categoryId || []

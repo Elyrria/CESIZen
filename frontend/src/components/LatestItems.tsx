@@ -1,7 +1,7 @@
+import { type IInformation, type IActivity } from "@/factories/Factory"
 import useStore from "@/stores/useStore"
 import React, { useEffect } from "react"
 import { Link } from "react-router-dom"
-import { type IInformation, type IActivity } from "@/factories/Factory"
 
 type ItemType = "information" | "activity"
 
@@ -67,11 +67,11 @@ const LatestItems: React.FC<LatestItemsProps> = ({
 
 			{isLoading ? (
 				<div className='text-center py-2'>
-					<p className='text-fr-grey-dark text-sm'>Loading...</p>
+					<p className='text-fr-grey-dark text-sm'>Chargement...</p>
 				</div>
 			) : error ? (
 				<div className='text-center py-2'>
-					<p className='text-red-500 text-sm'>Unable to load data</p>
+					<p className='text-red-500 text-sm'>Impossible de charger les données</p>
 				</div>
 			) : items && items.length > 0 ? (
 				<div className='space-y-2'>
@@ -84,8 +84,9 @@ const LatestItems: React.FC<LatestItemsProps> = ({
 							className='block hover:bg-fr-grey-light/20 p-2 rounded transition-colors'
 						>
 							<p className='text-fr-grey-dark text-sm font-medium'>
-								• {item.name}
+								• {isInformation(item) ? item.title : item.name}
 							</p>
+
 							{isInformation(item) && item.descriptionInformation && (
 								<p className='text-fr-grey text-xs ml-3 mt-1 line-clamp-2'>
 									{item.descriptionInformation}
