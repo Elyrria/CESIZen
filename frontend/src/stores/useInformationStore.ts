@@ -239,10 +239,9 @@ const useInformationStore = create<InformationState>()(
 
 				try {
 					const response = await api.updateInformation(id, formData)
-
 					if (response.success && response.data) {
 						const updatedInformation = entityFactory.createInformation(
-							response.data.information
+							response.data
 						)
 
 						// Update information in the list
@@ -270,6 +269,7 @@ const useInformationStore = create<InformationState>()(
 						return false
 					}
 				} catch (error) {
+
 					console.error("Error updating information:", error)
 					set({ error: "Une erreur inattendue s'est produite" })
 					return false

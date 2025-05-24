@@ -422,12 +422,18 @@ class ApiService {
 		id: string,
 		formData: FormData
 	): Promise<ApiResponse<ICreateInformationResponse>> {
-		return this.uploadFile<ICreateInformationResponse>(
+		const uploadConfig: AxiosRequestConfig = {
+			headers: {
+				"Content-Type": "multipart/form-data",
+			},
+		}
+
+		return this.put<ICreateInformationResponse>(
 			`v1/informations/update/${id}`,
-			formData
+			formData,
+			uploadConfig
 		)
 	}
-
 	public async deleteInformation(id: string): Promise<ApiResponse<void>> {
 		return this.delete<void>(`v1/informations/delete/${id}`)
 	}
