@@ -2,7 +2,7 @@ import React from 'react'
 import Modal from '@/components/ui/Modal'
 import InformationForm from './InformationForm'
 import useStore from '@/stores/useStore'
-import type { IInformation } from '@/factories/Factory'
+import type { IInformation, ICategory } from '@/factories/Factory'
 
 interface InformationModalProps {
 	isOpen: boolean
@@ -10,9 +10,10 @@ interface InformationModalProps {
 	mode: 'create' | 'edit'
 	initialData?: IInformation
 	onSubmit: (formData: FormData) => Promise<boolean>
+	categories?: ICategory[]
 }
 
-const InformationModal: React.FC<InformationModalProps> = ({ isOpen, onClose, mode, initialData, onSubmit }) => {
+const InformationModal: React.FC<InformationModalProps> = ({ isOpen, onClose, mode, initialData, onSubmit, categories }) => {
 	const { category, information } = useStore()
 
 	const handleSubmit = async (formData: FormData): Promise<boolean> => {
@@ -22,6 +23,8 @@ const InformationModal: React.FC<InformationModalProps> = ({ isOpen, onClose, mo
 		}
 		return success
 	}
+
+	const availableCategories = categories || category.publicCategories
 
 	return (
 		<Modal
@@ -33,7 +36,7 @@ const InformationModal: React.FC<InformationModalProps> = ({ isOpen, onClose, mo
 			<InformationForm
 				initialData={initialData}
 				onSubmit={handleSubmit}
-				categories={category.publicCategories}
+				categories={availableCategories}
 				isLoading={information.isLoading}
 				mode={mode}
 			/>

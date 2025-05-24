@@ -160,7 +160,7 @@ const InformationForm: React.FC<InformationFormProps> = ({
 				<select
 					{...register('type')}
 					id='type'
-					className={`w-full px-4 py-3 rounded-md bg-white text-fr-blue border border-gray-300 focus:outline-none focus:ring-2 focus:ring-fr-blue focus:border-fr-blue ${
+					className={`w-full px-4 py-3 rounded-md bg-gray-50 text-fr-blue border border-gray-300 focus:outline-none focus:ring-2 focus:ring-fr-blue focus:border-fr-blue ${
 						errors.type ? 'ring-2 ring-fr-red border-fr-red' : ''
 					}`}
 				>
@@ -213,6 +213,48 @@ const InformationForm: React.FC<InformationFormProps> = ({
 				</div>
 			)}
 
+			{/* Categories */}
+			<div>
+				<label className='block text-gray-700 mb-2'>Catégories *</label>
+				<div className='space-y-2 max-h-40 overflow-y-auto bg-gray-50 border border-gray-300 rounded-md p-4'>
+					{categories.map((category) => (
+						<label
+							key={category.id}
+							className='flex items-center hover:bg-gray-100 p-2 rounded cursor-pointer'
+						>
+							<div className='relative flex items-center mr-3'>
+								<input
+									{...register('categoryId')}
+									type='checkbox'
+									value={category.id}
+									className='peer w-5 h-5 appearance-none rounded border border-gray-300 bg-white checked:bg-white focus:outline-none focus:ring-2 focus:ring-fr-blue focus:border-fr-blue'
+								/>
+								{/* Custom checkmark identique à LoginPages */}
+								<svg
+									className='absolute left-0.5 top-0.5 w-4 h-4 text-fr-blue pointer-events-none opacity-0 peer-checked:opacity-100'
+									fill='none'
+									viewBox='0 0 24 24'
+									stroke='currentColor'
+									strokeWidth={2}
+								>
+									<path
+										strokeLinecap='round'
+										strokeLinejoin='round'
+										d='M5 13l4 4L19 7'
+									/>
+								</svg>
+							</div>
+							<span className='text-gray-700 select-none'>
+								{category.name}
+							</span>
+						</label>
+					))}
+				</div>
+				{errors.categoryId && (
+					<p className='text-fr-red text-sm mt-1'>{errors.categoryId.message}</p>
+				)}
+			</div>
+
 			{/* File upload (for IMAGE and VIDEO) */}
 			{(watchedType === 'IMAGE' || watchedType === 'VIDEO') && (
 				<div>
@@ -224,7 +266,7 @@ const InformationForm: React.FC<InformationFormProps> = ({
 						id='file'
 						accept={watchedType === 'IMAGE' ? 'image/*' : 'video/*'}
 						onChange={handleFileChange}
-						className='w-full px-4 py-3 rounded-md bg-white text-fr-blue border border-gray-300 focus:outline-none focus:ring-2 focus:ring-fr-blue focus:border-fr-blue file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-fr-blue file:text-white hover:file:bg-fr-blue-dark'
+						className='w-full px-4 py-3 rounded-md bg-white text-fr-blue border border-gray-300 focus:outline-none focus:ring-2 focus:ring-fr-blue focus:border-fr-blue file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-fr-blue file:text-white hover:file:bg-blue-800'
 					/>
 
 					{/* Preview for images */}
@@ -251,32 +293,6 @@ const InformationForm: React.FC<InformationFormProps> = ({
 				</div>
 			)}
 
-			{/* Categories */}
-			<div>
-				<label className='block text-gray-700 mb-2'>Catégories *</label>
-				<div className='space-y-2 max-h-40 overflow-y-auto bg-white border border-gray-300 rounded-md p-4'>
-					{categories.map((category) => (
-						<label
-							key={category.id}
-							className='flex items-center hover:bg-gray-50 p-2 rounded cursor-pointer'
-						>
-							<input
-								{...register('categoryId')}
-								type='checkbox'
-								value={category.id}
-								className='mr-3 w-4 h-4 text-fr-blue bg-white border-gray-300 rounded focus:ring-fr-blue focus:ring-2'
-							/>
-							<span className='text-gray-700 select-none'>
-								{category.name}
-							</span>
-						</label>
-					))}
-				</div>
-				{errors.categoryId && (
-					<p className='text-fr-red text-sm mt-1'>{errors.categoryId.message}</p>
-				)}
-			</div>
-
 			{/* Buttons */}
 			<div className='flex justify-end gap-3 pt-6 border-t border-gray-200'>
 				<button
@@ -289,7 +305,7 @@ const InformationForm: React.FC<InformationFormProps> = ({
 				</button>
 				<button
 					type='submit'
-					className='px-6 py-3 bg-fr-blue text-white rounded-md font-medium hover:bg-fr-blue-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-fr-blue disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center'
+					className='px-6 py-3 bg-fr-blue text-white rounded-md font-medium hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-fr-blue disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center'
 					disabled={isLoading}
 				>
 					{isLoading ? (
