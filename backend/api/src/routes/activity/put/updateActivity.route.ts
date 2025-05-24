@@ -1,4 +1,5 @@
 import { auth } from "@middlewares/security/auth.middleware.ts"
+import { upload } from "@middlewares/multer/upload.middleware.ts"  // AJOUT MANQUANT
 import { updateActivity } from "@controllers/index.ts"
 import { Router } from "express"
 
@@ -466,6 +467,7 @@ const updateActivityRouter = Router()
  *                 code: "serverError"
  *                 message: "An unexpected error occurred"
  */
-updateActivityRouter.put("/update/:id", auth, updateActivity)
+
+updateActivityRouter.put("/update/:id", upload.single("file"), auth, updateActivity)
 
 export default updateActivityRouter
