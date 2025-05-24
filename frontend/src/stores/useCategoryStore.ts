@@ -117,8 +117,8 @@ const useCategoryStore = create<CategoryState>()(
 				try {
 					const response = await api.createCategory(categoryData)
 
-					if (response.success && response.data && response.data.category) {
-						const newCategory = entityFactory.createCategory(response.data.category)
+					if (response.success && response.data) {
+						const newCategory = entityFactory.createCategory(response.data)
 
 						// Add the new category to the list
 						set((state) => ({
@@ -151,10 +151,8 @@ const useCategoryStore = create<CategoryState>()(
 				try {
 					const response = await api.updateCategory(id, categoryData)
 
-					if (response.success && response.data && response.data.category) {
-						const updatedCategory = entityFactory.createCategory(
-							response.data.category
-						)
+					if (response.success && response.data) {
+						const updatedCategory = entityFactory.createCategory(response.data)
 
 						// Update category in both lists
 						set((state) => ({

@@ -55,6 +55,8 @@ export interface UserState {
 		birthDate: string
 	}) => Promise<{ user: IUser; tokens: { accessToken: string; refreshToken: string } } | null>
 
+	deleteUser: (id: string) => Promise<boolean>
+
 	// State setters
 	setSelectedUser: (user: IUser | null) => void
 	clearUsers: () => void
@@ -229,10 +231,41 @@ const useUserStore = create<UserState>()(
 						}
 						return null
 					}
-				} catch (error) {
+				} catch (error: unknown) {
 					console.error("Error registering user:", error)
 					set({ error: "Une erreur inattendue s'est produite" })
 					return null
+				} finally {
+					set({ isLoading: false })
+				}
+			},
+
+			deleteUser: async (id: string) => {
+				set({ isLoading: true, error: null })
+
+				try {
+					const response = await api.deleteUser(id)
+
+					if (response.success) {
+						// Remove deleted user from the list
+						set((state) => ({
+							users: state.users.filter(user => user.id !== id),
+							selectedUser: state.selectedUser?.id === id ? null : state.selectedUser,
+						}))
+
+						return true
+					} else {
+						if (!response.success) {
+							set({ error: response.error.message })
+						} else {
+							set({ error: "Impossible de supprimer l'utilisateur" })
+						}
+						return false
+					}
+				} catch (error: unknown) {
+					console.error("Error deleting user:", error)
+					set({ error: "Une erreur inattendue s'est produite" })
+					return false
 				} finally {
 					set({ isLoading: false })
 				}

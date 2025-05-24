@@ -143,7 +143,7 @@ const DataTable = <T extends { id: string }>({
 									Chargement...
 								</td>
 							</tr>
-						) : data.length === 0 ? (
+						) : !data || data.length === 0 ? (
 							<tr>
 								<td
 									colSpan={

@@ -351,6 +351,10 @@ class ApiService {
 		return this.post<IUser>("v1/users/admin-create", userData)
 	}
 
+	public async deleteUser(id: string): Promise<ApiResponse<void>> {
+		return this.delete(`v1/users/delete/${id}`)
+	}
+
 	// CATEGORIES
 	public async getAdminCategories(): Promise<ApiResponse<ICategoryListResponse>> {
 		return this.get<ICategoryListResponse>("v1/category/get-categories")
