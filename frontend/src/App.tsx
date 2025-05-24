@@ -17,6 +17,9 @@ const HomePage = lazy(() => import('@/pages/home/HomePage'))
 const InformationsPage = lazy(() => import('@/pages/information/InformationsPage'))
 const InformationDetailPage = lazy(() => import('@/pages/information/InformationDetailPage'))
 
+// Pages admin
+const AdminDashboard = lazy(() => import('@/pages/admin/AdminDashboard'))
+
 const App: React.FC = () => {
 	return (
 		<Router>
@@ -48,6 +51,16 @@ const App: React.FC = () => {
 								element={
 									<ProtectedRoute>
 										<ProfilePage />
+									</ProtectedRoute>
+								}
+							/>
+
+							{/* Routes admin */}
+							<Route
+								path='/admin'
+								element={
+									<ProtectedRoute requireAdmin={true}>
+										<AdminDashboard />
 									</ProtectedRoute>
 								}
 							/>
