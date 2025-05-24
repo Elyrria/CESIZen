@@ -1,6 +1,6 @@
 // src/components/layout/Footer.tsx
-import { Link } from "react-router-dom"
-import React from "react"
+import { Link } from 'react-router-dom'
+import React from 'react'
 
 const Footer: React.FC = () => {
 	const currentYear = new Date().getFullYear()
@@ -42,6 +42,14 @@ const Footer: React.FC = () => {
 									className='text-sm text-fr-grey-dark hover:text-fr-blue transition-colors'
 								>
 									Activités
+								</Link>
+							</li>
+							<li>
+								<Link
+									to='/faq'
+									className='text-sm text-fr-grey-dark hover:text-fr-blue transition-colors'
+								>
+									FAQ
 								</Link>
 							</li>
 						</ul>
@@ -93,7 +101,7 @@ const Footer: React.FC = () => {
 								onError={(e) => {
 									// Fallback si l'image n'existe pas
 									;(e.target as HTMLImageElement).style.display =
-										"none"
+										'none'
 								}}
 							/>
 							<img
@@ -103,7 +111,7 @@ const Footer: React.FC = () => {
 								onError={(e) => {
 									// Fallback si l'image n'existe pas
 									;(e.target as HTMLImageElement).style.display =
-										"none"
+										'none'
 								}}
 							/>
 						</div>

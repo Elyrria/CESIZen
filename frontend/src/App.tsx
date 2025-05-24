@@ -8,17 +8,26 @@ import React, { Suspense, lazy } from 'react'
 import ProfilePage from '@/pages/profile/ProfilePage'
 import ProtectedRoute from '@/components/auth/ProtectedRoute'
 
-// Pages d'authentification
+// Authentication pages
 const RegisterPage = lazy(() => import('@/pages/auth/RegisterPage'))
 const LoginPage = lazy(() => import('@/pages/auth/LoginPages'))
 
-// Pages publiques
+// Public pages
 const HomePage = lazy(() => import('@/pages/home/HomePage'))
 const InformationsPage = lazy(() => import('@/pages/information/InformationsPage'))
 const InformationDetailPage = lazy(() => import('@/pages/information/InformationDetailPage'))
 
-// Pages admin
+// Admin pages
 const AdminDashboard = lazy(() => import('@/pages/admin/AdminDashboard'))
+
+// Static pages
+const LegalNoticesPage = lazy(() => import('@/pages/legal/LegalNoticesPage'))
+const PrivacyPolicyPage = lazy(() => import('@/pages/legal/PrivacyPolicyPage'))
+const AccessibilityPage = lazy(() => import('@/pages/legal/AccessibilityPage'))
+const FAQPage = lazy(() => import('@/pages/help/FAQPage'))
+
+// Error page
+const NotFoundPage = lazy(() => import('@/pages/error/NotFoundPage'))
 
 const App: React.FC = () => {
 	return (
@@ -33,19 +42,19 @@ const App: React.FC = () => {
 						}
 					>
 						<Routes>
-							{/* Routes publiques */}
+							{/* Public routes */}
 							<Route path='/register' element={<RegisterPage />} />
 							<Route path='/login' element={<LoginPage />} />
 							<Route path='/' element={<HomePage />} />
 
-							{/* Routes des informations */}
+							{/* Information routes */}
 							<Route path='/informations' element={<InformationsPage />} />
 							<Route
 								path='/informations/:id'
 								element={<InformationDetailPage />}
 							/>
 
-							{/* Routes protégées */}
+							{/* Protected routes */}
 							<Route
 								path='/profile'
 								element={
@@ -55,7 +64,7 @@ const App: React.FC = () => {
 								}
 							/>
 
-							{/* Routes admin */}
+							{/* Admin routes */}
 							<Route
 								path='/admin'
 								element={
@@ -65,8 +74,20 @@ const App: React.FC = () => {
 								}
 							/>
 
-							{/* Redirection par défaut */}
-							<Route path='*' element={<Navigate to='/' replace />} />
+							{/* Static pages */}
+							<Route
+								path='/mentions-legales'
+								element={<LegalNoticesPage />}
+							/>
+							<Route
+								path='/confidentialite'
+								element={<PrivacyPolicyPage />}
+							/>
+							<Route path='/accessibilite' element={<AccessibilityPage />} />
+							<Route path='/faq' element={<FAQPage />} />
+
+							{/* 404 route - MUST BE LAST */}
+							<Route path='*' element={<NotFoundPage />} />
 						</Routes>
 					</Suspense>
 				</Layout>
