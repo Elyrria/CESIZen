@@ -9,28 +9,28 @@ const InformationDetailPage: React.FC = () => {
 	const { information } = useStore()
 
 	useEffect(() => {
-		console.log("Changement d'id détecté", id)
+		console.log('ID change detected', id)
 		if (id) {
 			loadInformation(id)
 		}
 	}, [id])
 
-	// Utiliser selectedInformation du store et écouter ses changements
+	// Use selectedInformation from store and listen to its changes
 	useEffect(() => {
-		console.log("selectedInformation a changé:", information.selectedInformation)
+		console.log('selectedInformation changed:', information.selectedInformation)
 	}, [information.selectedInformation])
 
 	const loadInformation = async (infoId: string) => {
-		// Reset l'information sélectionnée avant de charger la nouvelle
+		// Reset selected information before loading new one
 		information.setSelectedInformation(null)
-		// Charger la nouvelle information
+		// Load new information
 		await information.fetchPublicInformationById(infoId)
 	}
 
 	const renderContent = () => {
 		const currentInfo = information.selectedInformation
 		if (!currentInfo) return null
-		
+
 		if (currentInfo.type === 'TEXT') {
 			return (
 				<div className='prose max-w-none'>
@@ -57,7 +57,7 @@ const InformationDetailPage: React.FC = () => {
 						className='w-full h-full rounded-lg'
 						src={currentInfo.mediaUrl || ''}
 					>
-						Votre navigateur ne supporte pas la lecture de vidéos.
+						Your browser does not support video playback.
 					</video>
 				</div>
 			)
@@ -65,13 +65,13 @@ const InformationDetailPage: React.FC = () => {
 		return null
 	}
 
-	// Utiliser directement selectedInformation du store
+	// Use selectedInformation directly from store
 	const currentInfo = information.selectedInformation
 
 	if (information.isLoading) {
 		return (
 			<div className='container mx-auto px-4 py-8'>
-				<div className='text-center text-fr-grey-dark'>Chargement...</div>
+				<div className='text-center text-fr-grey-dark'>Loading...</div>
 			</div>
 		)
 	}
@@ -79,7 +79,7 @@ const InformationDetailPage: React.FC = () => {
 	if (!currentInfo) {
 		return (
 			<div className='container mx-auto px-4 py-8'>
-				<div className='text-center text-fr-grey-dark'>Information non trouvée</div>
+				<div className='text-center text-fr-grey-dark'>Information not found</div>
 			</div>
 		)
 	}
@@ -118,7 +118,7 @@ const InformationDetailPage: React.FC = () => {
 				</ol>
 			</nav>
 
-			{/* Contenu principal */}
+			{/* Main content */}
 			<article className='bg-white rounded-lg shadow-fr-md p-6'>
 				<header className='mb-6'>
 					<h1 className='text-3xl font-bold text-fr-blue mb-2'>{currentInfo.title}</h1>
@@ -127,7 +127,7 @@ const InformationDetailPage: React.FC = () => {
 							status={currentInfo.status as 'DRAFT' | 'PENDING' | 'PUBLISHED'}
 						/>
 						{categoryName && (
-							<span className='text-sm'>Catégorie : {categoryName}</span>
+							<span className='text-sm'>Category: {categoryName}</span>
 						)}
 					</div>
 				</header>

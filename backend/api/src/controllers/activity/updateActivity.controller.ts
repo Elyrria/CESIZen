@@ -56,6 +56,7 @@ export const updateActivity = async (req: IAuthRequest, res: Response): Promise<
 		// Prepare update data
 		const updateData: Partial<IActivityDocument> = {}
 
+		console.log(req)
 		// Process basic fields that can be updated
 		if (req.body.name) updateData.name = req.body.name
 		if (req.body.descriptionActivity) updateData.descriptionActivity = req.body.descriptionActivity

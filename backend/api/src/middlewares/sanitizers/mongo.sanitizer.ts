@@ -89,7 +89,7 @@ export const containsMongoOperatorInValue = (value: any): boolean => {
 				return true
 			}
 
-			// Récursivement vérifier toutes les valeurs de l'objet
+			// Recursively check all object values
 			return Object.values(value).some((v) => containsMongoOperatorInValue(v))
 		}
 		return false
@@ -311,8 +311,8 @@ export const mongoSanitizerMiddleware = (req: Request, _res: Response, next: Nex
 			enumerable: false,
 		})
 
-		// For compatibility with existing code
-		;(req as any).sanitizedQuery = sanitizedQuery
+			// For compatibility with existing code
+			; (req as any).sanitizedQuery = sanitizedQuery
 	}
 
 	// Sanitize request body
@@ -328,8 +328,8 @@ export const mongoSanitizerMiddleware = (req: Request, _res: Response, next: Nex
 			enumerable: false,
 		})
 
-		// For compatibility
-		;(req as any).sanitizedBody = sanitizedBody
+			// For compatibility
+			; (req as any).sanitizedBody = sanitizedBody
 	}
 
 	// Sanitize route parameters - this is the part we're fixing
@@ -349,8 +349,8 @@ export const mongoSanitizerMiddleware = (req: Request, _res: Response, next: Nex
 			enumerable: false,
 		})
 
-		// For compatibility
-		;(req as any).sanitizedParams = sanitizedParams
+			// For compatibility
+			; (req as any).sanitizedParams = sanitizedParams
 	}
 
 	// Add getter methods to easily access sanitized data

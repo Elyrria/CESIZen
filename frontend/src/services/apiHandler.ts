@@ -130,26 +130,24 @@ class ApiService {
 			async (error: AxiosError) => {
 				const originalRequest = error.config as AxiosRequestConfig & { _retry?: boolean }
 
-				// If error is 401 (Unauthorized) and we haven't retried yet
-				if (error.response?.status === 401 && !originalRequest._retry && originalRequest) {
+				if (error.response?.status === 401 && !originalRequest._retry) {
 					originalRequest._retry = true
 
+					// Try to refresh the token
+					const refreshToken = getRefreshTokenFromCookie()
+					const userId = getUserIdFromCookie()
+
+					if (!refreshToken || !userId) {
+						this.redirectToLogin()
+						return Promise.reject(error)
+					}
+
 					try {
-						const refreshToken = getRefreshTokenFromCookie()
-						const userId = getUserIdFromCookie()
-
-						if (!refreshToken || !userId) {
-							this.redirectToLogin()
-							return Promise.reject(error)
-						}
-
-						// Call API to get new tokens
-						const response = await axios.post(`${this.baseURL}v1/refresh-token`, {
+						const response = await this.instance.post("v1/users/refresh-token", {
 							refreshToken,
-							userId,
 						})
 
-						// Puis accédez aux données
+						// Then access the data
 						const responseData = response.data as IApiSuccessResponse<{
 							tokens: { accessToken: string; refreshToken: string }
 						}>
@@ -471,6 +469,9 @@ class ApiService {
 		limit?: number
 	}): Promise<ApiResponse<IActivitiesListResponse>> {
 		return this.get<IActivitiesListResponse>("v1/activities/get-public-activities", params)
+	}
+	public async getPublicActivity(id: string): Promise<ApiResponse<{ activity: IActivity }>> {
+		return this.get<{ activity: IActivity }>(`v1/activities/get-public-activity/${id}`)
 	}
 
 	public async createActivity(formData: FormData): Promise<ApiResponse<{ activity: IActivity }>> {

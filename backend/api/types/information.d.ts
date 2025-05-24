@@ -3,9 +3,9 @@ import type { Role } from "@api/types/roles.d.ts"
 import type { Document } from "mongoose"
 import { mongoose } from "mongoose"
 
-// Définition des types pour les formats de contenu
+// Definition of content format types
 export type ContentType = (typeof MEDIATYPE)[number]
-// Définition des statuts de publication
+// Definition of publication statuses
 export type InformationStatus = (typeof STATUS)[number]
 /**
  * Interface for file metadata stored in GridFS
@@ -55,7 +55,7 @@ export interface IInformation {
  * Extends the IInformation interface with Mongoose Document properties
  * Used for database operations and document instance methods
  */
-export interface IInformationDocument extends IInformation, Document {}
+export interface IInformationDocument extends IInformation, Document { }
 // Helper type to identify media types vs text types
 export type MediaType = Exclude<ContentType, "TEXT">
 

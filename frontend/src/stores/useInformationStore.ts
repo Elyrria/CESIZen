@@ -89,14 +89,14 @@ const useInformationStore = create<InformationState>()(
 							})
 						} else {
 							set({
-								error: "Impossible de récupérer les informations",
+								error: "Impossible to retrieve informations",
 							})
 						}
 						return false
 					}
 				} catch (error) {
 					console.error("Error fetching informations:", error)
-					set({ error: "Une erreur inattendue s'est produite" })
+					set({ error: "An unexpected error occurred" })
 					return false
 				} finally {
 					set({ isLoading: false })
@@ -131,14 +131,14 @@ const useInformationStore = create<InformationState>()(
 							})
 						} else {
 							set({
-								error: "Impossible de récupérer les informations publiques",
+								error: "Impossible to retrieve public informations",
 							})
 						}
 						return false
 					}
 				} catch (error) {
 					console.error("Error fetching public informations:", error)
-					set({ error: "Une erreur inattendue s'est produite" })
+					set({ error: "An unexpected error occurred" })
 					return false
 				} finally {
 					set({ isLoading: false })
@@ -165,7 +165,7 @@ const useInformationStore = create<InformationState>()(
 							return true
 						} else {
 							set({
-								error: "Information non trouvée ou non publiée",
+								error: "Information not found or not published",
 								selectedInformation: null,
 							})
 							return false
@@ -178,7 +178,7 @@ const useInformationStore = create<InformationState>()(
 							})
 						} else {
 							set({
-								error: "Impossible de récupérer l'information",
+								error: "Impossible to retrieve the information",
 								selectedInformation: null,
 							})
 						}
@@ -187,7 +187,7 @@ const useInformationStore = create<InformationState>()(
 				} catch (error) {
 					console.error("Error fetching public information by ID:", error)
 					set({
-						error: "Une erreur inattendue s'est produite",
+						error: "An unexpected error occurred",
 						selectedInformation: null,
 					})
 					return false
@@ -220,14 +220,14 @@ const useInformationStore = create<InformationState>()(
 							})
 						} else {
 							set({
-								error: "Impossible de créer l'information : données invalides",
+								error: "Impossible to create information: invalid data",
 							})
 						}
 						return null
 					}
 				} catch (error) {
 					console.error("Error creating information:", error)
-					set({ error: "Une erreur inattendue s'est produite" })
+					set({ error: "An unexpected error occurred" })
 					return null
 				} finally {
 					set({ isLoading: false })
@@ -263,15 +263,14 @@ const useInformationStore = create<InformationState>()(
 							})
 						} else {
 							set({
-								error: "Impossible de mettre à jour l'information : données invalides",
+								error: "Impossible to update information: invalid data",
 							})
 						}
 						return false
 					}
 				} catch (error) {
-
 					console.error("Error updating information:", error)
-					set({ error: "Une erreur inattendue s'est produite" })
+					set({ error: "An unexpected error occurred" })
 					return false
 				} finally {
 					set({ isLoading: false })
@@ -304,14 +303,14 @@ const useInformationStore = create<InformationState>()(
 							})
 						} else {
 							set({
-								error: "Impossible de supprimer l'information",
+								error: "Impossible to delete information",
 							})
 						}
 						return false
 					}
 				} catch (error) {
 					console.error("Error deleting information:", error)
-					set({ error: "Une erreur inattendue s'est produite" })
+					set({ error: "An unexpected error occurred" })
 					return false
 				} finally {
 					set({ isLoading: false })

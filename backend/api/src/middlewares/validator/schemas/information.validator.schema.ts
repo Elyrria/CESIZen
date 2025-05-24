@@ -231,7 +231,7 @@ export const INFORMATION_VALIDATOR = {
 						CONFIG_FIELD.LENGTH.NAME.MAX
 					)
 				)
-				.matches(/^[a-zA-Z0-9-_]+$/) // Uniquement caractères alphanumériques, tirets et underscores
+				.matches(/^[a-zA-Z0-9-_]+$/) // Only alphanumeric characters, dashes and underscores
 				.withMessage(
 					"Le nom ne doit contenir que des caractères alphanumériques, tirets ou underscores"
 				)
@@ -261,7 +261,7 @@ export const INFORMATION_VALIDATOR = {
 				.isString()
 				.withMessage(INFORMATION_MESSAGE.mustBeString(FIELD.CATEGORY_ID))
 				.custom((value) => {
-					// Vérifier que c'est un ID MongoDB valide
+					// Verify it's a valid MongoDB ID
 					if (!mongoose.Types.ObjectId.isValid(value)) {
 						throw new Error(
 							`The ${FIELD.CATEGORY_ID} must be a valid MongoDB ObjectID`
@@ -298,7 +298,7 @@ export const INFORMATION_VALIDATOR = {
 				.optional()
 				.custom(async (value, { req }) => {
 					if (!value) {
-						return true // La catégorie est optionnelle
+						return true // Category is optional
 					}
 
 					try {

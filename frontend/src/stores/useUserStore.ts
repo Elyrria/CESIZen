@@ -95,13 +95,13 @@ const useUserStore = create<UserState>()(
 						if (!response.success) {
 							set({ error: response.error.message })
 						} else {
-							set({ error: "Impossible de récupérer les utilisateurs" })
+							set({ error: "Impossible to retrieve users" })
 						}
 						return false
 					}
 				} catch (error) {
 					console.error("Error fetching users:", error)
-					set({ error: "Une erreur inattendue s'est produite" })
+					set({ error: "An unexpected error occurred" })
 					return false
 				} finally {
 					set({ isLoading: false })
@@ -125,13 +125,13 @@ const useUserStore = create<UserState>()(
 						if (!response.success) {
 							set({ error: response.error.message })
 						} else {
-							set({ error: "Impossible de récupérer l'utilisateur" })
+							set({ error: "Impossible to retrieve the user" })
 						}
 						return null
 					}
 				} catch (error) {
 					console.error("Error fetching user:", error)
-					set({ error: "Une erreur inattendue s'est produite" })
+					set({ error: "An unexpected error occurred" })
 					return null
 				} finally {
 					set({ isLoading: false })
@@ -158,14 +158,14 @@ const useUserStore = create<UserState>()(
 							set({ error: response.error.message })
 						} else {
 							set({
-								error: "Impossible de créer l'utilisateur : données invalides",
+								error: "Impossible to create user: invalid data",
 							})
 						}
 						return null
 					}
 				} catch (error) {
 					console.error("Error creating user:", error)
-					set({ error: "Une erreur inattendue s'est produite" })
+					set({ error: "An unexpected error occurred" })
 					return null
 				} finally {
 					set({ isLoading: false })
@@ -198,14 +198,14 @@ const useUserStore = create<UserState>()(
 							set({ error: response.error.message })
 						} else {
 							set({
-								error: "Impossible de mettre à jour l'utilisateur : données invalides",
+								error: "Impossible to update user: invalid data",
 							})
 						}
 						return false
 					}
 				} catch (error) {
 					console.error("Error updating user:", error)
-					set({ error: "Une erreur inattendue s'est produite" })
+					set({ error: "An unexpected error occurred" })
 					return false
 				} finally {
 					set({ isLoading: false })
@@ -226,14 +226,14 @@ const useUserStore = create<UserState>()(
 							set({ error: response.error.message })
 						} else {
 							set({
-								error: "Impossible d'inscrire l'utilisateur : données invalides",
+								error: "Impossible to register user: invalid data",
 							})
 						}
 						return null
 					}
 				} catch (error: unknown) {
 					console.error("Error registering user:", error)
-					set({ error: "Une erreur inattendue s'est produite" })
+					set({ error: "An unexpected error occurred" })
 					return null
 				} finally {
 					set({ isLoading: false })
@@ -258,13 +258,13 @@ const useUserStore = create<UserState>()(
 						if (!response.success) {
 							set({ error: response.error.message })
 						} else {
-							set({ error: "Impossible de supprimer l'utilisateur" })
+							set({ error: "Impossible to delete the user" })
 						}
 						return false
 					}
 				} catch (error: unknown) {
 					console.error("Error deleting user:", error)
-					set({ error: "Une erreur inattendue s'est produite" })
+					set({ error: "An unexpected error occurred" })
 					return false
 				} finally {
 					set({ isLoading: false })

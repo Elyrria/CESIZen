@@ -1,13 +1,13 @@
-import { handleValidationErrors, getApiErrorMessage } from "@/utils/errorUtils"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Link, useNavigate } from "react-router-dom"
-import { CONFIG_FIELD } from "@configs/field.configs"
-import useStore from "@/stores/useStore"
-import { useForm } from "react-hook-form"
-import { toast } from "react-toastify"
-import React, { useState } from "react"
-import api from "@/services/apiHandler"
-import { z } from "zod"
+import { handleValidationErrors, getApiErrorMessage } from '@/utils/errorUtils'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Link, useNavigate } from 'react-router-dom'
+import { CONFIG_FIELD } from '@configs/field.configs'
+import useStore from '@/stores/useStore'
+import { useForm } from 'react-hook-form'
+import { toast } from 'react-toastify'
+import React, { useState } from 'react'
+import api from '@/services/apiHandler'
+import { z } from 'zod'
 
 /**
  * LoginPage Component – User authentication page.
@@ -28,8 +28,8 @@ import { z } from "zod"
 
 // Zod validation schema
 const loginSchema = z.object({
-	email: z.string().email("Invalid email").min(1, "Email est requis"),
-	password: z.string().min(CONFIG_FIELD.LENGTH.PASSWORD.MIN, "Le mot de passe est requis"),
+	email: z.string().email('Invalid email').min(1, 'Email est requis'),
+	password: z.string().min(CONFIG_FIELD.LENGTH.PASSWORD.MIN, 'Le mot de passe est requis'),
 	rememberMe: z.boolean().optional(),
 })
 
@@ -54,8 +54,8 @@ const LoginPage: React.FC = () => {
 	} = useForm<LoginFormValues>({
 		resolver: zodResolver(loginSchema),
 		defaultValues: {
-			email: "",
-			password: "",
+			email: '',
+			password: '',
 			rememberMe: false,
 		},
 	})
@@ -72,10 +72,10 @@ const LoginPage: React.FC = () => {
 				const loginSuccess = await login(data.email, data.password)
 
 				if (loginSuccess) {
-					toast.success("Connexion réussie")
-					navigate("/")
+					toast.success('Connexion réussie')
+					navigate('/')
 				} else {
-					toast.error("Identifiants incorrects ou compte inexistant")
+					toast.error('Identifiants incorrects ou compte inexistant')
 				}
 			} else {
 				// Handle server-side validation errors
@@ -84,10 +84,10 @@ const LoginPage: React.FC = () => {
 					const hasFieldErrors = handleValidationErrors(
 						response,
 						setError,
-						["email", "password"] as const, // Valid form fields with strict typing
+						['email', 'password'] as const, // Valid form fields with strict typing
 						{
 							// Custom messages for specific fields
-							credentials: "Identifiant incorrects",
+							credentials: 'Identifiant incorrects',
 						}
 					)
 
@@ -95,21 +95,21 @@ const LoginPage: React.FC = () => {
 					if (!hasFieldErrors) {
 						const errorMessage = getApiErrorMessage(
 							response,
-							"Identifiants incorrects ou compte inexistant"
+							'Identifiants incorrects ou compte inexistant'
 						)
 						toast.error(errorMessage)
 					}
 				}
 			}
 		} catch (error) {
-			console.error("Login error:", error)
-			toast.error("Veuillez vérifier vos identifiants")
+			console.error('Login error:', error)
+			toast.error('Veuillez vérifier vos identifiants')
 
 			// In case of network error, suggest checking credentials
 			setError(
-				"email",
+				'email',
 				{
-					message: "Veuillez vérifier vos identifiants",
+					message: 'Veuillez vérifier vos identifiants',
 				},
 				{ shouldFocus: true }
 			)
@@ -134,9 +134,9 @@ const LoginPage: React.FC = () => {
 							placeholder='example@email.com'
 							autoComplete='username'
 							className={`w-full px-4 py-3 rounded-md bg-white text-fr-blue border border-gray-300 focus:outline-none focus:ring-2 focus:ring-fr-blue focus:border-fr-blue ${
-								errors.email ? "ring-2 ring-fr-red" : ""
+								errors.email ? 'ring-2 ring-fr-red' : ''
 							}`}
-							{...register("email")}
+							{...register('email')}
 						/>
 						{errors.email && (
 							<p className='text-fr-red text-sm mt-1'>
@@ -152,15 +152,15 @@ const LoginPage: React.FC = () => {
 						<div className='relative'>
 							<input
 								id='password'
-								type={showPassword ? "text" : "password"}
+								type={showPassword ? 'text' : 'password'}
 								placeholder='Votre mot de passe'
 								autoComplete='current-password'
 								className={`w-full px-4 py-3 rounded-md bg-white text-fr-blue border border-gray-300 focus:outline-none focus:ring-2 focus:ring-fr-blue focus:border-fr-blue ${
 									errors.password
-										? "ring-2 ring-fr-red border-fr-red"
-										: ""
+										? 'ring-2 ring-fr-red border-fr-red'
+										: ''
 								}`}
-								{...register("password")}
+								{...register('password')}
 							/>
 							<button
 								type='button'
@@ -220,7 +220,7 @@ const LoginPage: React.FC = () => {
 									type='checkbox'
 									id='rememberMe'
 									className='peer w-5 h-5 appearance-none rounded border border-gray-300 bg-white checked:bg-white focus:outline-none focus:ring-2 focus:ring-fr-blue focus:border-fr-blue'
-									{...register("rememberMe")}
+									{...register('rememberMe')}
 								/>
 								{/* Custom validation symbol that appears when the checkbox is checked */}
 								<svg
@@ -260,13 +260,13 @@ const LoginPage: React.FC = () => {
 								Connexion en cours...
 							</>
 						) : (
-							"Connexion"
+							'Connexion'
 						)}
 					</button>
 
 					<div className='text-center mt-6'>
 						<p className='text-gray-700'>
-							Vous n'avez pas de compte?{" "}
+							Vous n'avez pas de compte?{' '}
 							<Link
 								to='/register'
 								className='text-indigo-600 hover:underline'

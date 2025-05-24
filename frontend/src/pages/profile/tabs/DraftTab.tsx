@@ -105,89 +105,98 @@ const DraftTab: React.FC<DraftTabProps> = ({ onTabChange }) => {
 		setModalState({ isOpen: true, mode: 'edit', item })
 	}, [])
 
-	// FIX: Improved deletion with error handling
-	const handleDelete = useCallback(async (id: string) => {
-		if (window.confirm('Êtes-vous sûr de vouloir supprimer cette information ?')) {
-			try {
-				const response = await information.deleteInformation(id)
-				// FIX: Check response.success instead of just response
-				if (response) {
-					toast.success('Information supprimée avec succès')
-					// Reload data
-					await reloadDraftData()
-				} else {
+	// Improved deletion with error handling
+	const handleDelete = useCallback(
+		async (id: string) => {
+			if (window.confirm('Êtes-vous sûr de vouloir supprimer cette information ?')) {
+				try {
+					const response = await information.deleteInformation(id)
+					// Check response.success instead of just response
+					if (response) {
+						toast.success('Information supprimée avec succès')
+						// Reload data
+						await reloadDraftData()
+					} else {
+						toast.error('Erreur lors de la suppression')
+					}
+				} catch (error) {
+					console.error('Erreur lors de la suppression:', error)
 					toast.error('Erreur lors de la suppression')
 				}
-			} catch (error) {
-				console.error('Erreur lors de la suppression:', error)
-				toast.error('Erreur lors de la suppression')
 			}
-		}
-	}, [information, reloadDraftData])
+		},
+		[information, reloadDraftData]
+	)
 
-	// FIX: Improved submission for validation
-	const handleSubmitForReview = useCallback(async (id: string) => {
-		try {
-			// Change status from DRAFT to PENDING
-			const formData = new FormData()
-			formData.append('status', 'PENDING')
-			// FIX: Check the API response directly
-			const response = await information.updateInformation(id, formData)
-			// FIX: Check response.success correctly (it's an object, not a boolean)
-			if (response) {
-				toast.success('Information soumise pour validation')
-				// Reload data and switch to the PENDING tab
-				await reloadDraftData()
-				onTabChange('PENDING')
-			} else {
+	// Improved submission for validation
+	const handleSubmitForReview = useCallback(
+		async (id: string) => {
+			try {
+				// Change status from DRAFT to PENDING
+				const formData = new FormData()
+				formData.append('status', 'PENDING')
+				// Check the API response directly
+				const response = await information.updateInformation(id, formData)
+				// Check response.success correctly (it's an object, not a boolean)
+				if (response) {
+					toast.success('Information soumise pour validation')
+					// Reload data and switch to the PENDING tab
+					await reloadDraftData()
+					onTabChange('PENDING')
+				} else {
+					toast.error('Erreur lors de la soumission')
+				}
+			} catch (error) {
+				console.error('Erreur lors de la soumission:', error)
 				toast.error('Erreur lors de la soumission')
 			}
-		} catch (error) {
-			console.error('Erreur lors de la soumission:', error)
-			toast.error('Erreur lors de la soumission')
-		}
-	}, [information, reloadDraftData, onTabChange])
+		},
+		[information, reloadDraftData, onTabChange]
+	)
 
 	const handleCreateNew = useCallback(() => {
 		setModalState({ isOpen: true, mode: 'create' })
 	}, [])
 
-	const handleModalSubmit = useCallback(async (formData: FormData): Promise<boolean> => {
-		try {
-			let success = false
+	const handleModalSubmit = useCallback(
+		async (formData: FormData): Promise<boolean> => {
+			try {
+				let success = false
 
-			if (modalState.mode === 'create') {
-				// Force DRAFT status for new creations
-				formData.append('status', 'DRAFT')
-				const result = await information.createInformation(formData)
-				// FIX: Check result.success as it's an API object
-				success = result ? true : false
-				if (success) {
-					toast.success('Information créée en brouillon')
+				if (modalState.mode === 'create') {
+					// Force DRAFT status for new creations
+					formData.append('status', 'DRAFT')
+					const result = await information.createInformation(formData)
+					// FIX: Check result.success as it's an API object
+					success = result ? true : false
+					if (success) {
+						toast.success('Information créée en brouillon')
+					}
+				} else if (modalState.mode === 'edit' && modalState.item) {
+					const result = await information.updateInformation(modalState.item.id, formData)
+					// FIX: Check result.success as it's an API object
+					success = result ? true : false
+					if (success) {
+						toast.success('Information modifiée avec succès')
+					}
 				}
-			} else if (modalState.mode === 'edit' && modalState.item) {
-				const result = await information.updateInformation(modalState.item.id, formData)
-				// FIX: Check result.success as it's an API object
-				success = result ? true : false
+
 				if (success) {
-					toast.success('Information modifiée avec succès')
+					setModalState({ isOpen: false, mode: 'create' })
+					// Reload data
+					await reloadDraftData()
+					return true
 				}
-			}
 
-			if (success) {
-				setModalState({ isOpen: false, mode: 'create' })
-				// Reload data
-				await reloadDraftData()
-				return true
+				return false
+			} catch (error) {
+				console.error('Erreur lors de la soumission:', error)
+				toast.error("Une erreur inattendue s'est produite")
+				return false
 			}
-
-			return false
-		} catch (error) {
-			console.error('Erreur lors de la soumission:', error)
-			toast.error("Une erreur inattendue s'est produite")
-			return false
-		}
-	}, [modalState.mode, modalState.item, information, reloadDraftData])
+		},
+		[modalState.mode, modalState.item, information, reloadDraftData]
+	)
 
 	const handleCloseModal = useCallback(() => {
 		setModalState({ isOpen: false, mode: 'create' })
@@ -247,7 +256,9 @@ const DraftTab: React.FC<DraftTabProps> = ({ onTabChange }) => {
 										✏️
 									</button>
 									<button
-										onClick={() => handleSubmitForReview(item.id)}
+										onClick={() =>
+											handleSubmitForReview(item.id)
+										}
 										className='text-green-600 hover:text-green-700 p-1 rounded hover:bg-green-50 transition-colors'
 										title='Soumettre pour validation'
 									>

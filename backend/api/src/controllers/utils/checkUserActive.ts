@@ -1,7 +1,7 @@
 import { ERROR_CODE } from "@errorHandler/configs.errorHandler.ts"
 import { errorHandler } from "@errorHandler/errorHandler.ts"
 import type { Response } from "express"
-import {User} from "@models/index.ts"
+import { User } from "@models/index.ts"
 import mongoose from "mongoose"
 
 /**
@@ -16,11 +16,11 @@ export const checkUserActive = async (userId: string | mongoose.Types.ObjectId, 
 		// Find user and check if active
 		const user = await User.findById(userId).select("active")
 		if (!user) {
-            errorHandler(res, ERROR_CODE.USER_NOT_FOUND)
+			errorHandler(res, ERROR_CODE.USER_NOT_FOUND)
 			return null
 		}
 		if (!user.active) {
-            errorHandler(res, ERROR_CODE.USER_NOT_FOUND)
+			errorHandler(res, ERROR_CODE.USER_NOT_FOUND)
 			return null
 		}
 		return user

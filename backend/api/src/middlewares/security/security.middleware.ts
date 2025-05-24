@@ -14,7 +14,7 @@ import path from "path"
  * @param {express.Application} app - The Express application
  */
 export const setupSecurityMiddleware = (app: express.Application): void => {
-	// Initialisation de base d'Express
+	// Basic Express initialization
 	app.set("trust proxy", true)
 	app.use(express.json({ limit: "10kb" }))
 	app.use(express.urlencoded({ extended: true, limit: "10kb" }))
@@ -56,14 +56,14 @@ export const setupSecurityMiddleware = (app: express.Application): void => {
 		legacyHeaders: false,
 		message: "Too many requests from this IP, please try again after 15 minutes",
 		keyGenerator: (req) => {
-			// Version plus sûre qui gère tous les cas
+			// Safer version that handles all cases
 			const ip =
 				req.ip ||
 				(req.headers["x-forwarded-for"] as string) ||
 				req.socket.remoteAddress ||
 				"127.0.0.1"
 
-			// Si l'IP est une liste (comme dans x-forwarded-for), prenez la première
+			// If IP is a list (like in x-forwarded-for), take the first one
 			return (Array.isArray(ip) ? ip[0] : ip).split(",")[0].trim()
 		},
 	})
@@ -72,14 +72,14 @@ export const setupSecurityMiddleware = (app: express.Application): void => {
 	app.use("/api/", apiLimiter)
 
 	app.use((req: Request, _res: Response, next: NextFunction) => {
-		// Si c'est une route de média, on skip certains sanitizers
+		// If it's a media route, skip certain sanitizers
 		if (req.path.includes('/media/')) {
 			return next()
 		}
 		mongoSanitizerMiddleware(req, _res, next)
 	})
 
-	// Data sanitization against XSS (avec exemption pour les médias)
+	// Data sanitization against XSS (with media route exemption)
 	app.use((req: Request, res: Response, next: NextFunction) => {
 		if (req.path.includes('/media/')) {
 			return next()
@@ -113,13 +113,13 @@ export const setupSecurityMiddleware = (app: express.Application): void => {
 			res.setHeader('Access-Control-Allow-Origin', '*')
 			res.setHeader('Access-Control-Allow-Methods', 'GET, HEAD, OPTIONS')
 			res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
-			
+
 			res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin')
 			res.setHeader('X-Content-Type-Options', 'nosniff')
 			res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin')
-		
+
 			res.setHeader('Cache-Control', 'public, max-age=86400')
-			
+
 			next()
 		})
 		app.use(express.static(path.join(__dirname, 'public')))

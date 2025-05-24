@@ -14,7 +14,7 @@ interface UserFormProps {
 }
 
 const UserForm: React.FC<UserFormProps> = ({ initialData, onSubmit, onCancel, isLoading = false, mode = 'create' }) => {
-	// Schema adaptatif selon le mode
+	// Adaptive schema based on mode
 	const userSchema = z.object({
 		email: z.string().email('Email invalide'),
 		name: z.string().min(1, 'Nom requis'),
@@ -49,7 +49,7 @@ const UserForm: React.FC<UserFormProps> = ({ initialData, onSubmit, onCancel, is
 	})
 
 	const onFormSubmit = async (data: UserFormData) => {
-		// En mode édition, on ne envoie le mot de passe que s'il est renseigné
+		// In edit mode, only send password if it's provided
 		if (mode === 'edit' && (!data.password || data.password === '')) {
 			delete data.password
 		}
@@ -103,7 +103,7 @@ const UserForm: React.FC<UserFormProps> = ({ initialData, onSubmit, onCancel, is
 				</div>
 			</div>
 
-			{/* Nom et Prénom */}
+			{/* Name and FirstName */}
 			<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
 				<div>
 					<label className='block text-gray-700 mb-2' htmlFor='name'>
@@ -142,7 +142,7 @@ const UserForm: React.FC<UserFormProps> = ({ initialData, onSubmit, onCancel, is
 				</div>
 			</div>
 
-			{/* Date de naissance */}
+			{/* BirthDate */}
 			<div>
 				<label className='block text-gray-700 mb-2' htmlFor='birthDate'>
 					Date de naissance
@@ -160,7 +160,7 @@ const UserForm: React.FC<UserFormProps> = ({ initialData, onSubmit, onCancel, is
 				)}
 			</div>
 
-			{/* Mot de passe */}
+			{/* Password */}
 			<div>
 				<label className='block text-gray-700 mb-2' htmlFor='password'>
 					{mode === 'create' ? 'Mot de passe' : 'Nouveau mot de passe (optionnel)'}

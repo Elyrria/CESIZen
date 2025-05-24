@@ -62,13 +62,13 @@ const useCategoryStore = create<CategoryState>()(
 						if (!response.success) {
 							set({ error: response.error.message })
 						} else {
-							set({ error: "Impossible de récupérer les catégories" })
+							set({ error: "Impossible to retrieve categories" })
 						}
 						return false
 					}
 				} catch (error) {
 					console.error("Error fetching admin categories:", error)
-					set({ error: "Une erreur inattendue s'est produite" })
+					set({ error: "An unexpected error occurred" })
 					return false
 				} finally {
 					set({ isLoading: false })
@@ -97,14 +97,14 @@ const useCategoryStore = create<CategoryState>()(
 							set({ error: response.error.message })
 						} else {
 							set({
-								error: "Impossible de récupérer les catégories publiques",
+								error: "Impossible to retrieve public categories",
 							})
 						}
 						return false
 					}
 				} catch (error) {
 					console.error("Error fetching public categories:", error)
-					set({ error: "Une erreur inattendue s'est produite" })
+					set({ error: "An unexpected error occurred" })
 					return false
 				} finally {
 					set({ isLoading: false })
@@ -131,14 +131,14 @@ const useCategoryStore = create<CategoryState>()(
 							set({ error: response.error.message })
 						} else {
 							set({
-								error: "Impossible de créer la catégorie : données invalides",
+								error: "Impossible to create category: invalid data",
 							})
 						}
 						return null
 					}
 				} catch (error) {
 					console.error("Error creating category:", error)
-					set({ error: "Une erreur inattendue s'est produite" })
+					set({ error: "An unexpected error occurred" })
 					return null
 				} finally {
 					set({ isLoading: false })
@@ -174,14 +174,14 @@ const useCategoryStore = create<CategoryState>()(
 							set({ error: response.error.message })
 						} else {
 							set({
-								error: "Impossible de mettre à jour la catégorie : données invalides",
+								error: "Impossible to update category: invalid data",
 							})
 						}
 						return false
 					}
 				} catch (error) {
 					console.error("Error updating category:", error)
-					set({ error: "Une erreur inattendue s'est produite" })
+					set({ error: "An unexpected error occurred" })
 					return false
 				} finally {
 					set({ isLoading: false })
@@ -214,13 +214,13 @@ const useCategoryStore = create<CategoryState>()(
 						if (!response.success) {
 							set({ error: response.error.message })
 						} else {
-							set({ error: "Impossible de supprimer la catégorie" })
+							set({ error: "Impossible to delete category" })
 						}
 						return false
 					}
 				} catch (error) {
 					console.error("Error deleting category:", error)
-					set({ error: "Une erreur inattendue s'est produite" })
+					set({ error: "An unexpected error occurred" })
 					return false
 				} finally {
 					set({ isLoading: false })

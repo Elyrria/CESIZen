@@ -1,5 +1,5 @@
 // src/components/auth/AuthInitializer.tsx
-import useStore from "@/stores/useStore" // Importation du store centralisé au lieu de useAuthStore
+import useStore from "@/stores/useStore" // Import centralized store instead of useAuthStore
 import { useEffect, useState } from "react"
 
 interface AuthInitializerProps {
@@ -7,7 +7,7 @@ interface AuthInitializerProps {
 }
 
 const AuthInitializer: React.FC<AuthInitializerProps> = ({ children }) => {
-	const { auth } = useStore() // Utilisation du store centralisé
+	const { auth } = useStore() // Use centralized store
 	const { initializeAuth, isAuthInitialized } = auth
 	const [isLoading, setIsLoading] = useState(true)
 
@@ -29,7 +29,7 @@ const AuthInitializer: React.FC<AuthInitializerProps> = ({ children }) => {
 		}
 	}, [initializeAuth, isAuthInitialized])
 
-	// Affiche un indicateur de chargement pendant l'initialisation de l'authentification
+	// Show loading indicator during authentication initialization
 	if (isLoading) {
 		return (
 			<div className='min-h-screen flex items-center justify-center'>

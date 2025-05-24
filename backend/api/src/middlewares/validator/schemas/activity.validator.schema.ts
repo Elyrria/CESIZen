@@ -108,7 +108,7 @@ export const ACTIVITY_VALIDATOR = {
 				.isString()
 				.withMessage(ACTIVITY_MESSAGE.mustBeString(FIELD.CATEGORY_ID))
 				.custom((value) => {
-					// Vérifier que c'est un ID MongoDB valide
+					// Verify it's a valid MongoDB ID
 					if (!mongoose.Types.ObjectId.isValid(value)) {
 						throw new Error(
 							`The ${FIELD.CATEGORY_ID} must be a valid MongoDB ObjectID`
@@ -239,7 +239,7 @@ export const ACTIVITY_VALIDATOR = {
 				.isString()
 				.withMessage(ACTIVITY_MESSAGE.mustBeString(FIELD.CATEGORY_ID))
 				.custom((value) => {
-					// Vérifier que c'est un ID MongoDB valide
+					// Verify it's a valid MongoDB ID
 					if (!mongoose.Types.ObjectId.isValid(value)) {
 						throw new Error(
 							`The ${FIELD.CATEGORY_ID} must be a valid MongoDB ObjectID`

@@ -13,17 +13,17 @@ export default {
   },
   overrides: [
     {
-      // Configuration spécifique au backend
+      // Backend-specific configuration
       files: ["backend/**/*.ts"],
       env: {
         node: true
       },
       rules: {
-        // Règles spécifiques au backend
+        // Backend-specific rules
       }
     },
     {
-      // Configuration spécifique au frontend
+      // Frontend-specific configuration
       files: ["frontend/**/*.ts", "frontend/**/*.tsx"],
       env: {
         browser: true
@@ -31,7 +31,7 @@ export default {
       extends: ["plugin:react/recommended", "plugin:react-hooks/recommended"],
       rules: {
         "react/react-in-jsx-scope": "off"
-        // Autres règles spécifiques au frontend
+        // Other frontend-specific rules
       },
       settings: {
         react: {

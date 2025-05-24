@@ -8,15 +8,15 @@ export interface AuthState {
 	user: IUser | null
 	isLoading: boolean
 	error: string | null
-	isAuthInitialized: boolean // Nouvel état pour suivre l'initialisation
+	isAuthInitialized: boolean // New state to track initialization
 
-	// Méthodes d'authentification
+	// Authentication methods
 	initializeAuth: () => Promise<void>
 	login: (email: string, password: string) => Promise<boolean>
 	logout: () => Promise<boolean>
 	fetchUserProfile: () => Promise<boolean>
 
-	// Méthodes utilitaires
+	// Utility methods
 	clearError: () => void
 	isAuthenticated: () => boolean
 	isAdmin: () => boolean
@@ -31,23 +31,23 @@ const useAuthStore = create<AuthState>()(
 			error: null,
 			isAuthInitialized: false,
 
-			// Méthode pour initialiser l'authentification
+			// Method to initialize authentication
 			initializeAuth: async () => {
 				const state = get()
 
-				// Si déjà initialisé et utilisateur présent, ne rien faire
+				// If already initialized and user present, do nothing
 				if (state.isAuthInitialized && state.user) {
 					return
 				}
 
 				try {
-					// Récupérer les tokens et ID depuis les cookies
+					// Get tokens and ID from cookies
 					const token = getTokenFromCookie()
 					const userId = getUserIdFromCookie()
 
 					if (token && userId) {
 						try {
-							// Obtenir les informations de l'utilisateur depuis l'API
+							// Get user information from API
 							const response = await api.getUser(userId)
 
 							if (response.success && response.data?.user) {
@@ -57,7 +57,7 @@ const useAuthStore = create<AuthState>()(
 								set({ user, isAuthInitialized: true })
 								return
 							} else {
-								// Si la requête échoue, effacer les cookies
+								// If request fails, clear cookies
 								clearAuthCookies()
 								set({ user: null, isAuthInitialized: true })
 							}
@@ -66,7 +66,7 @@ const useAuthStore = create<AuthState>()(
 								"Erreur lors de la récupération de l'utilisateur:",
 								error
 							)
-							// En cas d'erreur, on efface les cookies et on continue
+							// On error, clear cookies and continue
 							clearAuthCookies()
 							set({
 								user: null,
@@ -75,7 +75,7 @@ const useAuthStore = create<AuthState>()(
 							})
 						}
 					} else {
-						// Pas de token ou d'ID utilisateur
+						// No token or user ID
 						set({ user: null, isAuthInitialized: true })
 					}
 				} catch (error) {
@@ -87,7 +87,7 @@ const useAuthStore = create<AuthState>()(
 			setUser: (user) => {
 				set({
 					user,
-					isAuthInitialized: true, // Mise à jour de l'état d'initialisation
+					isAuthInitialized: true, // Update initialization state
 				})
 			},
 
@@ -100,10 +100,10 @@ const useAuthStore = create<AuthState>()(
 					if (response.success && response.data) {
 						const { user, tokens } = response.data
 
-						// Stocker les tokens dans les cookies
+						// Store tokens in cookies
 						setAuthCookies(user.id, tokens.accessToken, tokens.refreshToken)
 
-						// Mettre à jour l'état
+						// Update state
 						set({
 							user: entityFactory.createUser(user),
 							isLoading: false,
@@ -142,7 +142,7 @@ const useAuthStore = create<AuthState>()(
 				set({ isLoading: true, error: null })
 
 				try {
-					// Effacer les cookies
+					// Clear cookies
 					clearAuthCookies()
 
 					set({
