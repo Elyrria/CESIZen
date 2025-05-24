@@ -1,18 +1,18 @@
-import { clearAuthCookies } from "@/utils/authCookies"
 import { useIdleTimer } from "react-idle-timer"
 import { useNavigate } from "react-router-dom"
 import { useState, useEffect } from "react"
 import { toast } from "react-toastify"
+import useStore from "@/stores/useStore"
 
 interface IdleDetectionOptions {
-	idleTime?: number // Time before notification (ms), default 10min
-	warningTime?: number // Warning time before logout (ms), default 5min
+	idleTime?: number // Time before notification (ms), default 15min
+	warningTime?: number // Warning time before logout (ms), default 2min
 	onLogout?: () => Promise<void> // Custom logout function
 }
 
 const useIdleDetection = ({
-	idleTime = 10 * 60 * 1000, // 10 minutes
-	warningTime = 5 * 60 * 1000, // 5 minutes
+	idleTime = 15 * 60 * 1000, // 15 minutes (adapted for mental health app)
+	warningTime = 2 * 60 * 1000, // 2 minutes (less intrusive)
 	onLogout,
 }: IdleDetectionOptions = {}) => {
 	const [showModal, setShowModal] = useState(false)
@@ -20,8 +20,20 @@ const useIdleDetection = ({
 	const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null)
 	const navigate = useNavigate()
 
+	// Use the store for clean logout
+	const { auth } = useStore()
+
+	// Debug logs
+	console.log('IdleDetection configured:', {
+		idleTime: idleTime / 1000 + 's',
+		warningTime: warningTime / 1000 + 's',
+		userConnected: !!auth.user
+	})
+
 	// Logout action
 	const handleLogout = async () => {
+		console.log('Automatic logout triggered')
+
 		// Clean interval if exists
 		if (intervalId) {
 			clearInterval(intervalId)
@@ -35,25 +47,30 @@ const useIdleDetection = ({
 		if (onLogout) {
 			await onLogout()
 		} else {
-			// Default logout - clear all auth cookies
-			clearAuthCookies()
-			toast.info("Vous avez été déconnecté en raison de votre inactivité", {
-				autoClose: false,
-				closeOnClick: true,
-				pauseOnHover: true,
-				draggable: false,
-				progress: undefined,
-				hideProgressBar: false,
-				position: "top-center",
-				className: "logout-toast",
-				style: { fontWeight: "bold" },
-			})
-			navigate("/login")
+			// Use the store logout for a clean logout
+			const success = await auth.logout()
+
+			if (success) {
+				toast.info("Vous avez été déconnecté automatiquement en raison de votre inactivité", {
+					autoClose: 5000,
+					closeOnClick: true,
+					pauseOnHover: true,
+					draggable: true,
+					progress: undefined,
+					hideProgressBar: false,
+					position: "top-center",
+					className: "logout-toast",
+					style: { fontWeight: "bold" },
+				})
+				navigate("/login", { replace: true })
+			}
 		}
 	}
 
 	// Stay connected
 	const stayConnected = () => {
+		console.log('Session extended by user')
+
 		// Reset timer
 		reset()
 
@@ -66,13 +83,18 @@ const useIdleDetection = ({
 		// Close modal
 		setShowModal(false)
 
-		toast.success("Votre session a été prolongée")
+		toast.success("Votre session a été prolongée", {
+			autoClose: 3000,
+			position: "top-right"
+		})
 	}
 
 	// Idle timer configuration
-	const { reset } = useIdleTimer({
+	const { reset, getRemainingTime, getLastActiveTime } = useIdleTimer({
 		timeout: idleTime,
 		onIdle: () => {
+			console.log('Inactive user detected - showing modal')
+
 			// Show warning modal
 			setShowModal(true)
 			setRemainingTime(warningTime / 1000)
@@ -82,6 +104,7 @@ const useIdleDetection = ({
 				setRemainingTime((prev) => {
 					if (prev <= 1) {
 						// Time's up, logout
+						console.log('Time elapsed - automatic logout')
 						clearInterval(id)
 						handleLogout()
 						return 0
@@ -92,8 +115,40 @@ const useIdleDetection = ({
 
 			setIntervalId(id)
 		},
+		onActive: () => {
+			console.log('Active user detected')
+		},
+		onAction: () => {
+			console.log('User action detected')
+		},
 		debounce: 500,
+		// Events to monitor to reset the timer
+		events: [
+			'mousedown',
+			'mousemove',
+			'keypress',
+			'scroll',
+			'touchstart',
+			'click'
+		],
+		// Do not trigger on form elements to avoid interruptions
+		immediateEvents: [],
+		// Reset when the user returns to the tab
+		startOnMount: true,
+		startManually: false,
+		stopOnIdle: false,
+		crossTab: true // Synchronize between tabs
 	})
+
+	// Debug - display remaining time every 10 seconds
+	useEffect(() => {
+		const debugInterval = setInterval(() => {
+			const remaining = getRemainingTime()
+			console.log(`Remaining time before idle: ${Math.floor(remaining / 1000)}s`)
+		}, 10000) // Every 10 seconds
+
+		return () => clearInterval(debugInterval)
+	}, [getRemainingTime])
 
 	// Clean up interval when component unmounts
 	useEffect(() => {
@@ -109,6 +164,10 @@ const useIdleDetection = ({
 		remainingTime,
 		stayConnected,
 		handleLogout,
+		reset, // Expose reset for external use if necessary
+		// Debug helpers
+		getRemainingTime,
+		getLastActiveTime
 	}
 }
 
