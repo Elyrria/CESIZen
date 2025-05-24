@@ -43,6 +43,7 @@ export interface IQueryInterface {
 	$or?: Array<{
 		title?: { $regex: string; $options: string }
 		descriptionInformation?: { $regex: string; $options: string }
+		descriptionActivity?: { $regex: string; $options: string }
 		name?: { $regex: string; $options: string }
 	}>
 }

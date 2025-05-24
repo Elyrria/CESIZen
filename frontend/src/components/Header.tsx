@@ -61,7 +61,7 @@ const Header: React.FC = () => {
 							Informations
 						</Link>
 						<Link
-							to='/activites'
+							to='/activities'
 							className='fr-text hover:text-fr-blue transition-colors'
 						>
 							Activités

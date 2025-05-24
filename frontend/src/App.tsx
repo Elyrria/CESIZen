@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import 'react-toastify/dist/ReactToastify.css'
 
 import AuthInitializer from '@/components/auth/AuthInitializer'
@@ -16,6 +16,10 @@ const LoginPage = lazy(() => import('@/pages/auth/LoginPages'))
 const HomePage = lazy(() => import('@/pages/home/HomePage'))
 const InformationsPage = lazy(() => import('@/pages/information/InformationsPage'))
 const InformationDetailPage = lazy(() => import('@/pages/information/InformationDetailPage'))
+
+// Activity pages
+const ActivitiesPage = lazy(() => import('@/pages/activity/ActivitiesPage'))
+const ActivityDetailPage = lazy(() => import('@/pages/activity/ActivityDetailPage'))
 
 // Admin pages
 const AdminDashboard = lazy(() => import('@/pages/admin/AdminDashboard'))
@@ -52,6 +56,13 @@ const App: React.FC = () => {
 							<Route
 								path='/informations/:id'
 								element={<InformationDetailPage />}
+							/>
+
+							{/* Activity routes */}
+							<Route path='/activities' element={<ActivitiesPage />} />
+							<Route
+								path='/activities/:id'
+								element={<ActivityDetailPage />}
 							/>
 
 							{/* Protected routes */}
