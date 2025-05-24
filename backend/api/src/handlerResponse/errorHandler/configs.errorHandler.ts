@@ -12,6 +12,8 @@ export const ERROR_CODE = {
 	MALFORMED: "malformed",
 	NO_FIELDS: "noFields",
 	SERVER: "serverError",
+	INVALID_ID: "invalidId",
+
 
 	// Authentication errors
 	SECURITY_VALIDATION: "securityValidation",
@@ -73,6 +75,7 @@ export const ERROR_CODE = {
 
 // Predefined error messages
 export const ERROR_MESSAGE = {
+	INVALID_ID: "Format d'ID invalide",
 	UNABLE_MODIFY_USER: "Impossible de modifier un compte avec les informations fournies",
 	UNABLE_TO_CREATE: "Impossible de créer un compte avec les informations fournies",
 	INVALID_CREDENTIALS: "Nom d'utilisateur/mot de passe incorrect !",
@@ -412,4 +415,9 @@ export const ERROR_MAPPING: Record<string, IErrorInfo> = {
 		message: ERROR_MESSAGE.ACTIVITY_ACCESS_DENIED,
 		statusCode: 403,
 	},
+	[ERROR_CODE.INVALID_ID]: {
+		code: ERROR_CODE.INVALID_ID,
+		message: ERROR_MESSAGE.INVALID_ID,
+		statusCode: 400,
+	  },
 }

@@ -27,3 +27,4 @@ export { createActivity } from "@controllers/activity/createActivity.controller.
 export { getActivities } from "@controllers/activity/getActivities.controller.ts"
 export { deleteActivity } from "@controllers/activity/deleteActivity.controller.ts"
 export { updateActivity } from "@controllers/activity/updateActivity.controller.ts"
+export { getPublicActivityById } from "@controllers/activity/getPublicActivityById.controller.ts"
