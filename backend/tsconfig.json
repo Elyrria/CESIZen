@@ -37,8 +37,4 @@
   },
   "include": ["./**/*.ts"],
   "exclude": ["node_modules", "dist"],
-  "ts-node": {
-    "esm": true,
-    "require": ["./aliases.mjs"]
-  }
 }
