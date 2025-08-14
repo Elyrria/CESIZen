@@ -13,7 +13,7 @@ const deletInformation = Router()
  *       Access control rules:
  *       - Regular users can only delete their own information entries
  *       - Administrators can delete any information entry
- *       
+ *
  *       If the information has an associated media file in GridFS, it will also be deleted.
  *     tags: [Informations]
  *     security:

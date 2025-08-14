@@ -23,54 +23,54 @@ import chalk from "chalk"
  * @returns {Promise<void>} - A promise that resolves when the response is sent
  */
 export const getInformations = async (req: IAuthRequest, res: Response): Promise<void> => {
-	try {
-		// Authentication check
-		if (!req.auth?.userId) {
-			errorHandler(res, ERROR_CODE.NO_CONDITIONS)
-			return
-		}
-		const userId = req.auth.userId
+  try {
+    // Authentication check
+    if (!req.auth?.userId) {
+      errorHandler(res, ERROR_CODE.NO_CONDITIONS)
+      return
+    }
+    const userId = req.auth.userId
 
-		logger.info(
-			`Fetching information with filters: ${JSON.stringify(req.query)} for user: ${chalk.blue(userId)}`
-		)
+    logger.info(
+      `Fetching information with filters: ${JSON.stringify(req.query)} for user: ${chalk.blue(userId)}`
+    )
 
-		// Fetch user role to check if admin
-		const user = await User.findById(userId).select("role")
+    // Fetch user role to check if admin
+    const user = await User.findById(userId).select("role")
 
-		if (!user) {
-			logger.warn(`User with ID ${chalk.yellow(userId)} not found`)
-			errorHandler(res, ERROR_CODE.USER_NOT_FOUND)
-			return
-		}
+    if (!user) {
+      logger.warn(`User with ID ${chalk.yellow(userId)} not found`)
+      errorHandler(res, ERROR_CODE.USER_NOT_FOUND)
+      return
+    }
 
-		const isAdmin = user.role === ROLES.ADMIN
+    const isAdmin = user.role === ROLES.ADMIN
 
-		// Define base query according to user role
-		let baseQuery = {}
+    // Define base query according to user role
+    let baseQuery = {}
 
-		if (!isAdmin) {
-			// Regular users can only see their own information or PUBLISHED information
-			baseQuery = {
-				$or: [
-					{ authorId: userId }, // User's own information (any status)
-					{ status: STATUS[2] }, // Published information from any user
-				],
-			}
-		}
-		// Admins can see everything - no base query restrictions
+    if (!isAdmin) {
+      // Regular users can only see their own information or PUBLISHED information
+      baseQuery = {
+        $or: [
+          { authorId: userId }, // User's own information (any status)
+          { status: STATUS[2] } // Published information from any user
+        ]
+      }
+    }
+    // Admins can see everything - no base query restrictions
 
-		// Fetch data with the appropriate base query
-		const responseData = await fetchInformationWithQuery(req, baseQuery)
+    // Fetch data with the appropriate base query
+    const responseData = await fetchInformationWithQuery(req, baseQuery)
 
-		// Send response with appropriate success code
-		if (responseData.items.length > 0) {
-			successHandler(res, SUCCESS_CODE.INFORMATION_LIST, responseData)
-		} else {
-			successHandler(res, SUCCESS_CODE.NO_INFORMATION, responseData)
-		}
-	} catch (error: unknown) {
-		logger.error(`Error retrieving information: ${(error as Error).message}`)
-		handleUnexpectedError(res, error as Error)
-	}
+    // Send response with appropriate success code
+    if (responseData.items.length > 0) {
+      successHandler(res, SUCCESS_CODE.INFORMATION_LIST, responseData)
+    } else {
+      successHandler(res, SUCCESS_CODE.NO_INFORMATION, responseData)
+    }
+  } catch (error: unknown) {
+    logger.error(`Error retrieving information: ${(error as Error).message}`)
+    handleUnexpectedError(res, error as Error)
+  }
 }

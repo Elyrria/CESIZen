@@ -13,33 +13,33 @@ import chalk from "chalk"
  * @returns {Promise<ICategoryDocument[]>} - Promise resolving to array of categories
  */
 export const fetchCategories = async ({
-	includeInactive = false,
-	additionalFilters = {},
-	sortOptions = { name: 1 },
+  includeInactive = false,
+  additionalFilters = {},
+  sortOptions = { name: 1 }
 }: {
-	includeInactive?: boolean
-	additionalFilters?: Record<string, any>
-	sortOptions?: Record<string, 1 | -1 | { $meta: string }>
+  includeInactive?: boolean
+  additionalFilters?: Record<string, any>
+  sortOptions?: Record<string, 1 | -1 | { $meta: string }>
 }): Promise<ICategoryDocument[]> => {
-	// Build the query
-	const query: Record<string, any> = { ...additionalFilters }
+  // Build the query
+  const query: Record<string, any> = { ...additionalFilters }
 
-	// Add active/inactive filter unless explicitly including inactive categories
-	if (!includeInactive) {
-		query.isActive = true
-	}
+  // Add active/inactive filter unless explicitly including inactive categories
+  if (!includeInactive) {
+    query.isActive = true
+  }
 
-	logger.info(`Fetching categories with query: ${JSON.stringify(query)}`)
+  logger.info(`Fetching categories with query: ${JSON.stringify(query)}`)
 
-	try {
-		// Execute the query
-		const categories = await Category.find(query).sort(sortOptions)
+  try {
+    // Execute the query
+    const categories = await Category.find(query).sort(sortOptions)
 
-		logger.info(`Found ${chalk.green(categories.length)} categories`)
+    logger.info(`Found ${chalk.green(categories.length)} categories`)
 
-		return categories
-	} catch (error) {
-		logger.error(`Error fetching categories: ${(error as Error).message}`)
-		throw error
-	}
+    return categories
+  } catch (error) {
+    logger.error(`Error fetching categories: ${(error as Error).message}`)
+    throw error
+  }
 }

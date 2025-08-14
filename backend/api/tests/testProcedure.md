@@ -16,11 +16,11 @@ La validation s'effectue à travers trois niveaux de tests complémentaires :
 
 ### 2.2 Environnements de test
 
-| Environnement | Description | Utilisation |
-|---------------|-------------|-------------|
-| Local | Environnement de développement avec BD en mémoire | Tests unitaires et développement |
-| Staging | Réplique de production | Tests fonctionnels et de non-régression |
-| Production | Environnement final | Vérification finale avant livraison |
+| Environnement | Description                                       | Utilisation                             |
+| ------------- | ------------------------------------------------- | --------------------------------------- |
+| Local         | Environnement de développement avec BD en mémoire | Tests unitaires et développement        |
+| Staging       | Réplique de production                            | Tests fonctionnels et de non-régression |
+| Production    | Environnement final                               | Vérification finale avant livraison     |
 
 ### 2.3 Cycle de validation
 
@@ -44,16 +44,19 @@ La validation s'effectue à travers trois niveaux de tests complémentaires :
 ### 3.2 Critères spécifiques par module
 
 #### Module Utilisateur
+
 - L'authentification doit fonctionner dans 100% des cas testés
 - L'enregistrement d'un nouvel utilisateur doit être validé correctement
 - La gestion des profils doit respecter les droits d'accès définis
 
 #### Module Information
+
 - Les informations affichées doivent être cohérentes avec la base de données
 - Les mises à jour d'informations doivent être immédiatement visibles
 - La recherche d'informations doit retourner des résultats pertinents
 
 #### Module Activités
+
 - L'ajout d'une activité doit être correctement enregistré
 - Les mises à jour des activités doivent être immédiatement visibles
 - La recherche des activités doit retourner des résultats pertinents
@@ -67,8 +70,8 @@ La validation s'effectue à travers trois niveaux de tests complémentaires :
 
 ## 5. Responsabilités
 
-| Rôle | Responsabilité |
-|------|----------------|
-| Développeur | Mise en œuvre des tests unitaires |
-| Développeur | Exécution des tests fonctionnels |
+| Rôle           | Responsabilité                                  |
+| -------------- | ----------------------------------------------- |
+| Développeur    | Mise en œuvre des tests unitaires               |
+| Développeur    | Exécution des tests fonctionnels                |
 | Chef de projet | Validation finale et signature du PV de recette |

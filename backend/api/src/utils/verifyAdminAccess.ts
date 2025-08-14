@@ -18,37 +18,37 @@ import chalk from "chalk"
  * @returns {Promise<{isAdmin: boolean, userId: string, user: any} | null>} - Admin check result or null if verification failed
  */
 export const verifyAdminAccess = async (
-	req: IAuthRequest,
-	res: Response,
-	actionDescription: string
+  req: IAuthRequest,
+  res: Response,
+  actionDescription: string
 ): Promise<{ isAdmin: boolean; userId: string; user: any } | null> => {
-	// Authentication check
-	if (!req.auth?.userId) {
-		errorHandler(res, ERROR_CODE.NO_CONDITIONS)
-		return null
-	}
+  // Authentication check
+  if (!req.auth?.userId) {
+    errorHandler(res, ERROR_CODE.NO_CONDITIONS)
+    return null
+  }
 
-	const userId = req.auth.userId
+  const userId = req.auth.userId
 
-	logger.info(`Admin ${chalk.blue(userId)} ${actionDescription}`)
+  logger.info(`Admin ${chalk.blue(userId)} ${actionDescription}`)
 
-	// Verify the user is an admin
-	const user = await User.findById(userId).select(FIELD.ROLE)
+  // Verify the user is an admin
+  const user = await User.findById(userId).select(FIELD.ROLE)
 
-	if (!user) {
-		logger.warn(`User with ID ${chalk.yellow(userId)} not found`)
-		errorHandler(res, ERROR_CODE.USER_NOT_FOUND)
-		return null
-	}
+  if (!user) {
+    logger.warn(`User with ID ${chalk.yellow(userId)} not found`)
+    errorHandler(res, ERROR_CODE.USER_NOT_FOUND)
+    return null
+  }
 
-	const isAdmin = user.role === ROLES.ADMIN
+  const isAdmin = user.role === ROLES.ADMIN
 
-	if (!isAdmin) {
-		logger.warn(`Non-admin user ${chalk.yellow(userId)} attempted to ${actionDescription}`)
-		errorHandler(res, ERROR_CODE.INSUFFICIENT_ACCESS)
-		return null
-	}
+  if (!isAdmin) {
+    logger.warn(`Non-admin user ${chalk.yellow(userId)} attempted to ${actionDescription}`)
+    errorHandler(res, ERROR_CODE.INSUFFICIENT_ACCESS)
+    return null
+  }
 
-	// If we reach here, the user is authenticated and is an admin
-	return { isAdmin: true, userId, user }
+  // If we reach here, the user is authenticated and is an admin
+  return { isAdmin: true, userId, user }
 }

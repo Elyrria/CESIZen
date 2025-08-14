@@ -11,11 +11,11 @@ const getInformationsRouter = Router()
  *     description: |
  *       Fetches a paginated list of information entries with optional filtering and sorting.
  *       This endpoint requires authentication and implements role-based access control:
- *       
+ *
  *       - Regular users can only see:
  *         - Their own information entries (all statuses: DRAFT, PENDING, PUBLISHED)
  *         - PUBLISHED information entries from other users
- *       
+ *
  *       - Administrators can see all information entries from all users in any status
  *     tags: [Informations]
  *     security:
@@ -150,7 +150,7 @@ const getInformationsRouter = Router()
  *                       itemsPerPage: 10
  *                       hasNextPage: false
  *                       hasPrevPage: false
- *                     filters: 
+ *                     filters:
  *                       sortBy: "createdAt"
  *                       order: "desc"
  *               filteredInformationList:

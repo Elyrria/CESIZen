@@ -1,5 +1,5 @@
 import { displayServerStartMessage } from "@server/displayServerStart.ts"
-import { errorServerHandler} from "@server/errorServerHandler.ts"
+import { errorServerHandler } from "@server/errorServerHandler.ts"
 import { normalize } from "@server/normalize.ts"
 import express from "express"
 import http from "http"
@@ -11,19 +11,17 @@ import http from "http"
  * @returns {http.Server} - The HTTP server instance
  */
 export function createServer(app: express.Application, portValue: string): http.Server {
-	// Normalize the port
-	const port = normalize(String(portValue))
-	// Configure the port in the application
-	app.set("port", port)
-	// Create the server
-	const server = http.createServer(app)
-	// Configure error handling
-	server.on("error", (error: NodeJS.ErrnoException) => errorServerHandler(error, server, port))
+  // Normalize the port
+  const port = normalize(String(portValue))
+  // Configure the port in the application
+  app.set("port", port)
+  // Create the server
+  const server = http.createServer(app)
+  // Configure error handling
+  server.on("error", (error: NodeJS.ErrnoException) => errorServerHandler(error, server, port))
 
-	server.on("listening", () => {
-		displayServerStartMessage(server, port)
-	})
-	return server
+  server.on("listening", () => {
+    displayServerStartMessage(server, port)
+  })
+  return server
 }
-
-

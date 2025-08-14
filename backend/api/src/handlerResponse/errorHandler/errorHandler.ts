@@ -3,7 +3,7 @@ import type { ErrorData, IErrorInfo } from "@api/types/handlerResponse.js"
 import type { Response } from "express"
 
 export function getErrorInfo(errorCode: string): IErrorInfo {
-	return ERROR_MAPPING[errorCode] || ERROR_MAPPING[ERROR_CODE.UNEXPECTED]
+  return ERROR_MAPPING[errorCode] || ERROR_MAPPING[ERROR_CODE.UNEXPECTED]
 }
 /**
  * Function to format an error response
@@ -12,10 +12,10 @@ export function getErrorInfo(errorCode: string): IErrorInfo {
  * @returns {Object} - The formatted error response object
  */
 export const errorResponse = (error: ErrorData) => {
-	return {
-		success: false,
-		error: error,
-	}
+  return {
+    success: false,
+    error: error
+  }
 }
 
 /**
@@ -30,28 +30,33 @@ export const errorResponse = (error: ErrorData) => {
  * @param {any[]} [errors] - Optional array of validation errors.
  * @returns {Response} - The Express response with appropriate status code and error message.
  */
-export const errorHandler = (res: Response, errorCode: string, customMessage?: string, errors?: unknown[]): Response => {
-	// Get error information from the mapping
-	const errorInfo = getErrorInfo(errorCode)
+export const errorHandler = (
+  res: Response,
+  errorCode: string,
+  customMessage?: string,
+  errors?: unknown[]
+): Response => {
+  // Get error information from the mapping
+  const errorInfo = getErrorInfo(errorCode)
 
-	// Create the error response data
-	const errorData: ErrorData = {
-		code: errorInfo.code,
-		message: customMessage || errorInfo.message,
-	}
+  // Create the error response data
+  const errorData: ErrorData = {
+    code: errorInfo.code,
+    message: customMessage || errorInfo.message
+  }
 
-	// Add location if it exists
-	if (errorInfo.location) {
-		errorData.location = errorInfo.location
-	}
+  // Add location if it exists
+  if (errorInfo.location) {
+    errorData.location = errorInfo.location
+  }
 
-	// Add detailed errors if provided
-	if (errors && errors.length > 0) {
-		errorData.errors = errors
-	}
+  // Add detailed errors if provided
+  if (errors && errors.length > 0) {
+    errorData.errors = errors
+  }
 
-	// Return the response with the appropriate status code
-	return res.status(errorInfo.statusCode).json(errorResponse(errorData))
+  // Return the response with the appropriate status code
+  return res.status(errorInfo.statusCode).json(errorResponse(errorData))
 }
 
 /**
@@ -62,13 +67,13 @@ export const errorHandler = (res: Response, errorCode: string, customMessage?: s
  * @returns {Response} - The Express response with a server error
  */
 export const handleUnexpectedError = (res: Response, error: Error): Response => {
-	console.error("Unexpected error:", error)
+  console.error("Unexpected error:", error)
 
-	return errorHandler(
-		res,
-		ERROR_CODE.UNEXPECTED,
-		process.env.NODE_ENV === "development" ? error.message : undefined
-	)
+  return errorHandler(
+    res,
+    ERROR_CODE.UNEXPECTED,
+    process.env.NODE_ENV === "development" ? error.message : undefined
+  )
 }
 
 /**
@@ -79,12 +84,17 @@ export const handleUnexpectedError = (res: Response, error: Error): Response => 
  * @returns {Response} - The Express response with validation errors
  */
 export const handleValidationErrors = (res: Response, validationErrors: any[]): Response => {
-	// Format validation errors
-	const formattedErrors = validationErrors.map((error) => ({
-		field: error.path || error.param,
-		message: error.msg,
-		location: error.location,
-	}))
+  // Format validation errors
+  const formattedErrors = validationErrors.map((error) => ({
+    field: error.path || error.param,
+    message: error.msg,
+    location: error.location
+  }))
 
-	return errorHandler(res, ERROR_CODE.MISSING_INFO, ERROR_MESSAGE.VALIDATION_FAILED, formattedErrors)
+  return errorHandler(
+    res,
+    ERROR_CODE.MISSING_INFO,
+    ERROR_MESSAGE.VALIDATION_FAILED,
+    formattedErrors
+  )
 }

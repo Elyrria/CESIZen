@@ -1,5 +1,5 @@
 import { errorHandler, handleUnexpectedError } from "@errorHandler/errorHandler.ts"
-import { ERROR_CODE} from "@errorHandler/configs.errorHandler.ts"
+import { ERROR_CODE } from "@errorHandler/configs.errorHandler.ts"
 import type { IDecodedToken } from "@api/types/tokens.d.ts"
 import type { IAuthRequest } from "@api/types/request.d.ts"
 import type { Response, NextFunction } from "express"
@@ -14,44 +14,44 @@ import jwt from "jsonwebtoken"
  */
 
 export const auth = async (req: IAuthRequest, res: Response, next: NextFunction): Promise<void> => {
-	try {
-		const authorization = req.header("authorization")
-		if (!authorization) {
-			errorHandler(res, ERROR_CODE.UNAUTHORIZED)
-			return
-		}
+  try {
+    const authorization = req.header("authorization")
+    if (!authorization) {
+      errorHandler(res, ERROR_CODE.UNAUTHORIZED)
+      return
+    }
 
-		const token = authorization.split(" ")[1]
-		const secretKey: string | undefined = process.env.TOKEN_SECRET
+    const token = authorization.split(" ")[1]
+    const secretKey: string | undefined = process.env.TOKEN_SECRET
 
-		if (!secretKey) {
-			throw new Error("Missing secret key")
-		}
-        
-		const decodedToken = jwt.verify(token, secretKey) as IDecodedToken
-		const userId = decodedToken.userId
+    if (!secretKey) {
+      throw new Error("Missing secret key")
+    }
 
-		req.auth = {
-			userId: userId,
-		}
-		next()
-	} catch (error: unknown) {
-		const errorType = error instanceof Error ? error.message : ERROR_CODE.SERVER
-		switch (errorType) {
-			case "invalid signature":
-				errorHandler(res, ERROR_CODE.SIGN_TOKEN)
-				break
-			case "invalid token":
-				errorHandler(res, ERROR_CODE.INVALID_TOKEN)
-				break
-			case "jwt malformed":
-				errorHandler(res, ERROR_CODE.INVALID_TOKEN)
-				break
-			case "jwt expired":
-				errorHandler(res, ERROR_CODE.EXPIRED_TOKEN)
-				break
-			default:
-				handleUnexpectedError(res, error as Error)
-		}
-	}
+    const decodedToken = jwt.verify(token, secretKey) as IDecodedToken
+    const userId = decodedToken.userId
+
+    req.auth = {
+      userId: userId
+    }
+    next()
+  } catch (error: unknown) {
+    const errorType = error instanceof Error ? error.message : ERROR_CODE.SERVER
+    switch (errorType) {
+      case "invalid signature":
+        errorHandler(res, ERROR_CODE.SIGN_TOKEN)
+        break
+      case "invalid token":
+        errorHandler(res, ERROR_CODE.INVALID_TOKEN)
+        break
+      case "jwt malformed":
+        errorHandler(res, ERROR_CODE.INVALID_TOKEN)
+        break
+      case "jwt expired":
+        errorHandler(res, ERROR_CODE.EXPIRED_TOKEN)
+        break
+      default:
+        handleUnexpectedError(res, error as Error)
+    }
+  }
 }

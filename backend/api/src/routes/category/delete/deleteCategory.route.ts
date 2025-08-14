@@ -12,7 +12,7 @@ const deleteCategoryRouter = Router()
  *       Deletes or deactivates a category based on its usage:
  *       - If the category is not associated with any information entries, it will be permanently deleted
  *       - If the category is in use by information entries, it will be deactivated instead (isActive=false)
- *       
+ *
  *       This endpoint is restricted to administrators only.
  *     tags: [Categories]
  *     security:

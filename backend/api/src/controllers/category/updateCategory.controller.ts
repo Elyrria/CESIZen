@@ -18,63 +18,63 @@ import chalk from "chalk"
  * @returns {Promise<void>} - A promise that resolves when the category is updated
  */
 export const updateCategory = async (req: IAuthRequest, res: Response): Promise<void> => {
-	try {
-		const categoryId = req.params.id
+  try {
+    const categoryId = req.params.id
 
-		// Verify admin access
-		const adminResult = await verifyAdminAccess(req, res, `updating category ${categoryId}`)
+    // Verify admin access
+    const adminResult = await verifyAdminAccess(req, res, `updating category ${categoryId}`)
 
-		// If verification failed, the function above will have already sent an error response
-		if (!adminResult) return
+    // If verification failed, the function above will have already sent an error response
+    if (!adminResult) return
 
-		const { userId } = adminResult
+    const { userId } = adminResult
 
-		// Verify the category exists
-		const category = await Category.findById(categoryId)
+    // Verify the category exists
+    const category = await Category.findById(categoryId)
 
-		if (!category) {
-			logger.warn(`Category with ID ${chalk.yellow(categoryId)} not found`)
-			errorHandler(res, ERROR_CODE.CATEGORY_NOT_FOUND)
-			return
-		}
+    if (!category) {
+      logger.warn(`Category with ID ${chalk.yellow(categoryId)} not found`)
+      errorHandler(res, ERROR_CODE.CATEGORY_NOT_FOUND)
+      return
+    }
 
-		// Prepare update data
-		const updateData = {
-			...req.body,
-			updatedBy: userId,
-		}
+    // Prepare update data
+    const updateData = {
+      ...req.body,
+      updatedBy: userId
+    }
 
-		try {
-			// Update the category
-			const updatedCategory = await Category.findByIdAndUpdate(
-				categoryId,
-				{ $set: updateData },
-				{ new: true, runValidators: true }
-			)
+    try {
+      // Update the category
+      const updatedCategory = await Category.findByIdAndUpdate(
+        categoryId,
+        { $set: updateData },
+        { new: true, runValidators: true }
+      )
 
-			if (!updatedCategory) {
-				logger.error(`Failed to update category: ${chalk.red(categoryId)}`)
-				errorHandler(res, ERROR_CODE.UNABLE_MODIFY_CATEGORY)
-				return
-			}
+      if (!updatedCategory) {
+        logger.error(`Failed to update category: ${chalk.red(categoryId)}`)
+        errorHandler(res, ERROR_CODE.UNABLE_MODIFY_CATEGORY)
+        return
+      }
 
-			logger.info(`Category updated successfully: ${chalk.green(updatedCategory.name)}`)
+      logger.info(`Category updated successfully: ${chalk.green(updatedCategory.name)}`)
 
-			successHandler(res, SUCCESS_CODE.CATEGORY_UPDATED, updatedCategory)
-		} catch (updateError: any) {
-			// Check for unique constraint violation
-			if (updateError.message.includes("already exists")) {
-				logger.warn(`Category name '${chalk.yellow(req.body.name)}' already exists`)
-				errorHandler(res, ERROR_CODE.DUPLICATE_CATEGORY)
-				return
-			}
+      successHandler(res, SUCCESS_CODE.CATEGORY_UPDATED, updatedCategory)
+    } catch (updateError: any) {
+      // Check for unique constraint violation
+      if (updateError.message.includes("already exists")) {
+        logger.warn(`Category name '${chalk.yellow(req.body.name)}' already exists`)
+        errorHandler(res, ERROR_CODE.DUPLICATE_CATEGORY)
+        return
+      }
 
-			// Other update error
-			logger.error(`Failed to update category: ${chalk.red(updateError.message)}`)
-			errorHandler(res, ERROR_CODE.UNABLE_MODIFY_CATEGORY)
-		}
-	} catch (error: unknown) {
-		logger.error(`Error updating category: ${(error as Error).message}`)
-		handleUnexpectedError(res, error as Error)
-	}
+      // Other update error
+      logger.error(`Failed to update category: ${chalk.red(updateError.message)}`)
+      errorHandler(res, ERROR_CODE.UNABLE_MODIFY_CATEGORY)
+    }
+  } catch (error: unknown) {
+    logger.error(`Error updating category: ${(error as Error).message}`)
+    handleUnexpectedError(res, error as Error)
+  }
 }

@@ -433,12 +433,12 @@ const createActivityRouter = Router()
  *                 message: "An unexpected error occurred"
  */
 createActivityRouter.post(
-	"/create",
-	upload.single("file"),
-	createActivityValidationRules,
-	validationErrorHandler,
-	auth,
-	createActivity
+  "/create",
+  upload.single("file"),
+  createActivityValidationRules,
+  validationErrorHandler,
+  auth,
+  createActivity
 )
 
 export default createActivityRouter

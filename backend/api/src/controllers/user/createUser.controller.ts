@@ -21,45 +21,49 @@ import { User } from "@models/index.ts"
  * @returns {Promise<Response>} - A promise that resolves to the response object with user details and tokens or an error message.
  */
 export const createUser = async (req: Request, res: Response): Promise<void> => {
-	try {
-		// Extract user details from the request body
-		const userObject: IUserReqBodyRequest = req.body as IUser
+  try {
+    // Extract user details from the request body
+    const userObject: IUserReqBodyRequest = req.body as IUser
 
-		// Remove any user IDs from the request body for security reasons
-		const cleanUserObject = deleteObjectIds(userObject)
+    // Remove any user IDs from the request body for security reasons
+    const cleanUserObject = deleteObjectIds(userObject)
 
-		// Validate the presence of required fields
-		if (!validateRequiredUserFields(cleanUserObject)) {
-			errorHandler(res, ERROR_CODE.MISSING_INFO)
-			return
-		}
+    // Validate the presence of required fields
+    if (!validateRequiredUserFields(cleanUserObject)) {
+      errorHandler(res, ERROR_CODE.MISSING_INFO)
+      return
+    }
 
-		// Check if user already exists
-		const userExist = await User.findOne({ email: userObject.email })
-		if (userExist) {
-			errorHandler(res, ERROR_CODE.UNABLE_CREATE_USER)
-			return
-		}
+    // Check if user already exists
+    const userExist = await User.findOne({ email: userObject.email })
+    if (userExist) {
+      errorHandler(res, ERROR_CODE.UNABLE_CREATE_USER)
+      return
+    }
 
-		// Create and save new user
-		const newUser = await processUserData(cleanUserObject)
-		const savedUser = await newUser.save()
+    // Create and save new user
+    const newUser = await processUserData(cleanUserObject)
+    const savedUser = await newUser.save()
 
-		if (!savedUser) {
-			errorHandler(res, ERROR_CODE.SERVER)
-			return
-		}
+    if (!savedUser) {
+      errorHandler(res, ERROR_CODE.SERVER)
+      return
+    }
 
-		// Prepare user object without password for token generation
-		const { password, _id, ...userWithoutPassword } = savedUser.toObject()
+    // Prepare user object without password for token generation
+    const { _id, ...userWithoutPassword } = savedUser.toObject()
 
-		// Prepare auth response (tokens and user data)
-		const authResponse = await prepareUserAuthResponse({ ...userWithoutPassword, id: _id }, req, res)
-		if (!authResponse) return // Error already handled in the function
+    // Prepare auth response (tokens and user data)
+    const authResponse = await prepareUserAuthResponse(
+      { ...userWithoutPassword, id: _id },
+      req,
+      res
+    )
+    if (!authResponse) return // Error already handled in the function
 
-		// Return success response
-		createdHandler(res, SUCCESS_CODE.USER_CREATED, authResponse)
-	} catch (error) {
-		handleUnexpectedError(res, error as Error)
-	}
+    // Return success response
+    createdHandler(res, SUCCESS_CODE.USER_CREATED, authResponse)
+  } catch (error) {
+    handleUnexpectedError(res, error as Error)
+  }
 }

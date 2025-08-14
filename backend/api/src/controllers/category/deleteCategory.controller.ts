@@ -18,68 +18,68 @@ import chalk from "chalk"
  * @returns {Promise<void>} - A promise that resolves when the category is deleted
  */
 export const deleteCategory = async (req: IAuthRequest, res: Response): Promise<void> => {
-	try {
-		const categoryId = req.params.id
+  try {
+    const categoryId = req.params.id
 
-		// Verify admin access
-		const adminResult = await verifyAdminAccess(req, res, `deleting category ${categoryId}`)
+    // Verify admin access
+    const adminResult = await verifyAdminAccess(req, res, `deleting category ${categoryId}`)
 
-		// If verification failed, the function above will have already sent an error response
-		if (!adminResult) return
+    // If verification failed, the function above will have already sent an error response
+    if (!adminResult) return
 
-		const { userId } = adminResult
+    const { userId } = adminResult
 
-		// Verify the category exists
-		const category = await Category.findById(categoryId)
+    // Verify the category exists
+    const category = await Category.findById(categoryId)
 
-		if (!category) {
-			logger.warn(`Category with ID ${chalk.yellow(categoryId)} not found`)
-			errorHandler(res, ERROR_CODE.CATEGORY_NOT_FOUND)
-			return
-		}
+    if (!category) {
+      logger.warn(`Category with ID ${chalk.yellow(categoryId)} not found`)
+      errorHandler(res, ERROR_CODE.CATEGORY_NOT_FOUND)
+      return
+    }
 
-		// Check if any information is using this category
-		const informationCount = await Information.countDocuments({ categories: categoryId })
+    // Check if any information is using this category
+    const informationCount = await Information.countDocuments({ categories: categoryId })
 
-		if (informationCount > 0) {
-			logger.warn(
-				`Cannot delete category: ${chalk.yellow(categoryId)} as it is associated with ${informationCount} information entries`
-			)
+    if (informationCount > 0) {
+      logger.warn(
+        `Cannot delete category: ${chalk.yellow(categoryId)} as it is associated with ${informationCount} information entries`
+      )
 
-			// Instead of hard deletion, we'll set isActive to false
-			const deactivatedCategory = await Category.findByIdAndUpdate(
-				categoryId,
-				{ $set: { isActive: false, updatedBy: userId } },
-				{ new: true }
-			)
+      // Instead of hard deletion, we'll set isActive to false
+      const deactivatedCategory = await Category.findByIdAndUpdate(
+        categoryId,
+        { $set: { isActive: false, updatedBy: userId } },
+        { new: true }
+      )
 
-			if (!deactivatedCategory) {
-				logger.error(`Failed to deactivate category: ${chalk.red(categoryId)}`)
-				errorHandler(res, ERROR_CODE.UNABLE_MODIFY_CATEGORY)
-				return
-			}
+      if (!deactivatedCategory) {
+        logger.error(`Failed to deactivate category: ${chalk.red(categoryId)}`)
+        errorHandler(res, ERROR_CODE.UNABLE_MODIFY_CATEGORY)
+        return
+      }
 
-			logger.info(`Category deactivated instead of deleted: ${chalk.green(category.name)}`)
+      logger.info(`Category deactivated instead of deleted: ${chalk.green(category.name)}`)
 
-			successHandler(res, SUCCESS_CODE.CATEGORY_UPDATED, { category: deactivatedCategory })
+      successHandler(res, SUCCESS_CODE.CATEGORY_UPDATED, { category: deactivatedCategory })
 
-			return
-		}
+      return
+    }
 
-		// If not in use, delete the category
-		const deletedCategory = await Category.findByIdAndDelete(categoryId)
+    // If not in use, delete the category
+    const deletedCategory = await Category.findByIdAndDelete(categoryId)
 
-		if (!deletedCategory) {
-			logger.error(`Failed to delete category: ${chalk.red(categoryId)}`)
-			errorHandler(res, ERROR_CODE.UNABLE_MODIFY_CATEGORY)
-			return
-		}
+    if (!deletedCategory) {
+      logger.error(`Failed to delete category: ${chalk.red(categoryId)}`)
+      errorHandler(res, ERROR_CODE.UNABLE_MODIFY_CATEGORY)
+      return
+    }
 
-		logger.info(`Category deleted successfully: ${chalk.green(category.name)}`)
+    logger.info(`Category deleted successfully: ${chalk.green(category.name)}`)
 
-		successHandler(res, SUCCESS_CODE.CATEGORY_DELETED)
-	} catch (error: unknown) {
-		logger.error(`Error deleting category: ${(error as Error).message}`)
-		handleUnexpectedError(res, error as Error)
-	}
+    successHandler(res, SUCCESS_CODE.CATEGORY_DELETED)
+  } catch (error: unknown) {
+    logger.error(`Error deleting category: ${(error as Error).message}`)
+    handleUnexpectedError(res, error as Error)
+  }
 }

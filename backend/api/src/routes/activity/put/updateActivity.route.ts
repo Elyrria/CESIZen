@@ -1,5 +1,5 @@
 import { auth } from "@middlewares/security/auth.middleware.ts"
-import { upload } from "@middlewares/multer/upload.middleware.ts"  // AJOUT MANQUANT
+import { upload } from "@middlewares/multer/upload.middleware.ts" // AJOUT MANQUANT
 import { updateActivity } from "@controllers/index.ts"
 import { Router } from "express"
 
@@ -12,7 +12,7 @@ const updateActivityRouter = Router()
  *     description: |
  *       Updates an existing activity entry with the provided data.
  *       This endpoint requires authentication and is restricted to administrators only.
- *       
+ *
  *       Features:
  *       - Updates basic fields like name, descriptionActivity
  *       - Updates content for TEXT type activities

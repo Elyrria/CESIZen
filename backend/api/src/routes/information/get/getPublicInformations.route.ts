@@ -11,7 +11,7 @@ const getPublicInformationsRouter = Router()
  *       Fetches a paginated list of information entries that have a PUBLISHED status only.
  *       This endpoint is publicly accessible without authentication and is intended for
  *       retrieving content that has been approved for public viewing.
- *       
+ *
  *       All filters are applied after the base restriction of status=PUBLISHED.
  *     tags: [Informations]
  *     parameters:
@@ -140,7 +140,7 @@ const getPublicInformationsRouter = Router()
  *                       itemsPerPage: 10
  *                       hasNextPage: false
  *                       hasPrevPage: false
- *                     filters: 
+ *                     filters:
  *                       sortBy: "createdAt"
  *                       order: "desc"
  *               filteredPublishedList:

@@ -26,52 +26,54 @@ import chalk from "chalk"
  * @returns {Promise<void>} - A promise that resolves when the response is sent
  */
 export const getPublicActivityById = async (req: Request, res: Response): Promise<void> => {
-	try {
-		const activityId = req.params.id
+  try {
+    const activityId = req.params.id
 
-		// Validate activity ID format
-		if (!ObjectId.isValid(activityId)) {
-			logger.warn(`Invalid activity ID format: ${chalk.yellow(activityId)}`)
-			errorHandler(res, ERROR_CODE.INVALID_ID)
-			return
-		}
+    // Validate activity ID format
+    if (!ObjectId.isValid(activityId)) {
+      logger.warn(`Invalid activity ID format: ${chalk.yellow(activityId)}`)
+      errorHandler(res, ERROR_CODE.INVALID_ID)
+      return
+    }
 
-		logger.info(`Public request for activity ID: ${chalk.blue(activityId)}`)
+    logger.info(`Public request for activity ID: ${chalk.blue(activityId)}`)
 
-		// Find the activity by ID with the constraint that it must be active
-		// Only populate minimal information for public access
-		const activity = await Activity.findOne({
-			_id: activityId,
-			isActive: true // Only return active activities
-		})
-			.populate("categoryId", "name") // Populate category information
-			.select("-validatedBy -validatedAndPublishedAt") // Exclude validation details for public access
+    // Find the activity by ID with the constraint that it must be active
+    // Only populate minimal information for public access
+    const activity = await Activity.findOne({
+      _id: activityId,
+      isActive: true // Only return active activities
+    })
+      .populate("categoryId", "name") // Populate category information
+      .select("-validatedBy -validatedAndPublishedAt") // Exclude validation details for public access
 
-		if (!activity) {
-			logger.warn(`Public activity with ID ${chalk.yellow(activityId)} not found or not active`)
-			errorHandler(res, ERROR_CODE.ACTIVITY_NOT_FOUND, "Activity not found or not available")
-			return
-		}
+    if (!activity) {
+      logger.warn(`Public activity with ID ${chalk.yellow(activityId)} not found or not active`)
+      errorHandler(res, ERROR_CODE.ACTIVITY_NOT_FOUND, "Activity not found or not available")
+      return
+    }
 
-		logger.info(`Successfully found public activity: ${chalk.green(activity.name)} (Type: ${chalk.blue(activity.type)})`)
+    logger.info(
+      `Successfully found public activity: ${chalk.green(activity.name)} (Type: ${chalk.blue(activity.type)})`
+    )
 
-		// Transform the activity to include media URLs if needed
-		const baseUrl = `${req.protocol}://${req.get("host")}`
-		const transformedActivity = activity.toObject() as TransformedActivity
+    // Transform the activity to include media URLs if needed
+    const baseUrl = `${req.protocol}://${req.get("host")}`
+    const transformedActivity = activity.toObject() as TransformedActivity
 
-		// Add media URL if it's a VIDEO
-		if (activity.type === MEDIATYPE[1] && activity.fileId) {
-			transformedActivity.mediaUrl = `${baseUrl}/api/v1/activities/media/${activity._id}`
-			transformedActivity.thumbnailUrl = `${baseUrl}/assets/images/video-thumbnail.png`
-		} else if (activity.type === MEDIATYPE[0]) {
-			// Default thumbnail for text activities
-			transformedActivity.thumbnailUrl = `${baseUrl}/assets/images/text-icon.png`
-		}
+    // Add media URL if it's a VIDEO
+    if (activity.type === MEDIATYPE[1] && activity.fileId) {
+      transformedActivity.mediaUrl = `${baseUrl}/api/v1/activities/media/${activity._id}`
+      transformedActivity.thumbnailUrl = `${baseUrl}/assets/images/video-thumbnail.png`
+    } else if (activity.type === MEDIATYPE[0]) {
+      // Default thumbnail for text activities
+      transformedActivity.thumbnailUrl = `${baseUrl}/assets/images/text-icon.png`
+    }
 
-		// Send successful response
-		successHandler(res, SUCCESS_CODE.PUBLIC_ACTIVITIES, { activity: transformedActivity })
-	} catch (error: unknown) {
-		logger.error(`Error retrieving public activity: ${(error as Error).message}`)
-		handleUnexpectedError(res, error as Error)
-	}
+    // Send successful response
+    successHandler(res, SUCCESS_CODE.PUBLIC_ACTIVITIES, { activity: transformedActivity })
+  } catch (error: unknown) {
+    logger.error(`Error retrieving public activity: ${(error as Error).message}`)
+    handleUnexpectedError(res, error as Error)
+  }
 }

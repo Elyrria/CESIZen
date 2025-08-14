@@ -16,7 +16,12 @@ router.use("/v1/activities", updateActivityRouter)
 // POST routes
 router.use("/v1/activities", createActivityRouter)
 // GET routes
-router.use("/v1/activities", getActivitiesRouter, getPublicActivitiesRouter, getPublicActivityRouter)
+router.use(
+  "/v1/activities",
+  getActivitiesRouter,
+  getPublicActivitiesRouter,
+  getPublicActivityRouter
+)
 // DELETE routes
 router.use("/v1/activities", deleteActivityRouter)
 

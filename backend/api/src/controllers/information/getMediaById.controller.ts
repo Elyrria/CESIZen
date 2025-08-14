@@ -19,96 +19,91 @@ import chalk from "chalk"
  * @returns {Promise<void>} - A promise that resolves when the file is streamed or an error response is sent.
  */
 export const getMediaById = async (req: Request, res: Response): Promise<void> => {
-	try {
-		const informationId = req.params.id
-		logger.info(`Retrieving media for information: ${chalk.blue(informationId)}`)
+  try {
+    const informationId = req.params.id
+    logger.info(`Retrieving media for information: ${chalk.blue(informationId)}`)
 
-		// Find the information document to get the fileId
-		const information = await Information.findById(informationId)
+    // Find the information document to get the fileId
+    const information = await Information.findById(informationId)
 
-		if (!information) {
-			logger.warn(`Information with ID ${chalk.yellow(informationId)} not found`)
-			errorHandler(res, ERROR_CODE.INFORMATION_NOT_FOUND)
-			return
-		}
+    if (!information) {
+      logger.warn(`Information with ID ${chalk.yellow(informationId)} not found`)
+      errorHandler(res, ERROR_CODE.INFORMATION_NOT_FOUND)
+      return
+    }
 
-		if (!information.fileId) {
-			logger.warn(`Information ${chalk.yellow(informationId)} has no associated file`)
-			errorHandler(res, ERROR_CODE.FILE_REQUIRED)
-			return
-		}
+    if (!information.fileId) {
+      logger.warn(`Information ${chalk.yellow(informationId)} has no associated file`)
+      errorHandler(res, ERROR_CODE.FILE_REQUIRED)
+      return
+    }
 
-		// Convert string ID to ObjectId
-		const fileIdString: string = information.fileId.toString()
-		const fileId = new mongoose.Types.ObjectId(fileIdString)
+    // Convert string ID to ObjectId
+    const fileIdString: string = information.fileId.toString()
+    const fileId = new mongoose.Types.ObjectId(fileIdString)
 
-		try {
-			// Use the streamFile function from gridFSService to get file stream and metadata
-			const { stream, metadata } = await streamFile(fileId)
-			res.setHeader('Access-Control-Allow-Origin', '*')
-			res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin')
-			res.set("Content-Type", metadata.contentType || "application/octet-stream")
+    try {
+      // Use the streamFile function from gridFSService to get file stream and metadata
+      const { stream, metadata } = await streamFile(fileId)
+      res.setHeader("Access-Control-Allow-Origin", "*")
+      res.setHeader("Cross-Origin-Resource-Policy", "cross-origin")
+      res.set("Content-Type", metadata.contentType || "application/octet-stream")
 
-			// Set cache control headers for better performance
-			if (
-				[
-					"image/jpeg",
-					"image/png",
-					"image/gif",
-					"image/webp",
-					"video/mp4",
-					"video/webm",
-				].includes(metadata.contentType)
-			) {
-				res.set("Cache-Control", "public, max-age=86400") // Cache for 1 day
-				res.set("ETag", fileId.toString())
-			} else {
-				res.set("Cache-Control", "no-cache") // Don't cache other file types
-			}
+      // Set cache control headers for better performance
+      if (
+        ["image/jpeg", "image/png", "image/gif", "image/webp", "video/mp4", "video/webm"].includes(
+          metadata.contentType
+        )
+      ) {
+        res.set("Cache-Control", "public, max-age=86400") // Cache for 1 day
+        res.set("ETag", fileId.toString())
+      } else {
+        res.set("Cache-Control", "no-cache") // Don't cache other file types
+      }
 
-			// Set content disposition header for download if requested
-			if (req.query.download === "true") {
-				res.set("Content-Disposition", `attachment; filename="${metadata.filename}"`)
-			} else {
-				res.set("Content-Disposition", `inline; filename="${metadata.filename}"`)
-			}
-			if (metadata.length) {
-				res.set("Content-Length", metadata.length.toString())
-			}
+      // Set content disposition header for download if requested
+      if (req.query.download === "true") {
+        res.set("Content-Disposition", `attachment; filename="${metadata.filename}"`)
+      } else {
+        res.set("Content-Disposition", `inline; filename="${metadata.filename}"`)
+      }
+      if (metadata.length) {
+        res.set("Content-Length", metadata.length.toString())
+      }
 
-			const clientETag = req.headers['if-none-match']
-			if (clientETag === fileId.toString()) {
-				res.status(304).end()
-				return
-			}
-			// Log successful streaming start
-			logger.info(`Streaming ${chalk.green(metadata.filename)} (${metadata.contentType}) to client`)
+      const clientETag = req.headers["if-none-match"]
+      if (clientETag === fileId.toString()) {
+        res.status(304).end()
+        return
+      }
+      // Log successful streaming start
+      logger.info(`Streaming ${chalk.green(metadata.filename)} (${metadata.contentType}) to client`)
 
-			// Stream the file to the response
-			stream.pipe(res)
+      // Stream the file to the response
+      stream.pipe(res)
 
-			// Handle streaming errors
-			stream.on("error", (error) => {
-				logger.error(`Error streaming file ${chalk.red(fileId.toString())}: ${error.message}`)
+      // Handle streaming errors
+      stream.on("error", (error) => {
+        logger.error(`Error streaming file ${chalk.red(fileId.toString())}: ${error.message}`)
 
-				// Only send error response if headers haven't been sent yet
-				if (!res.headersSent) {
-					errorHandler(res, ERROR_CODE.FILE_UPLOAD_FAILED)
-				} else {
-					res.end() // End the response if headers were already sent
-				}
-			})
-			stream.on("end", () => {
-				logger.info(`Successfully streamed ${chalk.green(metadata.filename)} to client`)
-			})
-		} catch (streamError) {
-			logger.error(
-				`Failed to retrieve file ${chalk.red(fileId.toString())}: ${(streamError as Error).message}`
-			)
-			errorHandler(res, ERROR_CODE.INFORMATION_NOT_FOUND)
-		}
-	} catch (error: unknown) {
-		logger.error(`Error retrieving media: ${(error as Error).message}`)
-		handleUnexpectedError(res, error as Error)
-	}
+        // Only send error response if headers haven't been sent yet
+        if (!res.headersSent) {
+          errorHandler(res, ERROR_CODE.FILE_UPLOAD_FAILED)
+        } else {
+          res.end() // End the response if headers were already sent
+        }
+      })
+      stream.on("end", () => {
+        logger.info(`Successfully streamed ${chalk.green(metadata.filename)} to client`)
+      })
+    } catch (streamError) {
+      logger.error(
+        `Failed to retrieve file ${chalk.red(fileId.toString())}: ${(streamError as Error).message}`
+      )
+      errorHandler(res, ERROR_CODE.INFORMATION_NOT_FOUND)
+    }
+  } catch (error: unknown) {
+    logger.error(`Error retrieving media: ${(error as Error).message}`)
+    handleUnexpectedError(res, error as Error)
+  }
 }

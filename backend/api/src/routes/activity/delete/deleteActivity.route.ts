@@ -11,7 +11,7 @@ const deleteActivityRouter = Router()
  *     description: |
  *       Permanently deletes an activity by its ID.
  *       This endpoint requires authentication and is restricted to administrators only.
- *       
+ *
  *       When an activity is deleted:
  *       - For TEXT activities: The activity document is completely removed.
  *       - For VIDEO activities: Both the activity document and the associated file in GridFS are removed.

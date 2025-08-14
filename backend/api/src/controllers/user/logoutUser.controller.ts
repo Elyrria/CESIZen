@@ -16,26 +16,26 @@ import { RefreshToken } from "@models/index.ts"
  * @returns {Promise<Response>} - A promise that resolves to the response object with a success message or an error message.
  */
 export const logoutUser = async (req: Request, res: Response): Promise<void> => {
-	try {
-		// Extract the refresh token from the request body
-		const refreshToken: string = req.body.refreshToken
+  try {
+    // Extract the refresh token from the request body
+    const refreshToken: string = req.body.refreshToken
 
-		const refreshTokenIsValid = await RefreshToken.findOne({ refreshToken: refreshToken })
-		if (!refreshTokenIsValid) {
-			errorHandler(res, ERROR_CODE.ALREADY_LOGOUT)
-		}
-		if (!refreshToken) {
-			errorHandler(res, ERROR_CODE.REFRESH_TOKEN_REQUIRED)
-			return
-		}
+    const refreshTokenIsValid = await RefreshToken.findOne({ refreshToken: refreshToken })
+    if (!refreshTokenIsValid) {
+      errorHandler(res, ERROR_CODE.ALREADY_LOGOUT)
+    }
+    if (!refreshToken) {
+      errorHandler(res, ERROR_CODE.REFRESH_TOKEN_REQUIRED)
+      return
+    }
 
-		// Delete the refresh token from the database
-		await RefreshToken.deleteOne({ refreshToken: refreshToken })
-		// Return a success message
-		okHandler(res, SUCCESS_CODE.LOGOUT_SUCCESS)
-		return
-	} catch (error: unknown) {
-		handleUnexpectedError(res, error as Error)
-		return
-	}
+    // Delete the refresh token from the database
+    await RefreshToken.deleteOne({ refreshToken: refreshToken })
+    // Return a success message
+    okHandler(res, SUCCESS_CODE.LOGOUT_SUCCESS)
+    return
+  } catch (error: unknown) {
+    handleUnexpectedError(res, error as Error)
+    return
+  }
 }

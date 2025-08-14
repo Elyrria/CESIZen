@@ -15,7 +15,13 @@ const router = Router()
 // POST routes
 router.use("/v1/informations", createInformationRouter)
 // GET routes
-router.use("/v1/informations", getInformationsRouter, getMediaByIdRouter, getPublicInformationsRouter, getPublicInformationByIdRouter)
+router.use(
+  "/v1/informations",
+  getInformationsRouter,
+  getMediaByIdRouter,
+  getPublicInformationsRouter,
+  getPublicInformationByIdRouter
+)
 // DETLE routes
 router.use("/v1/informations", deleteInformationRouter)
 // PUT routes

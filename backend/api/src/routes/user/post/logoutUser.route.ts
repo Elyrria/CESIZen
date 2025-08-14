@@ -124,6 +124,11 @@ const logoutUseRouter = Router()
  *             schema:
  *               $ref: '#/components/schemas/ApiErrorResponse'
  */
-logoutUseRouter.post("/logout", removeRefreshTokenValidationRules, validationErrorHandler, logoutUser)
+logoutUseRouter.post(
+  "/logout",
+  removeRefreshTokenValidationRules,
+  validationErrorHandler,
+  logoutUser
+)
 
 export default logoutUseRouter

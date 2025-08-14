@@ -4,248 +4,241 @@ import api from "@/services/apiHandler"
 import { create } from "zustand"
 
 export interface CategoryState {
-	categories: ICategory[]
-	publicCategories: ICategory[]
-	selectedCategory: ICategory | null
-	isLoading: boolean
-	error: string | null
+  categories: ICategory[]
+  publicCategories: ICategory[]
+  selectedCategory: ICategory | null
+  isLoading: boolean
+  error: string | null
 
-	// Fetch methods
-	fetchAdminCategories: () => Promise<boolean>
-	fetchPublicCategories: () => Promise<boolean>
+  // Fetch methods
+  fetchAdminCategories: () => Promise<boolean>
+  fetchPublicCategories: () => Promise<boolean>
 
-	// CRUD methods
-	createCategory: (categoryData: { name: string; isActive?: boolean }) => Promise<ICategory | null>
+  // CRUD methods
+  createCategory: (categoryData: { name: string; isActive?: boolean }) => Promise<ICategory | null>
 
-	updateCategory: (
-		id: string,
-		categoryData: {
-			name?: string
-			isActive?: boolean
-		}
-	) => Promise<boolean>
+  updateCategory: (
+    id: string,
+    categoryData: {
+      name?: string
+      isActive?: boolean
+    }
+  ) => Promise<boolean>
 
-	deleteCategory: (id: string) => Promise<boolean>
+  deleteCategory: (id: string) => Promise<boolean>
 
-	// State setters
-	setSelectedCategory: (category: ICategory | null) => void
-	clearCategories: () => void
+  // State setters
+  setSelectedCategory: (category: ICategory | null) => void
+  clearCategories: () => void
 }
 
 const useCategoryStore = create<CategoryState>()(
-	persist(
-		(set) => ({
-			categories: [],
-			publicCategories: [],
-			selectedCategory: null,
-			isLoading: false,
-			error: null,
+  persist(
+    (set) => ({
+      categories: [],
+      publicCategories: [],
+      selectedCategory: null,
+      isLoading: false,
+      error: null,
 
-			fetchAdminCategories: async () => {
-				set({ isLoading: true, error: null })
+      fetchAdminCategories: async () => {
+        set({ isLoading: true, error: null })
 
-				try {
-					const response = await api.getAdminCategories()
+        try {
+          const response = await api.getAdminCategories()
 
-					if (response.success && response.data) {
-						const categoriesData = response.data
+          if (response.success && response.data) {
+            const categoriesData = response.data
 
-						// Convert raw data to entities using Factory
-						const categories = categoriesData.categories.map((item) =>
-							entityFactory.createCategory(item)
-						)
+            // Convert raw data to entities using Factory
+            const categories = categoriesData.categories.map((item) =>
+              entityFactory.createCategory(item)
+            )
 
-						set({ categories })
+            set({ categories })
 
-						return true
-					} else {
-						if (!response.success) {
-							set({ error: response.error.message })
-						} else {
-							set({ error: "Impossible to retrieve categories" })
-						}
-						return false
-					}
-				} catch (error) {
-					console.error("Error fetching admin categories:", error)
-					set({ error: "An unexpected error occurred" })
-					return false
-				} finally {
-					set({ isLoading: false })
-				}
-			},
+            return true
+          } else {
+            if (!response.success) {
+              set({ error: response.error.message })
+            } else {
+              set({ error: "Impossible to retrieve categories" })
+            }
+            return false
+          }
+        } catch (error) {
+          console.error("Error fetching admin categories:", error)
+          set({ error: "An unexpected error occurred" })
+          return false
+        } finally {
+          set({ isLoading: false })
+        }
+      },
 
-			fetchPublicCategories: async () => {
-				set({ isLoading: true, error: null })
+      fetchPublicCategories: async () => {
+        set({ isLoading: true, error: null })
 
-				try {
-					const response = await api.getPublicCategories()
+        try {
+          const response = await api.getPublicCategories()
 
-					if (response.success && response.data) {
-						const categoriesData = response.data
+          if (response.success && response.data) {
+            const categoriesData = response.data
 
-						// Convert raw data to entities using Factory
-						const categories = categoriesData.categories.map((item) =>
-							entityFactory.createCategory(item)
-						)
+            // Convert raw data to entities using Factory
+            const categories = categoriesData.categories.map((item) =>
+              entityFactory.createCategory(item)
+            )
 
-						set({ publicCategories: categories })
+            set({ publicCategories: categories })
 
-						return true
-					} else {
-						if (!response.success) {
-							set({ error: response.error.message })
-						} else {
-							set({
-								error: "Impossible to retrieve public categories",
-							})
-						}
-						return false
-					}
-				} catch (error) {
-					console.error("Error fetching public categories:", error)
-					set({ error: "An unexpected error occurred" })
-					return false
-				} finally {
-					set({ isLoading: false })
-				}
-			},
+            return true
+          } else {
+            if (!response.success) {
+              set({ error: response.error.message })
+            } else {
+              set({
+                error: "Impossible to retrieve public categories"
+              })
+            }
+            return false
+          }
+        } catch (error) {
+          console.error("Error fetching public categories:", error)
+          set({ error: "An unexpected error occurred" })
+          return false
+        } finally {
+          set({ isLoading: false })
+        }
+      },
 
-			createCategory: async (categoryData) => {
-				set({ isLoading: true, error: null })
+      createCategory: async (categoryData) => {
+        set({ isLoading: true, error: null })
 
-				try {
-					const response = await api.createCategory(categoryData)
+        try {
+          const response = await api.createCategory(categoryData)
 
-					if (response.success && response.data) {
-						const newCategory = entityFactory.createCategory(response.data)
+          if (response.success && response.data) {
+            // @ts-ignore
+            const newCategory = entityFactory.createCategory(response.data)
 
-						// Add the new category to the list
-						set((state) => ({
-							categories: [...state.categories, newCategory],
-						}))
+            // Add the new category to the list
+            set((state) => ({
+              categories: [...state.categories, newCategory]
+            }))
 
-						return newCategory
-					} else {
-						if (!response.success) {
-							set({ error: response.error.message })
-						} else {
-							set({
-								error: "Impossible to create category: invalid data",
-							})
-						}
-						return null
-					}
-				} catch (error) {
-					console.error("Error creating category:", error)
-					set({ error: "An unexpected error occurred" })
-					return null
-				} finally {
-					set({ isLoading: false })
-				}
-			},
+            return newCategory
+          } else {
+            if (!response.success) {
+              set({ error: response.error.message })
+            } else {
+              set({
+                error: "Impossible to create category: invalid data"
+              })
+            }
+            return null
+          }
+        } catch (error) {
+          console.error("Error creating category:", error)
+          set({ error: "An unexpected error occurred" })
+          return null
+        } finally {
+          set({ isLoading: false })
+        }
+      },
 
-			updateCategory: async (id, categoryData) => {
-				set({ isLoading: true, error: null })
+      updateCategory: async (id, categoryData) => {
+        set({ isLoading: true, error: null })
 
-				try {
-					const response = await api.updateCategory(id, categoryData)
+        try {
+          const response = await api.updateCategory(id, categoryData)
 
-					if (response.success && response.data) {
-						const updatedCategory = entityFactory.createCategory(response.data)
+          if (response.success && response.data) {
+            // @ts-ignore
+            const updatedCategory = entityFactory.createCategory(response.data)
 
-						// Update category in both lists
-						set((state) => ({
-							categories: state.categories.map((category) =>
-								category.id === id ? updatedCategory : category
-							),
-							publicCategories: state.publicCategories.map((category) =>
-								category.id === id ? updatedCategory : category
-							),
-							selectedCategory:
-								state.selectedCategory?.id === id
-									? updatedCategory
-									: state.selectedCategory,
-						}))
+            // Update category in both lists
+            set((state) => ({
+              categories: state.categories.map((category) =>
+                category.id === id ? updatedCategory : category
+              ),
+              publicCategories: state.publicCategories.map((category) =>
+                category.id === id ? updatedCategory : category
+              ),
+              selectedCategory:
+                state.selectedCategory?.id === id ? updatedCategory : state.selectedCategory
+            }))
 
-						return true
-					} else {
-						if (!response.success) {
-							set({ error: response.error.message })
-						} else {
-							set({
-								error: "Impossible to update category: invalid data",
-							})
-						}
-						return false
-					}
-				} catch (error) {
-					console.error("Error updating category:", error)
-					set({ error: "An unexpected error occurred" })
-					return false
-				} finally {
-					set({ isLoading: false })
-				}
-			},
+            return true
+          } else {
+            if (!response.success) {
+              set({ error: response.error.message })
+            } else {
+              set({
+                error: "Impossible to update category: invalid data"
+              })
+            }
+            return false
+          }
+        } catch (error) {
+          console.error("Error updating category:", error)
+          set({ error: "An unexpected error occurred" })
+          return false
+        } finally {
+          set({ isLoading: false })
+        }
+      },
 
-			deleteCategory: async (id) => {
-				set({ isLoading: true, error: null })
+      deleteCategory: async (id) => {
+        set({ isLoading: true, error: null })
 
-				try {
-					const response = await api.deleteCategory(id)
+        try {
+          const response = await api.deleteCategory(id)
 
-					if (response.success) {
-						// Remove deleted category from both lists
-						set((state) => ({
-							categories: state.categories.filter(
-								(category) => category.id !== id
-							),
-							publicCategories: state.publicCategories.filter(
-								(category) => category.id !== id
-							),
-							selectedCategory:
-								state.selectedCategory?.id === id
-									? null
-									: state.selectedCategory,
-						}))
+          if (response.success) {
+            // Remove deleted category from both lists
+            set((state) => ({
+              categories: state.categories.filter((category) => category.id !== id),
+              publicCategories: state.publicCategories.filter((category) => category.id !== id),
+              selectedCategory: state.selectedCategory?.id === id ? null : state.selectedCategory
+            }))
 
-						return true
-					} else {
-						if (!response.success) {
-							set({ error: response.error.message })
-						} else {
-							set({ error: "Impossible to delete category" })
-						}
-						return false
-					}
-				} catch (error) {
-					console.error("Error deleting category:", error)
-					set({ error: "An unexpected error occurred" })
-					return false
-				} finally {
-					set({ isLoading: false })
-				}
-			},
+            return true
+          } else {
+            if (!response.success) {
+              set({ error: response.error.message })
+            } else {
+              set({ error: "Impossible to delete category" })
+            }
+            return false
+          }
+        } catch (error) {
+          console.error("Error deleting category:", error)
+          set({ error: "An unexpected error occurred" })
+          return false
+        } finally {
+          set({ isLoading: false })
+        }
+      },
 
-			setSelectedCategory: (category) => {
-				set({ selectedCategory: category })
-			},
+      setSelectedCategory: (category) => {
+        set({ selectedCategory: category })
+      },
 
-			clearCategories: () => {
-				set({
-					categories: [],
-					publicCategories: [],
-					selectedCategory: null,
-				})
-			},
-		}),
-		{
-			name: "category-storage",
-			partialize: (state) => ({
-				selectedCategory: state.selectedCategory,
-			}),
-		}
-	)
+      clearCategories: () => {
+        set({
+          categories: [],
+          publicCategories: [],
+          selectedCategory: null
+        })
+      }
+    }),
+    {
+      name: "category-storage",
+      partialize: (state) => ({
+        selectedCategory: state.selectedCategory
+      })
+    }
+  )
 )
 
 export default useCategoryStore

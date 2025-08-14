@@ -24,99 +24,101 @@ import chalk from "chalk"
  * @param res - Express response object.
  */
 export const createActivity = async (req: IAuthRequest, res: Response): Promise<void> => {
-	try {
-		// Verify admin access
-		const adminAccess = await verifyAdminAccess(req, res, "creating a new activity")
-		if (!adminAccess) return // If access verification failed, response has already been handled
+  try {
+    // Verify admin access
+    const adminAccess = await verifyAdminAccess(req, res, "creating a new activity")
+    if (!adminAccess) return // If access verification failed, response has already been handled
 
-		// Clean and extract the data from the request
-		const activityObject = req.body
-		const cleanActivityObject = deleteObjectIds(activityObject)
+    // Clean and extract the data from the request
+    const activityObject = req.body
+    const cleanActivityObject = deleteObjectIds(activityObject)
 
-		// Validate presence of all required fields
-		if (!validateRequiredActivityFields(cleanActivityObject)) {
-			errorHandler(res, ERROR_CODE.MISSING_INFO)
-			return
-		}
-		// Destructure validated fields
-		const {
-			name,
-			descriptionActivity,
-			type,
-			content,
-			isActive = true, // Default to active
-			parameters = {}, // Default to empty object
-			categoryId,
-		} = cleanActivityObject
+    // Validate presence of all required fields
+    if (!validateRequiredActivityFields(cleanActivityObject)) {
+      errorHandler(res, ERROR_CODE.MISSING_INFO)
+      return
+    }
+    // Destructure validated fields
+    const {
+      name,
+      descriptionActivity,
+      type,
+      content,
+      isActive = true, // Default to active
+      parameters = {}, // Default to empty object
+      categoryId
+    } = cleanActivityObject
 
-		// Validate media type
-		if (!MEDIATYPE.includes(type)) {
-			errorHandler(res, ERROR_CODE.INVALID_ACTIVITY_TYPE)
-			return
-		}
+    // Validate media type
+    if (!MEDIATYPE.includes(type)) {
+      errorHandler(res, ERROR_CODE.INVALID_ACTIVITY_TYPE)
+      return
+    }
 
-		// Validate category
-		const category = await validateCategory(categoryId, res)
-		if (!category) return // If validation fails, response has already been handled
-		// Build the base activity document
-		const activityData: Partial<IActivityDocument> = {
-			authorId: new mongoose.Types.ObjectId(adminAccess.userId),
-			name,
-			descriptionActivity,
-			type,
-			isActive,
-			parameters,
-			categoryId: new mongoose.Types.ObjectId(String(categoryId)),
-		}
+    // Validate category
+    const category = await validateCategory(categoryId, res)
+    if (!category) return // If validation fails, response has already been handled
+    // Build the base activity document
+    const activityData: Partial<IActivityDocument> = {
+      authorId: new mongoose.Types.ObjectId(adminAccess.userId),
+      name,
+      descriptionActivity,
+      type,
+      isActive,
+      parameters,
+      categoryId: new mongoose.Types.ObjectId(String(categoryId))
+    }
 
-		// Handle TEXT content
-		if (type === MEDIATYPE[0]) {
-			if (!content) {
-				errorHandler(res, ERROR_CODE.CONTENT_REQUIRED)
-				return
-			}
-			activityData.content = content
-		}
+    // Handle TEXT content
+    if (type === MEDIATYPE[0]) {
+      if (!content) {
+        errorHandler(res, ERROR_CODE.CONTENT_REQUIRED)
+        return
+      }
+      activityData.content = content
+    }
 
-		// Handle VIDEO content
-		if (type === MEDIATYPE[1]) {
-			const file = req.file
-			if (!file) {
-				errorHandler(res, ERROR_CODE.FILE_REQUIRED)
-				return
-			}
+    // Handle VIDEO content
+    if (type === MEDIATYPE[1]) {
+      const file = req.file
+      if (!file) {
+        errorHandler(res, ERROR_CODE.FILE_REQUIRED)
+        return
+      }
 
-			let fileMetadata: Record<string, any> = {}
+      const fileMetadata: Record<string, any> = {}
 
-			// Upload file to GridFS
-			logger.info(`Starting upload to GridFS: ${chalk.blue(file.originalname)}`)
-			const fileId = await uploadToGridFS(file.buffer, file.originalname, file.mimetype, {
-				type,
-				createdBy: adminAccess.userId,
-				...fileMetadata,
-			})
-			logger.info(`Upload successful, ID: ${chalk.green(fileId.toString())}`)
+      // Upload file to GridFS
+      logger.info(`Starting upload to GridFS: ${chalk.blue(file.originalname)}`)
+      const fileId = await uploadToGridFS(file.buffer, file.originalname, file.mimetype, {
+        type,
+        createdBy: adminAccess.userId,
+        ...fileMetadata
+      })
+      logger.info(`Upload successful, ID: ${chalk.green(fileId.toString())}`)
 
-			// Attach file info to the document
-			activityData.fileId = fileId
-			activityData.fileMetadata = {
-				filename: file.originalname,
-				contentType: file.mimetype,
-				size: file.size,
-				uploadDate: new Date(),
-				...fileMetadata,
-			}
-		}
+      // Attach file info to the document
+      activityData.fileId = fileId
+      activityData.fileMetadata = {
+        filename: file.originalname,
+        contentType: file.mimetype,
+        size: file.size,
+        uploadDate: new Date(),
+        ...fileMetadata
+      }
+    }
 
-		// Save the final document to the database
-		const activity = await new Activity(activityData).save()
+    // Save the final document to the database
+    const activity = await new Activity(activityData).save()
 
-		logger.info(`Activity created: ${chalk.green(activity._id.toString())} (Type: ${chalk.blue(type)})`)
+    logger.info(
+      `Activity created: ${chalk.green(activity._id.toString())} (Type: ${chalk.blue(type)})`
+    )
 
-		// Return a successful response
-		createdHandler(res, SUCCESS_CODE.ACTIVITY_CREATED, { activity: activity })
-	} catch (error: unknown) {
-		// Catch-all for any unexpected errors
-		handleUnexpectedError(res, error as Error)
-	}
+    // Return a successful response
+    createdHandler(res, SUCCESS_CODE.ACTIVITY_CREATED, { activity: activity })
+  } catch (error: unknown) {
+    // Catch-all for any unexpected errors
+    handleUnexpectedError(res, error as Error)
+  }
 }

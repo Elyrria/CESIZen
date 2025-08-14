@@ -16,7 +16,7 @@ const updateInformationRouter = Router()
  *       Different rules apply depending on user roles:
  *       - Regular users can only update their own information entries and set status to DRAFT or PENDING
  *       - Administrators can update any information entry and set status to PUBLISHED
- *       
+ *
  *       For media types (IMAGE, VIDEO), a new file can be uploaded to replace the existing one.
  *       The category of the information can also be updated.
  *     tags: [Informations]
@@ -288,12 +288,12 @@ const updateInformationRouter = Router()
  */
 
 updateInformationRouter.put(
-	"/update/:id",
-    upload.single("file"),
-	updateInformationValidationRules,
-	validationErrorHandler,
-	auth,
-	updateInformation
+  "/update/:id",
+  upload.single("file"),
+  updateInformationValidationRules,
+  validationErrorHandler,
+  auth,
+  updateInformation
 )
 
 export default updateInformationRouter

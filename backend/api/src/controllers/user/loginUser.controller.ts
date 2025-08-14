@@ -18,31 +18,35 @@ import bcrypt from "bcrypt"
  * @returns {Promise<Response>} - A promise that resolves to the response object with tokens or an error message.
  */
 export const loginUser = async (req: Request, res: Response): Promise<void> => {
-	try {
-		// Find the user by email
-		const user = await User.findOne({ email: req.body.email }).select("+password")
-		// Check if the user exists and has a password
-		if (!user || !user.password) {
-			errorHandler(res, ERROR_CODE.INVALID_CREDENTIALS)
-			return
-		}
+  try {
+    // Find the user by email
+    const user = await User.findOne({ email: req.body.email }).select("+password")
+    // Check if the user exists and has a password
+    if (!user || !user.password) {
+      errorHandler(res, ERROR_CODE.INVALID_CREDENTIALS)
+      return
+    }
 
-		// Verify the provided password with the stored hashed password
-		const isValid: boolean = await bcrypt.compare(req.body.password, user.password)
+    // Verify the provided password with the stored hashed password
+    const isValid: boolean = await bcrypt.compare(req.body.password, user.password)
 
-		if (!isValid) {
-			errorHandler(res, ERROR_CODE.INVALID_CREDENTIALS)
-			return
-		}
-		// Prepare user object without password for token generation
-		const { password, _id, ...userWithoutPassword } = user.toObject()
-		// Prepare auth response (tokens and user data)
-		const authResponse = await prepareUserAuthResponse({ ...userWithoutPassword, id: _id }, req, res)
-		if (!authResponse) return // Error already handled in the function
+    if (!isValid) {
+      errorHandler(res, ERROR_CODE.INVALID_CREDENTIALS)
+      return
+    }
+    // Prepare user object without password for token generation
+    const { _id, ...userWithoutPassword } = user.toObject()
+    // Prepare auth response (tokens and user data)
+    const authResponse = await prepareUserAuthResponse(
+      { ...userWithoutPassword, id: _id },
+      req,
+      res
+    )
+    if (!authResponse) return // Error already handled in the function
 
-		// Return success response
-		okHandler(res, SUCCESS_CODE.USERS_FOUND, authResponse)
-	} catch (error) {
-		handleUnexpectedError(res, error as Error)
-	}
+    // Return success response
+    okHandler(res, SUCCESS_CODE.USERS_FOUND, authResponse)
+  } catch (error) {
+    handleUnexpectedError(res, error as Error)
+  }
 }

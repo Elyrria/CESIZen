@@ -139,6 +139,12 @@ const createUseRouter = Router()
  *                     code: "unexpectedError"
  *                     message: "An unexpected error occurred"
  */
-createUseRouter.post("/admin-create", auth, adminCreateUserValidationRules, validationErrorHandler, adminCreateUser)
+createUseRouter.post(
+  "/admin-create",
+  auth,
+  adminCreateUserValidationRules,
+  validationErrorHandler,
+  adminCreateUser
+)
 
 export default createUseRouter

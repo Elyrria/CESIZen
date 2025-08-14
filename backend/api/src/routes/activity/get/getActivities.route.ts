@@ -11,7 +11,7 @@ const getActivitiesRouter = Router()
  *     description: |
  *       Fetches a paginated list of activity entries with optional filtering and sorting.
  *       This endpoint requires authentication and is restricted to administrators only.
- *       
+ *
  *       Unlike the public endpoints, this admin route returns all activities regardless of status,
  *       including inactive ones.
  *     tags: [Activities]
@@ -135,7 +135,7 @@ const getActivitiesRouter = Router()
  *                             during: "Concentrez-vous uniquement sur votre respiration en suivant le rythme affiché"
  *                             after: "Prenez un moment pour observer comment vous vous sentez après l'exercice"
  *                         validatedAndPublishedAt: null
- *                         categoryId: 
+ *                         categoryId:
  *                           _id: "6824ac779ca3a43fb48bbeac"
  *                           name: "Techniques de respiration"
  *                           id: "6824ac779ca3a43fb48bbeac"
@@ -165,7 +165,7 @@ const getActivitiesRouter = Router()
  *                           uploadDate: "2025-05-15T14:09:32.456Z"
  *                         fileId: "6825f5bc3a0944127c37756c"
  *                         validatedAndPublishedAt: null
- *                         categoryId: 
+ *                         categoryId:
  *                           _id: "6824ac779ca3a43fb48bbeac"
  *                           name: "Techniques de respiration"
  *                           id: "6824ac779ca3a43fb48bbeac"
@@ -180,7 +180,7 @@ const getActivitiesRouter = Router()
  *                       itemsPerPage: 10
  *                       hasNextPage: false
  *                       hasPrevPage: false
- *                     filters: 
+ *                     filters:
  *                       sortBy: "createdAt"
  *                       order: "desc"
  *               filteredActivities:
@@ -215,7 +215,7 @@ const getActivitiesRouter = Router()
  *                             during: "Concentrez-vous uniquement sur votre respiration"
  *                             after: "Prenez un moment pour observer comment vous vous sentez"
  *                         validatedAndPublishedAt: null
- *                         categoryId: 
+ *                         categoryId:
  *                           _id: "6824ac779ca3a43fb48bbeac"
  *                           name: "Techniques de respiration"
  *                           id: "6824ac779ca3a43fb48bbeac"
@@ -251,7 +251,7 @@ const getActivitiesRouter = Router()
  *                           defaultPattern: "748"
  *                           recommendedDuration: 300
  *                         validatedAndPublishedAt: null
- *                         categoryId: 
+ *                         categoryId:
  *                           _id: "6824ac779ca3a43fb48bbeac"
  *                           name: "Techniques de respiration"
  *                           id: "6824ac779ca3a43fb48bbeac"

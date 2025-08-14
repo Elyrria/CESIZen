@@ -1,6 +1,6 @@
 import { errorHandler, handleUnexpectedError } from "@errorHandler/errorHandler.ts"
 import { validateStoredToken } from "@controllers/auth/utils/validateStoredToken.ts"
-import {processTokenRenewal} from "@controllers/auth/utils/processTokenRenewal.ts"
+import { processTokenRenewal } from "@controllers/auth/utils/processTokenRenewal.ts"
 import { revokeToken } from "@controllers/auth/utils/revokeToken.ts"
 import type { IRefreshTokenRequest } from "@api/types/tokens.d.ts"
 import { ERROR_CODE } from "@errorHandler/configs.errorHandler.ts"
@@ -18,41 +18,40 @@ import type { Request, Response } from "express"
  * @returns {Promise<void>} - A promise that resolves to the response with the new access token or an error message.
  */
 export const refreshToken = async (req: Request, res: Response): Promise<void> => {
-	try {
-	
-		const tokenData: IRefreshTokenRequest = req.body as IRefreshTokenRequest
-		const { refreshToken, userId } = tokenData
+  try {
+    const tokenData: IRefreshTokenRequest = req.body as IRefreshTokenRequest
+    const { refreshToken, userId } = tokenData
 
-		// Validate refresh token is provided
-		if (!refreshToken || !userId) {
-			errorHandler(res, ERROR_CODE.INVALID_TOKEN)
-			return
-		}
+    // Validate refresh token is provided
+    if (!refreshToken || !userId) {
+      errorHandler(res, ERROR_CODE.INVALID_TOKEN)
+      return
+    }
 
-		// Validate secret key availability
-		const secretKey: string = CONFIGS.TOKEN_SECRET.KEY
-		if (!secretKey) {
-			errorHandler(res, ERROR_CODE.SERVER)
-			return
-		}
+    // Validate secret key availability
+    const secretKey: string = CONFIGS.TOKEN_SECRET.KEY
+    if (!secretKey) {
+      errorHandler(res, ERROR_CODE.SERVER)
+      return
+    }
 
-		// Get User-Agent for security validation
-		const userAgent = req.headers["user-agent"] || "unknown"
+    // Get User-Agent for security validation
+    const userAgent = req.headers["user-agent"] || "unknown"
 
-		// Find and validate stored token
-		const storedToken = await validateStoredToken(res, refreshToken, userAgent)
-		if (!storedToken) return
+    // Find and validate stored token
+    const storedToken = await validateStoredToken(res, refreshToken, userAgent)
+    if (!storedToken) return
 
-		try {
-			// Process token renewal
-			return await processTokenRenewal(res, refreshToken, userId, secretKey, storedToken)
-		} catch (tokenError: any) {
-			await revokeToken(storedToken)
-			errorHandler(res, ERROR_CODE.EXPIRED_TOKEN, tokenError.message, tokenError)
-			return
-		}
-	} catch (error: unknown) {
-		handleUnexpectedError(res, error as Error)
-		return
-	}
+    try {
+      // Process token renewal
+      return await processTokenRenewal(res, refreshToken, userId, secretKey, storedToken)
+    } catch (tokenError: any) {
+      await revokeToken(storedToken)
+      errorHandler(res, ERROR_CODE.EXPIRED_TOKEN, tokenError.message, tokenError)
+      return
+    }
+  } catch (error: unknown) {
+    handleUnexpectedError(res, error as Error)
+    return
+  }
 }

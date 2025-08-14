@@ -19,58 +19,58 @@ import { User } from "@models/index.ts"
  * @returns {Promise<void>} - A promise that resolves when the response is sent.
  */
 export const getUserById = async (req: Request, res: Response): Promise<void> => {
-	try {
-		// Check authentication and retrieve the authenticated user
-		const user: IUser | null = await checkAuthentification(req)
+  try {
+    // Check authentication and retrieve the authenticated user
+    const user: IUser | null = await checkAuthentification(req)
 
-		let userRoleIndex: number = -1
+    let userRoleIndex: number = -1
 
-		try {
-			// Determine the role index for the authenticated user
-			userRoleIndex = user?.role ? checkUserRole(user.role) : userRoleIndex
-		} catch (error: unknown) {
-			const errorType = error instanceof Error ? error.message : ERROR_CODE.SERVER
-			errorHandler(res, errorType)
-			return
-		}
+    try {
+      // Determine the role index for the authenticated user
+      userRoleIndex = user?.role ? checkUserRole(user.role) : userRoleIndex
+    } catch (error: unknown) {
+      const errorType = error instanceof Error ? error.message : ERROR_CODE.SERVER
+      errorHandler(res, errorType)
+      return
+    }
 
-		// Ensure the authenticated user has sufficient permissions to access user data
-		if (userRoleIndex > 0) {
-			errorHandler(res, ERROR_CODE.INSUFFICIENT_ACCESS)
-			return
-		}
+    // Ensure the authenticated user has sufficient permissions to access user data
+    if (userRoleIndex > 0) {
+      errorHandler(res, ERROR_CODE.INSUFFICIENT_ACCESS)
+      return
+    }
 
-		// Get user ID from request parameters
-		const userId = req.params.id
+    // Get user ID from request parameters
+    const userId = req.params.id
 
-		if (!userId) {
-			errorHandler(res, ERROR_CODE.MISSING_INFO)
-			return
-		}
+    if (!userId) {
+      errorHandler(res, ERROR_CODE.MISSING_INFO)
+      return
+    }
 
-		// Find user by ID
-		const foundUser = await User.findById(userId)
-			.select("_id email firstName name birthDate role createdAt updatedAt")
-			.lean()
+    // Find user by ID
+    const foundUser = await User.findById(userId)
+      .select("_id email firstName name birthDate role createdAt updatedAt")
+      .lean()
 
-		if (!foundUser) {
-			errorHandler(res, ERROR_CODE.USER_NOT_FOUND)
-			return
-		}
+    if (!foundUser) {
+      errorHandler(res, ERROR_CODE.USER_NOT_FOUND)
+      return
+    }
 
-		// List of fields to decrypt
-		const ENCRYPTED_FIELDS = ["name", "firstName", "birthDate"]
+    // List of fields to decrypt
+    const ENCRYPTED_FIELDS = ["name", "firstName", "birthDate"]
 
-		// Decrypt user data
-		const decryptedUserResponse = decryptData([foundUser], ENCRYPTED_FIELDS)
+    // Decrypt user data
+    const decryptedUserResponse = decryptData([foundUser], ENCRYPTED_FIELDS)
 
-		okHandler(res, SUCCESS_CODE.USER_FOUND, {
-			user: decryptedUserResponse[0],
-		})
+    okHandler(res, SUCCESS_CODE.USER_FOUND, {
+      user: decryptedUserResponse[0]
+    })
 
-		return
-	} catch (error: unknown) {
-		handleUnexpectedError(res, error as Error)
-		return
-	}
+    return
+  } catch (error: unknown) {
+    handleUnexpectedError(res, error as Error)
+    return
+  }
 }

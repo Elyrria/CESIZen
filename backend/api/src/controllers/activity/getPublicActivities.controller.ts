@@ -20,23 +20,23 @@ import { logger } from "@logs/logger.ts"
  * @returns {Promise<void>} - A promise that resolves when the response is sent
  */
 export const getPublicActivities = async (req: Request, res: Response): Promise<void> => {
-	try {
-		logger.info(`Public request for activities with filters: ${JSON.stringify(req.query)}`)
+  try {
+    logger.info(`Public request for activities with filters: ${JSON.stringify(req.query)}`)
 
-		// Only show active activities
-		const baseQuery = { isActive: true }
+    // Only show active activities
+    const baseQuery = { isActive: true }
 
-		// Fetch data with the appropriate base query
-		const responseData = await fetchActivityWithQuery(req, baseQuery)
+    // Fetch data with the appropriate base query
+    const responseData = await fetchActivityWithQuery(req, baseQuery)
 
-		// Send response with appropriate success code
-		if (responseData.items.length > 0) {
-			successHandler(res, SUCCESS_CODE.PUBLIC_ACTIVITIES, responseData)
-		} else {
-			successHandler(res, SUCCESS_CODE.NO_ACTIVITY, responseData)
-		}
-	} catch (error: unknown) {
-		logger.error(`Error retrieving public activities: ${(error as Error).message}`)
-		handleUnexpectedError(res, error as Error)
-	}
+    // Send response with appropriate success code
+    if (responseData.items.length > 0) {
+      successHandler(res, SUCCESS_CODE.PUBLIC_ACTIVITIES, responseData)
+    } else {
+      successHandler(res, SUCCESS_CODE.NO_ACTIVITY, responseData)
+    }
+  } catch (error: unknown) {
+    logger.error(`Error retrieving public activities: ${(error as Error).message}`)
+    handleUnexpectedError(res, error as Error)
+  }
 }

@@ -7,20 +7,20 @@ import useUserStore, { type UserState } from "@/stores/useUserStore"
 
 // Type for the combined store
 interface Store {
-	auth: AuthState
-	user: UserState
-	information: InformationState
-	activity: ActivityState
-	category: CategoryState
+  auth: AuthState
+  user: UserState
+  information: InformationState
+  activity: ActivityState
+  category: CategoryState
 }
 
 // Function to access all stores from a single point
 const useStore = (): Store => ({
-	auth: useAuthStore(),
-	user: useUserStore(),
-	information: useInformationStore(),
-	activity: useActivityStore(),
-	category: useCategoryStore(),
+  auth: useAuthStore(),
+  user: useUserStore(),
+  information: useInformationStore(),
+  activity: useActivityStore(),
+  category: useCategoryStore()
 })
 
 export default useStore

@@ -276,6 +276,12 @@ const updateCategoryRouter = Router()
  *                     code: "unexpectedError"
  *                     message: "An unexpected error occurred"
  */
-updateCategoryRouter.put("/update/:id", updateCategoryValidationRules, validationErrorHandler, auth, updateCategory)
+updateCategoryRouter.put(
+  "/update/:id",
+  updateCategoryValidationRules,
+  validationErrorHandler,
+  auth,
+  updateCategory
+)
 
 export default updateCategoryRouter

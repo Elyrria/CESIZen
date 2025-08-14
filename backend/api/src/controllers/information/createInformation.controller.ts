@@ -34,129 +34,129 @@ import chalk from "chalk"
  * @param res - Express response object.
  */
 export const createInformation = async (req: IAuthRequest, res: Response): Promise<void> => {
-	try {
-		// Authentication check
-		if (!req.auth?.userId) {
-			errorHandler(res, ERROR_CODE.NO_CONDITIONS)
-			return
-		}
+  try {
+    // Authentication check
+    if (!req.auth?.userId) {
+      errorHandler(res, ERROR_CODE.NO_CONDITIONS)
+      return
+    }
 
-		// Ensure the user is active
-		const user = await checkUserActive(req.auth.userId, res)
-		if (!user) return // If user is not active, response has already been handled
+    // Ensure the user is active
+    const user = await checkUserActive(req.auth.userId, res)
+    if (!user) return // If user is not active, response has already been handled
 
-		// Clean and extract the data from the request
-		const informationObject = req.body
-		const cleanInformationObject = deleteObjectIds(informationObject)
+    // Clean and extract the data from the request
+    const informationObject = req.body
+    const cleanInformationObject = deleteObjectIds(informationObject)
 
-		// Validate presence of all required fields
-		if (!validateRequierdInformationFields(cleanInformationObject)) {
-			errorHandler(res, ERROR_CODE.MISSING_INFO)
-			return
-		}
+    // Validate presence of all required fields
+    if (!validateRequierdInformationFields(cleanInformationObject)) {
+      errorHandler(res, ERROR_CODE.MISSING_INFO)
+      return
+    }
 
-		// Destructure validated fields with default status
-		const {
-			title,
-			descriptionInformation,
-			name,
-			type,
-			status = STATUS[0],
-			content,
-			categoryId,
-		} = cleanInformationObject
+    // Destructure validated fields with default status
+    const {
+      title,
+      descriptionInformation,
+      name,
+      type,
+      status = STATUS[0],
+      content,
+      categoryId
+    } = cleanInformationObject
 
-		// Validate media type
-		if (!MEDIATYPE.includes(type)) {
-			errorHandler(res, ERROR_CODE.INVALID_INFORMATION_TYPE)
-			return
-		}
+    // Validate media type
+    if (!MEDIATYPE.includes(type)) {
+      errorHandler(res, ERROR_CODE.INVALID_INFORMATION_TYPE)
+      return
+    }
 
-		// Validate category with utility function
-		const category = await validateCategory(
-			categoryId,
-			res,
-			"Category",
-			ERROR_CODE.INVALID_INFORMATION_TYPE
-		)
-		if (!category) return // If validation fails, response has already been handled
+    // Validate category with utility function
+    const category = await validateCategory(
+      categoryId,
+      res,
+      "Category",
+      ERROR_CODE.INVALID_INFORMATION_TYPE
+    )
+    if (!category) return // If validation fails, response has already been handled
 
-		// Build the base information document
-		const informationData: Partial<IInformationDocument> = {
-			authorId: new mongoose.Types.ObjectId(req.auth.userId),
-			title,
-			descriptionInformation,
-			name,
-			type,
-			status,
-			categoryId: new mongoose.Types.ObjectId(String(categoryId)),
-		}
+    // Build the base information document
+    const informationData: Partial<IInformationDocument> = {
+      authorId: new mongoose.Types.ObjectId(req.auth.userId),
+      title,
+      descriptionInformation,
+      name,
+      type,
+      status,
+      categoryId: new mongoose.Types.ObjectId(String(categoryId))
+    }
 
-		// Handle TEXT content
-		if (type === MEDIATYPE[0]) {
-			if (!content) {
-				errorHandler(res, ERROR_CODE.CONTENT_REQUIRED)
-				return
-			}
-			informationData.content = content
-		}
+    // Handle TEXT content
+    if (type === MEDIATYPE[0]) {
+      if (!content) {
+        errorHandler(res, ERROR_CODE.CONTENT_REQUIRED)
+        return
+      }
+      informationData.content = content
+    }
 
-		// Handle MEDIA (IMAGE or VIDEO)
-		if (type !== MEDIATYPE[0]) {
-			const file = req.file
-			if (!file) {
-				errorHandler(res, ERROR_CODE.FILE_REQUIRED)
-				return
-			}
+    // Handle MEDIA (IMAGE or VIDEO)
+    if (type !== MEDIATYPE[0]) {
+      const file = req.file
+      if (!file) {
+        errorHandler(res, ERROR_CODE.FILE_REQUIRED)
+        return
+      }
 
-			let fileMetadata: Record<string, any> = {}
+      let fileMetadata: Record<string, any> = {}
 
-			// Extract image metadata if the type is IMAGE
-			if (type === "IMAGE") {
-				try {
-					const imageInfo = await sharp(file.buffer).metadata()
-					fileMetadata = {
-						dimension: {
-							width: imageInfo.width,
-							height: imageInfo.height,
-						},
-						format: imageInfo.format,
-					}
-				} catch (error) {
-					logger.error("Error while extracting image metadata:", error)
-				}
-			}
+      // Extract image metadata if the type is IMAGE
+      if (type === "IMAGE") {
+        try {
+          const imageInfo = await sharp(file.buffer).metadata()
+          fileMetadata = {
+            dimension: {
+              width: imageInfo.width,
+              height: imageInfo.height
+            },
+            format: imageInfo.format
+          }
+        } catch (error) {
+          logger.error("Error while extracting image metadata:", error)
+        }
+      }
 
-			// Upload file to GridFS
-			logger.info(`Starting upload to GridFS: ${chalk.blue(file.originalname)}`)
-			const fileId = await uploadToGridFS(file.buffer, file.originalname, file.mimetype, {
-				type,
-				createdBy: req.auth.userId,
-				...fileMetadata,
-			})
-			logger.info(`Upload successful, ID: ${chalk.green(fileId.toString())}`)
+      // Upload file to GridFS
+      logger.info(`Starting upload to GridFS: ${chalk.blue(file.originalname)}`)
+      const fileId = await uploadToGridFS(file.buffer, file.originalname, file.mimetype, {
+        type,
+        createdBy: req.auth.userId,
+        ...fileMetadata
+      })
+      logger.info(`Upload successful, ID: ${chalk.green(fileId.toString())}`)
 
-			// Attach file info to the document
-			informationData.fileId = fileId
-			informationData.fileMetadata = {
-				filename: file.originalname,
-				contentType: file.mimetype,
-				size: file.size,
-				uploadDate: new Date(),
-				...fileMetadata,
-			}
-		}
+      // Attach file info to the document
+      informationData.fileId = fileId
+      informationData.fileMetadata = {
+        filename: file.originalname,
+        contentType: file.mimetype,
+        size: file.size,
+        uploadDate: new Date(),
+        ...fileMetadata
+      }
+    }
 
-		// Save the final document to the database
-		const information = await new Information(informationData).save()
-		logger.info(
-			`Information created: ${chalk.green(information._id.toString())} (Type: ${chalk.blue(type)})`
-		)
+    // Save the final document to the database
+    const information = await new Information(informationData).save()
+    logger.info(
+      `Information created: ${chalk.green(information._id.toString())} (Type: ${chalk.blue(type)})`
+    )
 
-		// Return a successful response
-		createdHandler(res, SUCCESS_CODE.INFORMATION_CREATED, { information: information })
-	} catch (error: unknown) {
-		// Catch-all for any unexpected errors
-		handleUnexpectedError(res, error as Error)
-	}
+    // Return a successful response
+    createdHandler(res, SUCCESS_CODE.INFORMATION_CREATED, { information: information })
+  } catch (error: unknown) {
+    // Catch-all for any unexpected errors
+    handleUnexpectedError(res, error as Error)
+  }
 }

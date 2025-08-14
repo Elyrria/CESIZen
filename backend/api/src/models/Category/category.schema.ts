@@ -9,34 +9,34 @@ import mongoose, { Schema } from "mongoose"
  * Contains validation rules, indexes and data structure for category documents
  */
 const categorySchema = new Schema<ICategoryDocument>(
-	{
-		name: {
-			type: String,
-			required: [true, CATEGORY_MESSAGE.required(FIELD.NAME)],
-            unique: true,
-			trim: true,
-			minlength: [2, CATEGORY_MESSAGE.minLength(FIELD.NAME, 2)],
-			maxlength: [50, CATEGORY_MESSAGE.maxLength(FIELD.NAME, 50)],
-		},
-		createdBy: {
-			type: mongoose.Schema.Types.ObjectId,
-			ref: "User",
-			required: [true, CATEGORY_MESSAGE.required(FIELD.CREATED_BY)],
-		},
-		updatedBy: {
-			type: mongoose.Schema.Types.ObjectId,
-			ref: "User",
-		},
-		isActive: {
-			type: Boolean,
-			default: true,
-		},
-	},
-	{
-		timestamps: true, // Automatically manages createdAt and updatedAt fields
-		toJSON: { virtuals: true }, // Includes virtual properties when converting to JSON
-		toObject: { virtuals: true }, // Includes virtual properties when converting to objects
-	}
+  {
+    name: {
+      type: String,
+      required: [true, CATEGORY_MESSAGE.required(FIELD.NAME)],
+      unique: true,
+      trim: true,
+      minlength: [2, CATEGORY_MESSAGE.minLength(FIELD.NAME, 2)],
+      maxlength: [50, CATEGORY_MESSAGE.maxLength(FIELD.NAME, 50)]
+    },
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: [true, CATEGORY_MESSAGE.required(FIELD.CREATED_BY)]
+    },
+    updatedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User"
+    },
+    isActive: {
+      type: Boolean,
+      default: true
+    }
+  },
+  {
+    timestamps: true, // Automatically manages createdAt and updatedAt fields
+    toJSON: { virtuals: true }, // Includes virtual properties when converting to JSON
+    toObject: { virtuals: true } // Includes virtual properties when converting to objects
+  }
 )
 
 /**

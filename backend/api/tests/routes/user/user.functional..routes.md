@@ -21,12 +21,16 @@ Ces tests fonctionnels servent à :
 - **ID** : FT-001-01
 - **Description** : Vérifie qu'un administrateur pré-inséré peut se connecter au système
 - **Entrée** : Identifiants administrateur (email et mot de passe)
-- **Sortie Attendue** : 
- * Statut 200 (OK)
- * Réponse contenant les tokens d'accès et de rafraîchissement valides
+- **Sortie Attendue** :
+
+* Statut 200 (OK)
+* Réponse contenant les tokens d'accès et de rafraîchissement valides
+
 - **Vérifications Spécifiques** :
- * Format JWT des tokens
- * Structure de la réponse API
+
+* Format JWT des tokens
+* Structure de la réponse API
+
 - **Statut** : RÉUSSI
 - **Date d'Ajout** : 2025-05-13
 
@@ -35,12 +39,16 @@ Ces tests fonctionnels servent à :
 - **ID** : FT-001-02
 - **Description** : Vérifie qu'un administrateur peut créer un nouvel utilisateur standard
 - **Entrée** : Données utilisateur (email, mot de passe, nom, prénom, date de naissance, rôle)
-- **Sortie Attendue** : 
- * Statut 201 (Created)
- * Données de l'utilisateur créé
+- **Sortie Attendue** :
+
+* Statut 201 (Created)
+* Données de l'utilisateur créé
+
 - **Vérifications Spécifiques** :
- * Correspondance des données retournées avec les données soumises
- * Attribution correcte de l'ID utilisateur
+
+* Correspondance des données retournées avec les données soumises
+* Attribution correcte de l'ID utilisateur
+
 - **Statut** : RÉUSSI
 - **Date d'Ajout** : 2025-05-13
 
@@ -49,12 +57,16 @@ Ces tests fonctionnels servent à :
 - **ID** : FT-001-03
 - **Description** : Vérifie qu'un administrateur peut récupérer la liste de tous les utilisateurs
 - **Entrée** : Token d'accès administrateur
-- **Sortie Attendue** : 
- * Statut 200 (OK)
- * Liste des utilisateurs incluant l'administrateur et l'utilisateur standard créé
+- **Sortie Attendue** :
+
+* Statut 200 (OK)
+* Liste des utilisateurs incluant l'administrateur et l'utilisateur standard créé
+
 - **Vérifications Spécifiques** :
- * Présence des utilisateurs de test dans la liste
- * Structure correcte de la réponse
+
+* Présence des utilisateurs de test dans la liste
+* Structure correcte de la réponse
+
 - **Statut** : RÉUSSI
 - **Date d'Ajout** : 2025-05-13
 
@@ -63,11 +75,15 @@ Ces tests fonctionnels servent à :
 - **ID** : FT-001-04
 - **Description** : Vérifie qu'un utilisateur standard peut se connecter avec ses identifiants
 - **Entrée** : Identifiants utilisateur standard (email et mot de passe)
-- **Sortie Attendue** : 
- * Statut 200 (OK)
- * Tokens d'accès et de rafraîchissement valides
+- **Sortie Attendue** :
+
+* Statut 200 (OK)
+* Tokens d'accès et de rafraîchissement valides
+
 - **Vérifications Spécifiques** :
- * Structure de la réponse API
+
+* Structure de la réponse API
+
 - **Statut** : RÉUSSI
 - **Date d'Ajout** : 2025-05-13
 
@@ -76,13 +92,17 @@ Ces tests fonctionnels servent à :
 - **ID** : FT-001-05
 - **Description** : Vérifie qu'un utilisateur peut mettre à jour son propre profil
 - **Entrée** : Token d'accès utilisateur standard et données de mise à jour (nom et prénom)
-- **Sortie Attendue** : 
- * Statut 200 (OK)
- * Données utilisateur mises à jour
- * Nouveaux tokens générés
+- **Sortie Attendue** :
+
+* Statut 200 (OK)
+* Données utilisateur mises à jour
+* Nouveaux tokens générés
+
 - **Vérifications Spécifiques** :
- * Correspondance des données mises à jour
- * Structure correcte de la réponse incluant utilisateur et tokens
+
+* Correspondance des données mises à jour
+* Structure correcte de la réponse incluant utilisateur et tokens
+
 - **Statut** : RÉUSSI
 - **Date d'Ajout** : 2025-05-13
 
@@ -91,11 +111,15 @@ Ces tests fonctionnels servent à :
 - **ID** : FT-001-06
 - **Description** : Vérifie qu'un utilisateur standard peut se déconnecter en invalidant son token de rafraîchissement
 - **Entrée** : Token de rafraîchissement utilisateur
-- **Sortie Attendue** : 
- * Statut 200 (OK)
- * Message de déconnexion réussie
+- **Sortie Attendue** :
+
+* Statut 200 (OK)
+* Message de déconnexion réussie
+
 - **Vérifications Spécifiques** :
- * Suppression du token de rafraîchissement de la base de données
+
+* Suppression du token de rafraîchissement de la base de données
+
 - **Statut** : RÉUSSI
 - **Date d'Ajout** : 2025-05-13
 
@@ -104,11 +128,15 @@ Ces tests fonctionnels servent à :
 - **ID** : FT-001-07
 - **Description** : Vérifie qu'un administrateur peut supprimer un utilisateur standard
 - **Entrée** : Token d'accès administrateur et ID de l'utilisateur à supprimer
-- **Sortie Attendue** : 
- * Statut 200 (OK)
- * Message de suppression réussie
+- **Sortie Attendue** :
+
+* Statut 200 (OK)
+* Message de suppression réussie
+
 - **Vérifications Spécifiques** :
- * Suppression effective de l'utilisateur de la base de données
+
+* Suppression effective de l'utilisateur de la base de données
+
 - **Statut** : RÉUSSI
 - **Date d'Ajout** : 2025-05-13
 
@@ -117,11 +145,15 @@ Ces tests fonctionnels servent à :
 - **ID** : FT-001-08
 - **Description** : Vérifie qu'un administrateur peut se déconnecter en invalidant son token de rafraîchissement
 - **Entrée** : Token de rafraîchissement administrateur
-- **Sortie Attendue** : 
- * Statut 200 (OK)
- * Message de déconnexion réussie
+- **Sortie Attendue** :
+
+* Statut 200 (OK)
+* Message de déconnexion réussie
+
 - **Vérifications Spécifiques** :
- * Suppression du token de rafraîchissement de la base de données
+
+* Suppression du token de rafraîchissement de la base de données
+
 - **Statut** : RÉUSSI
 - **Date d'Ajout** : 2025-05-13
 
@@ -156,108 +188,109 @@ import app from "@core/app.ts"
 import bcrypt from "bcrypt"
 
 describe("User API Functional Tests", () => {
- // Test data setup
- const adminUser = {
-   email: "admin-test@example.com",
-   password: "AdminPassword123!",
-   name: "Admin",
-   firstName: "Test",
-   birthDate: "1990-01-01",
-   role: "administrator",
-   active: true,
- }
+  // Test data setup
+  const adminUser = {
+    email: "admin-test@example.com",
+    password: "AdminPassword123!",
+    name: "Admin",
+    firstName: "Test",
+    birthDate: "1990-01-01",
+    role: "administrator",
+    active: true
+  }
 
- const testUser = {
-   email: "functional-test@example.com",
-   password: "Password123!",
-   name: "Functional",
-   firstName: "Test",
-   birthDate: "1994-06-14",
-   role: "user",
- }
+  const testUser = {
+    email: "functional-test@example.com",
+    password: "Password123!",
+    name: "Functional",
+    firstName: "Test",
+    birthDate: "1994-06-14",
+    role: "user"
+  }
 
- const updatedUserData = {
-   name: "UpdatedName",
-   firstName: "UpdatedFirstName",
- }
+  const updatedUserData = {
+    name: "UpdatedName",
+    firstName: "UpdatedFirstName"
+  }
 
- // Shared tokens and IDs
- let adminAccessToken: string
- let adminRefreshToken: string
- let userAccessToken: string
- let userRefreshToken: string
- let userId: string
+  // Shared tokens and IDs
+  let adminAccessToken: string
+  let adminRefreshToken: string
+  let userAccessToken: string
+  let userRefreshToken: string
+  let userId: string
 
- // Test setup and teardown
- beforeAll(async () => {
-   // Insert admin user directly into the database
-   const salt = await bcrypt.genSalt(10)
-   const hashedPassword = await bcrypt.hash(adminUser.password, salt)
-   
-   await User.create({
-     email: adminUser.email,
-     password: hashedPassword,
-     name: encrypt(adminUser.name),
-     firstName: encrypt(adminUser.firstName),
-     birthDate: encrypt(adminUser.birthDate),
-     role: adminUser.role,
-     active: adminUser.active,
-     createdAt: new Date(),
-     updatedAt: new Date(),
-   })
- })
+  // Test setup and teardown
+  beforeAll(async () => {
+    // Insert admin user directly into the database
+    const salt = await bcrypt.genSalt(10)
+    const hashedPassword = await bcrypt.hash(adminUser.password, salt)
 
- afterAll(async () => {
-   // Clean up all test data
-   await User.deleteMany({
-     email: {
-       $in: [testUser.email, adminUser.email],
-     },
-   })
-   await RefreshToken.deleteMany({})
- })
+    await User.create({
+      email: adminUser.email,
+      password: hashedPassword,
+      name: encrypt(adminUser.name),
+      firstName: encrypt(adminUser.firstName),
+      birthDate: encrypt(adminUser.birthDate),
+      role: adminUser.role,
+      active: adminUser.active,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    })
+  })
 
- // Group 1: Administrator Authentication
- describe("1. Admin Authentication", () => {
-   it("should login with the pre-inserted admin user", async () => {
-     // Test implementation
-   })
- })
+  afterAll(async () => {
+    // Clean up all test data
+    await User.deleteMany({
+      email: {
+        $in: [testUser.email, adminUser.email]
+      }
+    })
+    await RefreshToken.deleteMany({})
+  })
 
- // Group 2: User Management
- describe("2. Admin User Management", () => {
-   it("should create a standard user using admin privileges", async () => {
-     // Test implementation
-   })
+  // Group 1: Administrator Authentication
+  describe("1. Admin Authentication", () => {
+    it("should login with the pre-inserted admin user", async () => {
+      // Test implementation
+    })
+  })
 
-   it("should retrieve all users as admin", async () => {
-     // Test implementation
-   })
- })
+  // Group 2: User Management
+  describe("2. Admin User Management", () => {
+    it("should create a standard user using admin privileges", async () => {
+      // Test implementation
+    })
 
- // Group 3: Standard User Operations
- describe("3. Standard User Operations", () => {
-   it("should login with the created standard user", async () => {
-     // Test implementation
-   })
+    it("should retrieve all users as admin", async () => {
+      // Test implementation
+    })
+  })
 
-   it("should update standard user profile", async () => {
-     // Test implementation
-   })
+  // Group 3: Standard User Operations
+  describe("3. Standard User Operations", () => {
+    it("should login with the created standard user", async () => {
+      // Test implementation
+    })
 
-   it("should logout the standard user", async () => {
-     // Test implementation
-   })
- })
+    it("should update standard user profile", async () => {
+      // Test implementation
+    })
 
- // Group 4: Admin Cleanup Operations
- describe("4. Admin Cleanup", () => {
-   it("should delete the standard user as admin", async () => {
-     // Test implementation
-   })
+    it("should logout the standard user", async () => {
+      // Test implementation
+    })
+  })
 
-   it("should logout the admin user", async () => {
-     // Test implementation
-   })
- })
+  // Group 4: Admin Cleanup Operations
+  describe("4. Admin Cleanup", () => {
+    it("should delete the standard user as admin", async () => {
+      // Test implementation
+    })
+
+    it("should logout the admin user", async () => {
+      // Test implementation
+    })
+  })
 })
+```

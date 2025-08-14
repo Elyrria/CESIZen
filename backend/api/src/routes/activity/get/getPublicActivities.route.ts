@@ -11,7 +11,7 @@ const getPublicActivitiesRouter = Router()
  *       Fetches a paginated list of active activities with optional filtering and sorting.
  *       This endpoint is publicly accessible without authentication and is intended for
  *       retrieving content that is ready for public use.
- *       
+ *
  *       Only returns activities where isActive is true.
  *     tags: [Activities]
  *     parameters:
@@ -121,7 +121,7 @@ const getPublicActivitiesRouter = Router()
  *                             before: "Trouvez un endroit calme et adoptez une posture confortable, assise ou allongée"
  *                             during: "Concentrez-vous uniquement sur votre respiration en suivant le rythme affiché"
  *                             after: "Prenez un moment pour observer comment vous vous sentez après l'exercice"
- *                         categoryId: 
+ *                         categoryId:
  *                           _id: "6824ac779ca3a43fb48bbeac"
  *                           name: "Techniques de respiration"
  *                           id: "6824ac779ca3a43fb48bbeac"
@@ -150,7 +150,7 @@ const getPublicActivitiesRouter = Router()
  *                           size: 15728640
  *                           uploadDate: "2025-05-15T14:09:32.456Z"
  *                         fileId: "6825f5bc3a0944127c37756c"
- *                         categoryId: 
+ *                         categoryId:
  *                           _id: "6824ac779ca3a43fb48bbeac"
  *                           name: "Techniques de respiration"
  *                           id: "6824ac779ca3a43fb48bbeac"
@@ -165,7 +165,7 @@ const getPublicActivitiesRouter = Router()
  *                       itemsPerPage: 10
  *                       hasNextPage: false
  *                       hasPrevPage: false
- *                     filters: 
+ *                     filters:
  *                       sortBy: "createdAt"
  *                       order: "desc"
  *               filteredActivities:
@@ -199,7 +199,7 @@ const getPublicActivitiesRouter = Router()
  *                             before: "Trouvez un endroit calme et adoptez une posture confortable"
  *                             during: "Concentrez-vous uniquement sur votre respiration"
  *                             after: "Prenez un moment pour observer comment vous vous sentez"
- *                         categoryId: 
+ *                         categoryId:
  *                           _id: "6824ac779ca3a43fb48bbeac"
  *                           name: "Techniques de respiration"
  *                           id: "6824ac779ca3a43fb48bbeac"
@@ -234,7 +234,7 @@ const getPublicActivitiesRouter = Router()
  *                         parameters:
  *                           defaultPattern: "748"
  *                           recommendedDuration: 300
- *                         categoryId: 
+ *                         categoryId:
  *                           _id: "6824ac779ca3a43fb48bbeac"
  *                           name: "Techniques de respiration"
  *                           id: "6824ac779ca3a43fb48bbeac"

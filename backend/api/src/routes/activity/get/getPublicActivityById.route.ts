@@ -11,7 +11,7 @@ const getPublicActivityByIdRouter = Router()
  *       Fetches a single active activity entry by its ID.
  *       This endpoint is publicly accessible without authentication and is intended for
  *       retrieving content that is ready for public use.
- *       
+ *
  *       Only returns activities where isActive is true.
  *     tags: [Activities]
  *     parameters:

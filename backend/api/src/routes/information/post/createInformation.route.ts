@@ -8,12 +8,12 @@ import { Router } from "express"
 const createInformationRouter = Router()
 
 createInformationRouter.post(
-	"/create",
-	upload.single("file"),
-	createInformationValidationRules,
-	validationErrorHandler,
-	auth,
-	createInformation
+  "/create",
+  upload.single("file"),
+  createInformationValidationRules,
+  validationErrorHandler,
+  auth,
+  createInformation
 )
 
 /**

@@ -7,14 +7,14 @@
  * @throws {Error} - If the port value is less than or equal to 0.
  */
 export const normalize = (portBackend: string): string | number => {
-	const port = parseInt(portBackend, 10) // Convert port in integer
-	if (isNaN(port)) {
-		return portBackend
-	}
+  const port = parseInt(portBackend, 10) // Convert port in integer
+  if (isNaN(port)) {
+    return portBackend
+  }
 
-	if (port <= 0) {
-		throw new Error(`Value cannot be ≤ to 0: ${port}`)
-	}
+  if (port <= 0) {
+    throw new Error(`Value cannot be ≤ to 0: ${port}`)
+  }
 
-	return port
+  return port
 }

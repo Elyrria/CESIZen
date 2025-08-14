@@ -22,25 +22,25 @@ import fs from "fs"
 const logDirectory = path.join(process.cwd(), "api", "src", "logs", "filesLogs")
 // Ensure the log directory exists
 if (!fs.existsSync(logDirectory)) {
-	fs.mkdirSync(logDirectory, { recursive: true })
+  fs.mkdirSync(logDirectory, { recursive: true })
 }
 
 // Define custom log levels with 'security' added
 const customLevels = {
-	levels: {
-		error: 0,
-		security: 1, // Nouveau niveau pour les événements de sécurité
-		warn: 2,
-		info: 3,
-		debug: 4,
-	},
-	colors: {
-		error: "red",
-		security: "magenta", // Couleur pour les logs de sécurité
-		warn: "yellow",
-		info: "green",
-		debug: "blue",
-	},
+  levels: {
+    error: 0,
+    security: 1, // Nouveau niveau pour les événements de sécurité
+    warn: 2,
+    info: 3,
+    debug: 4
+  },
+  colors: {
+    error: "red",
+    security: "magenta", // Couleur pour les logs de sécurité
+    warn: "yellow",
+    info: "green",
+    debug: "blue"
+  }
 }
 
 // Add colors to Winston
@@ -48,57 +48,57 @@ winston.addColors(customLevels.colors)
 
 // Create a custom format for the standard logger
 const customFormat = winston.format.printf(({ level, message }) => {
-	const timestamp = moment().format("DD/MM/YYYY:HH:mm:ss Z")
-	let levelOutput
+  const timestamp = moment().format("DD/MM/YYYY:HH:mm:ss Z")
+  let levelOutput
 
-	switch (level) {
-		case "error":
-			levelOutput = chalk.red("[ERROR]")
-			break
-		case "security":
-			levelOutput = chalk.magenta("[SECURITY]")
-			break
-		case "warn":
-			levelOutput = chalk.yellow("[WARN]")
-			break
-		case "debug":
-			levelOutput = chalk.blue("[DEBUG]")
-			break
-		default:
-			levelOutput = chalk.green("[INFO]")
-	}
+  switch (level) {
+    case "error":
+      levelOutput = chalk.red("[ERROR]")
+      break
+    case "security":
+      levelOutput = chalk.magenta("[SECURITY]")
+      break
+    case "warn":
+      levelOutput = chalk.yellow("[WARN]")
+      break
+    case "debug":
+      levelOutput = chalk.blue("[DEBUG]")
+      break
+    default:
+      levelOutput = chalk.green("[INFO]")
+  }
 
-	return `${chalk.bgBlue(" " + timestamp + " ")} | ${levelOutput} | ${message}`
+  return `${chalk.bgBlue(" " + timestamp + " ")} | ${levelOutput} | ${message}`
 })
 
 // Create file transports
 const consoleTransport = new winston.transports.Console()
 const appFileTransport = new winston.transports.File({
-	filename: path.join(logDirectory, "app.log"),
+  filename: path.join(logDirectory, "app.log")
 })
 const errorFileTransport = new winston.transports.File({
-	filename: path.join(logDirectory, "error.log"),
-	level: "error",
+  filename: path.join(logDirectory, "error.log"),
+  level: "error"
 })
 const securityFileTransport = new winston.transports.File({
-	filename: path.join(logDirectory, "security.log"),
-	level: "security",
+  filename: path.join(logDirectory, "security.log"),
+  level: "security"
 })
 
 // Create the standard logger
 const standardLogger: Logger = winston.createLogger({
-	levels: customLevels.levels,
-	level: "debug", // Définir le niveau le plus bas pour capturer tous les messages
-	format: customFormat,
-	transports: [consoleTransport, appFileTransport, errorFileTransport, securityFileTransport],
+  levels: customLevels.levels,
+  level: "debug", // Définir le niveau le plus bas pour capturer tous les messages
+  format: customFormat,
+  transports: [consoleTransport, appFileTransport, errorFileTransport, securityFileTransport]
 })
 
 // Create a specific logger for HTTP requests (morgan)
 const httpLogger: Logger = winston.createLogger({
-	levels: customLevels.levels,
-	level: "info",
-	format: winston.format.printf(({ message }) => message as string),
-	transports: [consoleTransport, appFileTransport, errorFileTransport],
+  levels: customLevels.levels,
+  level: "info",
+  format: winston.format.printf(({ message }) => message as string),
+  transports: [consoleTransport, appFileTransport, errorFileTransport]
 })
 
 /**
@@ -107,17 +107,17 @@ const httpLogger: Logger = winston.createLogger({
 morgan.token("ip", (req: Request) => chalk.cyan(req.headers["x-forwarded-for"] || req.ip))
 morgan.token("timestamp", () => moment().format("DD/MM/YYYY:HH:mm:ss Z"))
 morgan.token("level", (req: Request, res: Response): string => {
-	const status: number = res.statusCode
-	if (status >= 500) return chalk.red("[ERROR]")
-	if (status >= 400) return chalk.yellow("[WARN]")
-	return chalk.green("[INFO]")
+  const status: number = res.statusCode
+  if (status >= 500) return chalk.red("[ERROR]")
+  if (status >= 400) return chalk.yellow("[WARN]")
+  return chalk.green("[INFO]")
 })
 morgan.token("statusColor", (_req: Request, res: Response): string => {
-	const status = res.statusCode
-	if (status >= 500) return chalk.red(status.toString())
-	if (status >= 400) return chalk.yellow(status.toString())
-	if (status >= 300) return chalk.cyan(status.toString())
-	return chalk.green(status.toString())
+  const status = res.statusCode
+  if (status >= 500) return chalk.red(status.toString())
+  if (status >= 400) return chalk.yellow(status.toString())
+  if (status >= 300) return chalk.cyan(status.toString())
+  return chalk.green(status.toString())
 })
 morgan.token("methodColor", (req: Request) => chalk.blue(req.method))
 morgan.token("route", (req: Request) => chalk.magenta(req.originalUrl || "/"))
@@ -135,19 +135,19 @@ morgan.token("user-agent", (req: Request) => chalk.gray(req.headers["user-agent"
  * - User-Agent information
  */
 const morganFormat: string =
-	chalk.bgBlue(" :timestamp ") +
-	" | :level | :ip | :methodColor | route : :route | status : :statusColor | execute : :response-time ms | :user-agent"
+  chalk.bgBlue(" :timestamp ") +
+  " | :level | :ip | :methodColor | route : :route | status : :statusColor | execute : :response-time ms | :user-agent"
 
 /**
  * `morganMiddleware`: A middleware function that uses `morgan` for logging HTTP requests.
  * This middleware logs requests with the defined `morganFormat` and outputs them to `winston`.
  */
 export const morganMiddleware = morgan(morganFormat, {
-	stream: {
-		write: (message: string): void => {
-			httpLogger.info(message.trim())
-		},
-	} as StreamOptions,
+  stream: {
+    write: (message: string): void => {
+      httpLogger.info(message.trim())
+    }
+  } as StreamOptions
 })
 
 /**
@@ -155,8 +155,8 @@ export const morganMiddleware = morgan(morganFormat, {
  * Logs errors that occur during the request handling with the HTTP method and URL.
  */
 export const errorLogger = (err: Error, req: Request, res: Response, next: NextFunction): void => {
-	standardLogger.error(`${req.method} ${req.originalUrl} - ${err.message}`)
-	return next(err)
+  standardLogger.error(`${req.method} ${req.originalUrl} - ${err.message}`)
+  return next(err)
 }
 
 /**
@@ -167,15 +167,15 @@ export const errorLogger = (err: Error, req: Request, res: Response, next: NextF
  * @param {string[]} details - Optional array of detail messages
  */
 export const logSecurityEvent = (message: string, req: Request, details: string[] = []): void => {
-	const ip = req.headers["x-forwarded-for"] || req.ip
+  const ip = req.headers["x-forwarded-for"] || req.ip
 
-	standardLogger.log("security", `${message} from ${chalk.red(ip)}`)
+  standardLogger.log("security", `${message} from ${chalk.red(ip)}`)
 
-	details.forEach((detail) => {
-		standardLogger.log("security", `  - ${detail}`)
-	})
+  details.forEach((detail) => {
+    standardLogger.log("security", `  - ${detail}`)
+  })
 
-	standardLogger.log("security", `Route: ${req.method} ${req.originalUrl}`)
+  standardLogger.log("security", `Route: ${req.method} ${req.originalUrl}`)
 }
 
 // Export the standard logger as the default logger

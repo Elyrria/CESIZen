@@ -4,29 +4,29 @@ import type { ObjectId, Document } from "mongoose"
  * Base interface for a user
  */
 export interface IUser {
-	_id?: ObjectId
-	/** User's unique email */
-	email: string
-	/** User's hashed password */
-	password: string
-	/** User's name (required) */
-	name: string
-	/** User's first name */
-	firstName: string
-	/** User's birth date in the system */
-	birthDate: DATE
-	/** User's role in the system */
-	role: Role
-	/** Account creation date */
-	createdAt: Date
-	/** Account last update date */
-	updatedAt: Date
-	/** Account last update date */
-	active: Boolean
+  _id?: ObjectId
+  /** User's unique email */
+  email: string
+  /** User's hashed password */
+  password: string
+  /** User's name (required) */
+  name: string
+  /** User's first name */
+  firstName: string
+  /** User's birth date in the system */
+  birthDate: DATE
+  /** User's role in the system */
+  role: Role
+  /** Account creation date */
+  createdAt: Date
+  /** Account last update date */
+  updatedAt: Date
+  /** Account last update date */
+  active: boolean
 }
 
 export type IUserCreate = Pick<IUser, "email" | "password" | "name" | "firstName" | "birthDate"> &
-	Partial<Pick<IUser, "role">>
+  Partial<Pick<IUser, "role">>
 
 export type IUserUpdate = Partial<Omit<IUser, "createdAt" | "updatedAt">>
 
@@ -47,16 +47,16 @@ export type IUserDisplay = Omit<IUser, "password"> & { id: string | ObjectId }
  * These are filtered out in the controller for security purposes
  */
 export interface IUserReqBodyRequest extends IUser {
-	/** Standard ID format */
-	id?: ObjectId
-	/** Alternative user ID format */
-	userId?: string
-	/** UUID format */
-	uuid?: string
-	/** MongoDB-style ID format */
-	_id?: ObjectId
-	/** New password (for password change requests) */
-	newPassword?: string
+  /** Standard ID format */
+  id?: ObjectId
+  /** Alternative user ID format */
+  userId?: string
+  /** UUID format */
+  uuid?: string
+  /** MongoDB-style ID format */
+  _id?: ObjectId
+  /** New password (for password change requests) */
+  newPassword?: string
 }
 
 /**
@@ -65,8 +65,8 @@ export interface IUserReqBodyRequest extends IUser {
 export interface IUserDocument extends IUser, Document {}
 
 export interface IUserDataToHash {
-	password: string
-	name: string
-	firstName: string
-	[key: string]: string | number | boolean | null | undefined
+  password: string
+  name: string
+  firstName: string
+  [key: string]: string | number | boolean | null | undefined
 }

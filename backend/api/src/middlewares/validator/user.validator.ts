@@ -8,11 +8,11 @@ import { ROLES } from "@configs/role.configs.ts"
  * @returns An array of validation rules for the 'email', 'password', 'name', and 'role' fields.
  */
 export const createUserValidationRules = [
-	...VALIDATOR.REQUIRED.EMAIL(),
-	...VALIDATOR.REQUIRED.PASSWORD(),
-	...VALIDATOR.REQUIRED.NAME(),
-	...VALIDATOR.REQUIRED.BIRTH_DATE(),
-	...VALIDATOR.REQUIRED.ROLE([ROLES.REGISTERED_USER]), // User role only
+  ...VALIDATOR.REQUIRED.EMAIL(),
+  ...VALIDATOR.REQUIRED.PASSWORD(),
+  ...VALIDATOR.REQUIRED.NAME(),
+  ...VALIDATOR.REQUIRED.BIRTH_DATE(),
+  ...VALIDATOR.REQUIRED.ROLE([ROLES.REGISTERED_USER]) // User role only
 ]
 
 /**
@@ -22,11 +22,11 @@ export const createUserValidationRules = [
  * @returns An array of validation rules for the 'email', 'password', 'name', and 'role' fields.
  */
 export const adminCreateUserValidationRules = [
-	...VALIDATOR.REQUIRED.EMAIL(),
-	...VALIDATOR.REQUIRED.PASSWORD(),
-	...VALIDATOR.REQUIRED.NAME(),
-	...VALIDATOR.REQUIRED.BIRTH_DATE(),
-	...VALIDATOR.REQUIRED.ROLE(Object.values(ROLES)), // All roles are valid
+  ...VALIDATOR.REQUIRED.EMAIL(),
+  ...VALIDATOR.REQUIRED.PASSWORD(),
+  ...VALIDATOR.REQUIRED.NAME(),
+  ...VALIDATOR.REQUIRED.BIRTH_DATE(),
+  ...VALIDATOR.REQUIRED.ROLE(Object.values(ROLES)) // All roles are valid
 ]
 
 /**
@@ -35,7 +35,10 @@ export const adminCreateUserValidationRules = [
  *
  * @returns An array of validation rules for the 'email' and 'password' fields.
  */
-export const loginUserValidationRules = [...VALIDATOR.REQUIRED.EMAIL(), ...VALIDATOR.REQUIRED.PASSWORD()]
+export const loginUserValidationRules = [
+  ...VALIDATOR.REQUIRED.EMAIL(),
+  ...VALIDATOR.REQUIRED.PASSWORD()
+]
 
 /**
  * Validation rules for updating user information.
@@ -44,10 +47,10 @@ export const loginUserValidationRules = [...VALIDATOR.REQUIRED.EMAIL(), ...VALID
  * @returns An array of validation rules for the 'email', 'password', 'name', and 'role' fields.
  */
 export const updateUserValidationRules = [
-	...VALIDATOR.OPTIONAL.EMAIL(),
-	...VALIDATOR.OPTIONAL.NEW_PASSWORD(),
-	...VALIDATOR.OPTIONAL.PASSWORD(),
-	...VALIDATOR.OPTIONAL.NAME(),
-	...VALIDATOR.OPTIONAL.BIRTH_DATE(),
-	...VALIDATOR.OPTIONAL.ROLE(Object.values(ROLES)), // All roles are valid
+  ...VALIDATOR.OPTIONAL.EMAIL(),
+  ...VALIDATOR.OPTIONAL.NEW_PASSWORD(),
+  ...VALIDATOR.OPTIONAL.PASSWORD(),
+  ...VALIDATOR.OPTIONAL.NAME(),
+  ...VALIDATOR.OPTIONAL.BIRTH_DATE(),
+  ...VALIDATOR.OPTIONAL.ROLE(Object.values(ROLES)) // All roles are valid
 ]

@@ -98,6 +98,11 @@ const createRefreshTokenRouter = Router()
  *                     code: "invalidToken"
  *                     message: "Invalid or expired refresh token"
  */
-createRefreshTokenRouter.post("/create", createRefreshTokenValidationRules, validationErrorHandler, refreshToken)
+createRefreshTokenRouter.post(
+  "/create",
+  createRefreshTokenValidationRules,
+  validationErrorHandler,
+  refreshToken
+)
 
 export default createRefreshTokenRouter

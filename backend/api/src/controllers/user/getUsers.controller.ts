@@ -19,74 +19,74 @@ import { User } from "@models/index.ts"
  * @returns {Promise<Response>} - A promise that resolves to the response object with the list of users or an error message.
  */
 export const getAllUsers = async (req: Request, res: Response): Promise<void> => {
-	try {
-		// Check authentication and retrieve the authenticated user
-		const user: IUser | null = await checkAuthentification(req)
+  try {
+    // Check authentication and retrieve the authenticated user
+    const user: IUser | null = await checkAuthentification(req)
 
-		let userRoleIndex: number = -1
+    let userRoleIndex: number = -1
 
-		try {
-			// Determine the role index for the authenticated user
-			userRoleIndex = user?.role ? checkUserRole(user.role) : userRoleIndex
-		} catch (error: unknown) {
-			const errorType = error instanceof Error ? error.message : ERROR_CODE.SERVER
-			errorHandler(res, errorType)
-			return
-		}
+    try {
+      // Determine the role index for the authenticated user
+      userRoleIndex = user?.role ? checkUserRole(user.role) : userRoleIndex
+    } catch (error: unknown) {
+      const errorType = error instanceof Error ? error.message : ERROR_CODE.SERVER
+      errorHandler(res, errorType)
+      return
+    }
 
-		// Ensure the authenticated user has sufficient permissions to access user data
-		if (userRoleIndex > 0) {
-			errorHandler(res, ERROR_CODE.INSUFFICIENT_ACCESS)
-			return
-		}
-		// Build query based on role and request parameters
-		const query = buildUserQuery(req, userRoleIndex)
-		// Get pagination and sorting options
-		const { page, limit, skip, sortOptions } = getPaginationOptions(req)
-		// Execute the query with all filters and options
-		const users = await User.find(query)
-			.select("_id email firstName name role createdAt updatedAt")
-			.sort(sortOptions)
-			.skip(skip)
-			.limit(limit)
-			.lean()
+    // Ensure the authenticated user has sufficient permissions to access user data
+    if (userRoleIndex > 0) {
+      errorHandler(res, ERROR_CODE.INSUFFICIENT_ACCESS)
+      return
+    }
+    // Build query based on role and request parameters
+    const query = buildUserQuery(req, userRoleIndex)
+    // Get pagination and sorting options
+    const { page, limit, skip, sortOptions } = getPaginationOptions(req)
+    // Execute the query with all filters and options
+    const users = await User.find(query)
+      .select("_id email firstName name role createdAt updatedAt")
+      .sort(sortOptions)
+      .skip(skip)
+      .limit(limit)
+      .lean()
 
-		if (!users) {
-			// Return an error if no conditions are met
-			errorHandler(res, ERROR_CODE.NO_CONDITIONS)
-			return
-		}
-		// Get total count for pagination
-		const total: number = await User.countDocuments(query)
+    if (!users) {
+      // Return an error if no conditions are met
+      errorHandler(res, ERROR_CODE.NO_CONDITIONS)
+      return
+    }
+    // Get total count for pagination
+    const total: number = await User.countDocuments(query)
 
-		const totalPages = total > 0 ? Math.ceil(total / limit) : 0
+    const totalPages = total > 0 ? Math.ceil(total / limit) : 0
 
-		if (total === 0) {
-			okHandler(res, SUCCESS_CODE.NO_USER, { users: [], pagination: {} })
-			return
-		}
-		const pagination = {
-			currentPage: page,
-			totalPages: totalPages,
-			totalItems: total,
-			itemsPerPage: limit,
-			hasNextPage: page < totalPages,
-			hasPrevPage: page > 1,
-		}
-		// List of fields to decrypt
-		const ENCRYPTED_FIELDS = ["name", "firstName", "birthDate"]
+    if (total === 0) {
+      okHandler(res, SUCCESS_CODE.NO_USER, { users: [], pagination: {} })
+      return
+    }
+    const pagination = {
+      currentPage: page,
+      totalPages: totalPages,
+      totalItems: total,
+      itemsPerPage: limit,
+      hasNextPage: page < totalPages,
+      hasPrevPage: page > 1
+    }
+    // List of fields to decrypt
+    const ENCRYPTED_FIELDS = ["name", "firstName", "birthDate"]
 
-		// Decrypt user data
-		const decryptedUserResponse = decryptData(users, ENCRYPTED_FIELDS)
+    // Decrypt user data
+    const decryptedUserResponse = decryptData(users, ENCRYPTED_FIELDS)
 
-		okHandler(res, users.length > 1 ? SUCCESS_CODE.USERS_FOUND : SUCCESS_CODE.USER_FOUND, {
-			users: decryptedUserResponse,
-			pagination: pagination,
-		})
+    okHandler(res, users.length > 1 ? SUCCESS_CODE.USERS_FOUND : SUCCESS_CODE.USER_FOUND, {
+      users: decryptedUserResponse,
+      pagination: pagination
+    })
 
-		return
-	} catch (error: unknown) {
-		handleUnexpectedError(res, error as Error)
-		return
-	}
+    return
+  } catch (error: unknown) {
+    handleUnexpectedError(res, error as Error)
+    return
+  }
 }

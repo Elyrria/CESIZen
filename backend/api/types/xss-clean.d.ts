@@ -1,7 +1,7 @@
 declare module "xss-clean" {
-	import { RequestHandler } from "express"
+  import { RequestHandler } from "express"
 
-	function xss(): RequestHandler
+  function xss(): RequestHandler
 
-	export = xss
+  export = xss
 }

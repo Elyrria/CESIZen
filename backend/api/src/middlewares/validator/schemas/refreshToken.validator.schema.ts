@@ -20,35 +20,35 @@ const isValidObjectId = (value: string) => Types.ObjectId.isValid(value)
  * @returns An array containing the validation chain for 'refreshToken'
  */
 export const VALIDATOR = {
-	/**
-	 * Required field validations
-	 */
-	REQUIRED: {
-		/**
-		 * Validates the refreshToken field
-		 * @returns Array of express-validator chain methods for refreshToken validation
-		 */
-		REFRESH_TOKEN: () => [
-			body(FIELD.REFRESH_TOKEN)
-				.exists()
-				.withMessage(TOKEN_MESSAGE.cannotBeEmpty(FIELD.REFRESH_TOKEN))
-				.isString()
-				.withMessage(TOKEN_MESSAGE.mustBeString(FIELD.REFRESH_TOKEN))
-				.escape()
-				.trim(),
-		],
-		USER_ID: () => [
-			body(FIELD.USER_ID)
-				.exists()
-				.withMessage(TOKEN_MESSAGE.cannotBeEmpty(FIELD.REFRESH_TOKEN))
-				.isString()
-				.withMessage(TOKEN_MESSAGE.mustBeString(FIELD.REFRESH_TOKEN))
-				.custom(isValidObjectId)
-				.withMessage(TOKEN_MESSAGE.invalidFormat(FIELD.REFRESH_TOKEN))
-				.escape()
-				.trim(),
-		],
-	},
+  /**
+   * Required field validations
+   */
+  REQUIRED: {
+    /**
+     * Validates the refreshToken field
+     * @returns Array of express-validator chain methods for refreshToken validation
+     */
+    REFRESH_TOKEN: () => [
+      body(FIELD.REFRESH_TOKEN)
+        .exists()
+        .withMessage(TOKEN_MESSAGE.cannotBeEmpty(FIELD.REFRESH_TOKEN))
+        .isString()
+        .withMessage(TOKEN_MESSAGE.mustBeString(FIELD.REFRESH_TOKEN))
+        .escape()
+        .trim()
+    ],
+    USER_ID: () => [
+      body(FIELD.USER_ID)
+        .exists()
+        .withMessage(TOKEN_MESSAGE.cannotBeEmpty(FIELD.REFRESH_TOKEN))
+        .isString()
+        .withMessage(TOKEN_MESSAGE.mustBeString(FIELD.REFRESH_TOKEN))
+        .custom(isValidObjectId)
+        .withMessage(TOKEN_MESSAGE.invalidFormat(FIELD.REFRESH_TOKEN))
+        .escape()
+        .trim()
+    ]
+  }
 }
 
 // refreshTokenValidationRule

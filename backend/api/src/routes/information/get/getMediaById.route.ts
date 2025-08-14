@@ -10,13 +10,13 @@ const getMediaByIdRouter = Router()
  *     description: |
  *       Retrieves and streams the media file (image, video) associated with an information entry.
  *       This endpoint directly returns the binary file data with appropriate content headers.
- *       
- *       **Important note**: This endpoint returns raw binary data and not JSON. 
- *       When tested in Swagger UI, you will see a successful response (200) but the content will not be 
- *       displayed properly. To view the actual media, please use the direct URL in a browser or use 
- *       the "Try it out" feature and then copy the curl command to test in a terminal, or use the URL 
+ *
+ *       **Important note**: This endpoint returns raw binary data and not JSON.
+ *       When tested in Swagger UI, you will see a successful response (200) but the content will not be
+ *       displayed properly. To view the actual media, please use the direct URL in a browser or use
+ *       the "Try it out" feature and then copy the curl command to test in a terminal, or use the URL
  *       directly in an <img> tag or browser.
- *       
+ *
  *       Example direct URL: http://localhost:3000/api/v1/informations/media/682367a522de12d1d3d9b0a6
  *     tags: [Informations]
  *     parameters:
@@ -190,7 +190,7 @@ const getMediaByIdRouter = Router()
  *         source: |
  *           <!-- For images, use in an img tag -->
  *           <img src="http://localhost:3000/api/v1/informations/media/682367a522de12d1d3d9b0a6" alt="Media content">
- *           
+ *
  *           <!-- For videos, use in a video tag -->
  *           <video controls>
  *             <source src="http://localhost:3000/api/v1/informations/media/682367a522de12d1d3d9b0a6" type="video/mp4">

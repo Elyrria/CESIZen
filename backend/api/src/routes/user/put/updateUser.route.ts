@@ -330,6 +330,12 @@ const updateUserRouter = Router()
  *             schema:
  *               $ref: '#/components/schemas/ApiErrorResponse'
  */
-updateUserRouter.put("/update/:id", updateUserValidationRules, validationErrorHandler, auth, updateUser)
+updateUserRouter.put(
+  "/update/:id",
+  updateUserValidationRules,
+  validationErrorHandler,
+  auth,
+  updateUser
+)
 
 export default updateUserRouter

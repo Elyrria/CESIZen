@@ -9,7 +9,7 @@ const getUsers = Router()
  *   get:
  *     summary: Retrieve a user by ID
  *     description: |
- *       Fetches a specific user by their ID. 
+ *       Fetches a specific user by their ID.
  *       Requires administrator authentication via JWT token.
  *       The authenticated user must have sufficient permissions to access user data.
  *     tags: [Users]

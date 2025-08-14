@@ -15,36 +15,36 @@ import mongoose from "mongoose"
  * @returns The category document if valid, null otherwise
  */
 export const validateCategory = async (
-	categoryId: string,
-	res: Response,
-	fieldName: string = "Category",
-	errorCode: string = ERROR_CODE.INVALID_ACTIVITY_TYPE
+  categoryId: string,
+  res: Response,
+  fieldName: string = "Category",
+  errorCode: string = ERROR_CODE.INVALID_ACTIVITY_TYPE
 ): Promise<null | ICategoryDocument> => {
-	// Check if category ID is provided
-	if (!categoryId) {
-		errorHandler(res, ERROR_CODE.MISSING_FIELDS, `${fieldName} is required`)
-		return null
-	}
+  // Check if category ID is provided
+  if (!categoryId) {
+    errorHandler(res, ERROR_CODE.MISSING_FIELDS, `${fieldName} is required`)
+    return null
+  }
 
-	// Validate category ID format
-	if (!mongoose.Types.ObjectId.isValid(categoryId)) {
-		errorHandler(res, errorCode, `Invalid ${fieldName.toLowerCase()} ID format`)
-		return null
-	}
+  // Validate category ID format
+  if (!mongoose.Types.ObjectId.isValid(categoryId)) {
+    errorHandler(res, errorCode, `Invalid ${fieldName.toLowerCase()} ID format`)
+    return null
+  }
 
-	// Verify category exists
-	const category = await Category.findById(categoryId)
-	if (!category) {
-		errorHandler(res, errorCode, `${fieldName} not found`)
-		return null
-	}
+  // Verify category exists
+  const category = await Category.findById(categoryId)
+  if (!category) {
+    errorHandler(res, errorCode, `${fieldName} not found`)
+    return null
+  }
 
-	// Verify category is active
-	if (!category.isActive) {
-		errorHandler(res, errorCode, `${fieldName} is inactive`)
-		return null
-	}
+  // Verify category is active
+  if (!category.isActive) {
+    errorHandler(res, errorCode, `${fieldName} is inactive`)
+    return null
+  }
 
-	// If all validations pass, return the category
-	return category
+  // If all validations pass, return the category
+  return category
 }

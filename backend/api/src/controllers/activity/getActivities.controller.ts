@@ -23,26 +23,26 @@ import chalk from "chalk"
  * @returns {Promise<void>} - A promise that resolves when the response is sent
  */
 export const getActivities = async (req: IAuthRequest, res: Response): Promise<void> => {
-	try {
-		// Verify admin access
-		const adminAccess = await verifyAdminAccess(req, res, "fetching all activities")
-		if (!adminAccess) return // If access verification failed, response has already been handled
+  try {
+    // Verify admin access
+    const adminAccess = await verifyAdminAccess(req, res, "fetching all activities")
+    if (!adminAccess) return // If access verification failed, response has already been handled
 
-		logger.info(
-			`Admin ${chalk.blue(adminAccess.userId)} fetching activities with filters: ${JSON.stringify(req.query)}`
-		)
+    logger.info(
+      `Admin ${chalk.blue(adminAccess.userId)} fetching activities with filters: ${JSON.stringify(req.query)}`
+    )
 
-		// Fetch data with the appropriate base query
-		const responseData = await fetchActivityWithQuery(req)
+    // Fetch data with the appropriate base query
+    const responseData = await fetchActivityWithQuery(req)
 
-		// Send response with appropriate success code
-		if (responseData.items.length > 0) {
-			successHandler(res, SUCCESS_CODE.ACTIVITY_LIST, responseData)
-		} else {
-			successHandler(res, SUCCESS_CODE.NO_ACTIVITY, responseData)
-		}
-	} catch (error: unknown) {
-		logger.error(`Error retrieving activities: ${(error as Error).message}`)
-		handleUnexpectedError(res, error as Error)
-	}
+    // Send response with appropriate success code
+    if (responseData.items.length > 0) {
+      successHandler(res, SUCCESS_CODE.ACTIVITY_LIST, responseData)
+    } else {
+      successHandler(res, SUCCESS_CODE.NO_ACTIVITY, responseData)
+    }
+  } catch (error: unknown) {
+    logger.error(`Error retrieving activities: ${(error as Error).message}`)
+    handleUnexpectedError(res, error as Error)
+  }
 }

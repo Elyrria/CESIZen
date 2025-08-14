@@ -15,50 +15,50 @@ import jwt from "jsonwebtoken"
  * Processes token renewal once validation is complete
  */
 export async function processTokenRenewal(
-	res: Response,
-	refreshToken: string,
-	requestUserId: ObjectId,
-	secretKey: string,
-	storedToken: IRefreshTokenDocument
+  res: Response,
+  refreshToken: string,
+  requestUserId: ObjectId,
+  secretKey: string,
+  storedToken: IRefreshTokenDocument
 ): Promise<void> {
-	// Verify and decode token
-	const decoded: IDecodedToken = jwt.verify(refreshToken, secretKey) as IDecodedToken
+  // Verify and decode token
+  const decoded: IDecodedToken = jwt.verify(refreshToken, secretKey) as IDecodedToken
 
-	// Find the user
-	const user: IUserDocument | null = await User.findOne({ _id: decoded.userId })
+  // Find the user
+  const user: IUserDocument | null = await User.findOne({ _id: decoded.userId })
 
-	// Validate user exists
-	if (!user) {
-		await revokeToken(storedToken)
-		errorHandler(res, ERROR_CODE.MIS_MATCH)
-		return
-	}
+  // Validate user exists
+  if (!user) {
+    await revokeToken(storedToken)
+    errorHandler(res, ERROR_CODE.MIS_MATCH)
+    return
+  }
 
-	// Validate user ID matches
-	if (!decoded.userId || user._id !== requestUserId) {
-		await revokeToken(storedToken)
-		errorHandler(res, ERROR_CODE.MIS_MATCH)
-		return
-	}
+  // Validate user ID matches
+  if (!decoded.userId || user._id !== requestUserId) {
+    await revokeToken(storedToken)
+    errorHandler(res, ERROR_CODE.MIS_MATCH)
+    return
+  }
 
-	// Check if user is active
-	if (user.active === false) {
-		await revokeToken(storedToken)
-		errorHandler(res, ERROR_CODE.NO_CONDITIONS)
-		return
-	}
+  // Check if user is active
+  if (user.active === false) {
+    await revokeToken(storedToken)
+    errorHandler(res, ERROR_CODE.NO_CONDITIONS)
+    return
+  }
 
-	// Generate new access token
-	const userData = { id: decoded.userId, role: decoded.role }
-	const accessToken = generateAccesToken(userData)
+  // Generate new access token
+  const userData = { id: decoded.userId, role: decoded.role }
+  const accessToken = generateAccesToken(userData)
 
-	if (!accessToken) {
-		errorHandler(res, ERROR_CODE.SERVER)
-		return
-	}
+  if (!accessToken) {
+    errorHandler(res, ERROR_CODE.SERVER)
+    return
+  }
 
-	// Return successful response
-	createdHandler(res, SUCCESS_CODE.TOKEN_RENEWED, {
-		tokens: { accessToken, refreshToken },
-	})
+  // Return successful response
+  createdHandler(res, SUCCESS_CODE.TOKEN_RENEWED, {
+    tokens: { accessToken, refreshToken }
+  })
 }

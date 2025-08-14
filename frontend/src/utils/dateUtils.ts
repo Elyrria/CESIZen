@@ -6,19 +6,19 @@
  * @returns Date in DD/MM/YYYY format or empty string if invalid
  */
 export const parseToFrenchDate = (isoDateString: string | null | undefined): string => {
-	if (!isoDateString) return ''
+  if (!isoDateString) return ""
 
-	try {
-		const dateMatch = isoDateString.match(/^(\d{4})-(\d{2})-(\d{2})/)
+  try {
+    const dateMatch = isoDateString.match(/^(\d{4})-(\d{2})-(\d{2})/)
 
-		if (dateMatch) {
-			const [, year, month, day] = dateMatch
-			return `${day}/${month}/${year}`
-		}
+    if (dateMatch) {
+      const [, year, month, day] = dateMatch
+      return `${day}/${month}/${year}`
+    }
 
-		return ''
-	} catch (error) {
-		console.warn(`Error while parsing the date: ${isoDateString}`, error)
-		return ''
-	}
+    return ""
+  } catch (error) {
+    console.warn(`Error while parsing the date: ${isoDateString}`, error)
+    return ""
+  }
 }

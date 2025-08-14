@@ -13,29 +13,28 @@ import swaggerJsdoc from "swagger-jsdoc"
 import express from "express"
 import path from "path"
 
-
 const app = express()
 
 // Security configutration
 setupSecurityMiddleware(app)
 
 if (process.env.NODE_ENV !== "test") {
-	let __dirname
-	try {
-		const mainFilePath = require.main?.filename || ""
-		__dirname = path.dirname(mainFilePath)
-	} catch (error) {
-		__dirname = process.cwd()
-	}
+  let __dirname
+  try {
+    const mainFilePath = require.main?.filename || ""
+    __dirname = path.dirname(mainFilePath)
+  } catch (error) {
+    __dirname = process.cwd()
+  }
 
-	app.use(morganMiddleware) // For request logging
-	setupMongoConnection()
-	// Generate Swagger specification
-	const swaggerSpec = swaggerJsdoc(swaggerOptions)
-	// Setup Swagger UI
-	app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec, swaggerUiOptions))
-	// Global error handler middleware
-	app.use(express.static(path.join(__dirname, "public")))
+  app.use(morganMiddleware) // For request logging
+  setupMongoConnection()
+  // Generate Swagger specification
+  const swaggerSpec = swaggerJsdoc(swaggerOptions)
+  // Setup Swagger UI
+  app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec, swaggerUiOptions))
+  // Global error handler middleware
+  app.use(express.static(path.join(__dirname, "public")))
 }
 
 app.use(errorLogger)
@@ -45,6 +44,5 @@ app.use("/api", informationRouter)
 app.use("/api", refreshTokenRouter)
 app.use("/api", categoryRouter)
 app.use("/api", activityRouter)
-
 
 export default app

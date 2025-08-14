@@ -1,36 +1,47 @@
 # Documentation de Test : Fonctions de Cryptage et Traitement des Données
 
 ## Aperçu
+
 Ce module fournit des fonctions de cryptage et de traitement des données utilisateur pour sécuriser les informations sensibles. Il comprend le cryptage réversible des données personnelles et le hachage sécurisé des mots de passe, ainsi que des méthodes pour traiter et décrypter ces données.
 
 ## Objectif des Fonctions
 
 ### encrypt
+
 La fonction `encrypt` sert à :
+
 - Crypter les données sensibles de manière réversible
 - Utiliser l'algorithme AES-256-CBC pour un niveau de sécurité élevé
 - Générer et stocker un vecteur d'initialisation (IV) aléatoire avec chaque donnée
 
 ### decrypt
+
 La fonction `decrypt` sert à :
+
 - Décrypter les données précédemment cryptées par la fonction `encrypt`
 - Récupérer l'IV stocké avec les données cryptées
 - Reconstruire les données originales en texte clair
 
 ### processUserData
+
 La fonction `processUserData` sert à :
+
 - Crypter les informations sensibles des utilisateurs (nom, prénom, date de naissance)
 - Hacher le mot de passe de façon non réversible
 - Créer un nouvel objet utilisateur avec les données sécurisées
 
 ### processRefreshToken
+
 La fonction `processRefreshToken` sert à :
+
 - Crypter les informations de connexion (adresse IP, user-agent)
 - Créer un nouvel objet de jeton de rafraîchissement avec les données sécurisées
 - Vérifier que le userId est au format MongoDB ID
 
 ### decryptData
+
 La fonction `decryptData` sert à :
+
 - Décrypter les champs spécifiés dans un objet utilisateur
 - Traiter spécifiquement les dates de naissance pour les reconvertir en objets Date
 - Gérer les erreurs de décryptage de manière gracieuse
@@ -38,6 +49,7 @@ La fonction `decryptData` sert à :
 ## Cas de Test pour encrypt
 
 ### TC-001 : Cryptage de Base
+
 - **ID** : UT-003-01
 - **Description** : Vérifie que la fonction crypte correctement une chaîne simple
 - **Entrée** : "test"
@@ -46,6 +58,7 @@ La fonction `decryptData` sert à :
 - **Date d'Ajout** : 06-05-2025
 
 ### TC-002 : Cryptage de Chaîne Complexe
+
 - **ID** : UT-003-02
 - **Description** : Teste le cryptage d'une chaîne contenant des caractères spéciaux
 - **Entrée** : "Test@123!#+éèê"
@@ -54,6 +67,7 @@ La fonction `decryptData` sert à :
 - **Date d'Ajout** : 06-05-2025
 
 ### TC-003 : Cohérence du Cryptage
+
 - **ID** : UT-003-03
 - **Description** : Vérifie que deux cryptages successifs produisent des résultats différents
 - **Entrée** : "test" (crypté deux fois)
@@ -64,6 +78,7 @@ La fonction `decryptData` sert à :
 ## Cas de Test pour decrypt
 
 ### TC-004 : Décryptage de Base
+
 - **ID** : UT-003-04
 - **Description** : Vérifie qu'une chaîne cryptée peut être décryptée correctement
 - **Entrée** : Sortie de encrypt("test")
@@ -72,6 +87,7 @@ La fonction `decryptData` sert à :
 - **Date d'Ajout** : 06-05-2025
 
 ### TC-005 : Décryptage de Caractères Spéciaux
+
 - **ID** : UT-003-05
 - **Description** : Teste le décryptage d'une chaîne contenant des caractères spéciaux
 - **Entrée** : Sortie de encrypt("Test@123!#+éèê")
@@ -80,6 +96,7 @@ La fonction `decryptData` sert à :
 - **Date d'Ajout** : 06-05-2025
 
 ### TC-006 : Gestion des Erreurs de Format
+
 - **ID** : UT-003-06
 - **Description** : Vérifie la gestion des entrées mal formatées
 - **Entrée** : "malformatted_string"
@@ -90,6 +107,7 @@ La fonction `decryptData` sert à :
 ## Cas de Test pour processUserData
 
 ### TC-007 : Traitement des Données Utilisateur
+
 - **ID** : UT-003-07
 - **Description** : Vérifie que les données utilisateur sont correctement cryptées
 - **Entrée** : Objet utilisateur avec données brutes
@@ -98,6 +116,7 @@ La fonction `decryptData` sert à :
 - **Date d'Ajout** : 06-05-2025
 
 ### TC-008 : Traitement des Dates
+
 - **ID** : UT-003-08
 - **Description** : Vérifie que les dates de naissance sont correctement traitées
 - **Entrée** : Utilisateur avec date de naissance
@@ -106,6 +125,7 @@ La fonction `decryptData` sert à :
 - **Date d'Ajout** : 06-05-2025
 
 ### TC-009 : Hachage du Mot de Passe
+
 - **ID** : UT-003-09
 - **Description** : Vérifie que le mot de passe est correctement haché
 - **Entrée** : Utilisateur avec mot de passe "password123!"
@@ -116,6 +136,7 @@ La fonction `decryptData` sert à :
 ## Cas de Test pour processRefreshToken
 
 ### TC-010 : Cryptage des Données de Connexion
+
 - **ID** : UT-003-10
 - **Description** : Vérifie que l'IP et l'user-agent sont cryptés
 - **Entrée** : Objet avec IP et user-agent
@@ -124,6 +145,7 @@ La fonction `decryptData` sert à :
 - **Date d'Ajout** : 06-05-2025
 
 ### TC-011 : Validation du Format MongoDB ID
+
 - **ID** : UT-003-11
 - **Description** : Vérifie que le userId est au format MongoDB ID valide
 - **Entrée** : Objet avec userId valide et invalide
@@ -134,6 +156,7 @@ La fonction `decryptData` sert à :
 ## Cas de Test pour decryptData
 
 ### TC-012 : Décryptage des Données Utilisateur
+
 - **ID** : UT-003-12
 - **Description** : Vérifie que les champs spécifiés sont correctement décryptés
 - **Entrée** : Utilisateur avec données cryptées, liste de champs à décrypter
@@ -142,6 +165,7 @@ La fonction `decryptData` sert à :
 - **Date d'Ajout** : 06-05-2025
 
 ### TC-013 : Conversion des Dates
+
 - **ID** : UT-003-13
 - **Description** : Vérifie que les dates cryptées sont reconverties en objets Date
 - **Entrée** : Utilisateur avec date cryptée, ["birthDate"] comme champ à décrypter
@@ -150,6 +174,7 @@ La fonction `decryptData` sert à :
 - **Date d'Ajout** : 06-05-2025
 
 ### TC-014 : Gestion des Erreurs de Décryptage
+
 - **ID** : UT-003-14
 - **Description** : Vérifie la gestion gracieuse des erreurs de décryptage
 - **Entrée** : Utilisateur avec valeur invalide, champs à décrypter
@@ -160,7 +185,13 @@ La fonction `decryptData` sert à :
 ## Implémentation des Tests
 
 ```typescript
-import { encrypt, decrypt, processUserData, processRefreshToken, decryptData } from "@utils/encryption.ts"
+import {
+  encrypt,
+  decrypt,
+  processUserData,
+  processRefreshToken,
+  decryptData
+} from "@utils/encryption.ts"
 import { User, RefreshToken } from "@models/index.ts"
 import { FIELD } from "@configs/fields.configs.ts"
 import bcrypt from "bcrypt"
@@ -222,7 +253,7 @@ describe("processUserData", () => {
   jest.mock("bcrypt", () => ({
     hash: jest.fn().mockResolvedValue("hashed_password")
   }))
-  
+
   jest.mock("@models/index", () => ({
     User: jest.fn().mockImplementation((data) => data)
   }))
@@ -236,23 +267,23 @@ describe("processUserData", () => {
       firstName: "John",
       birthDate: new Date(1990, 0, 1)
     }
-    
+
     const result = await processUserData(userData)
-    
+
     // Check if sensitive fields are encrypted
     expect(result.name).not.toBe(userData.name)
     expect(result.name).toContain(":")
-    
+
     expect(result.firstName).not.toBe(userData.firstName)
     expect(result.firstName).toContain(":")
-    
+
     expect(result.birthDate).not.toBe(userData.birthDate)
     expect(result.birthDate).toContain(":")
-    
+
     // Check if password is hashed
     expect(bcrypt.hash).toHaveBeenCalledWith(userData.password, 10)
     expect(result.password).toBe("hashed_password")
-    
+
     // Email should remain unencrypted
     expect(result.email).toBe(userData.email)
   })
@@ -273,21 +304,21 @@ describe("processRefreshToken", () => {
       ipAddress: "192.168.1.1",
       userAgent: "Mozilla/5.0"
     }
-    
+
     const result = await processRefreshToken(tokenData)
-    
+
     // Check if sensitive fields are encrypted
     expect(result.ipAddress).not.toBe(tokenData.ipAddress)
     expect(result.ipAddress).toContain(":")
-    
+
     expect(result.userAgent).not.toBe(tokenData.userAgent)
     expect(result.userAgent).toContain(":")
-    
+
     // Token and userId should remain unencrypted
     expect(result.refreshToken).toBe(tokenData.refreshToken)
     expect(result.userId).toBe(tokenData.userId)
   })
-  
+
   // Test for MongoDB ID validation
   it("should validate that userId is a valid MongoDB ID", async () => {
     const invalidId = "invalid-id-format"
@@ -297,14 +328,14 @@ describe("processRefreshToken", () => {
       ipAddress: "192.168.1.1",
       userAgent: "Mozilla/5.0"
     }
-    
+
     // Should throw error for invalid MongoDB ID
     await expect(processRefreshToken(tokenData)).rejects.toThrow()
-    
+
     // Test with valid ID format
     const validId = new mongoose.Types.ObjectId().toString()
     const validTokenData = { ...tokenData, userId: validId }
-    
+
     // Should not throw error for valid MongoDB ID
     await expect(processRefreshToken(validTokenData)).resolves.toBeDefined()
   })
@@ -317,25 +348,25 @@ describe("decryptData", () => {
     const name = encrypt("Doe")
     const firstName = encrypt("John")
     const birthDate = encrypt("1990-01-01T00:00:00.000Z")
-    
+
     const userData = {
       email: "test@example.com",
       name,
       firstName,
       birthDate
     }
-    
+
     const result = decryptData(userData, [FIELD.NAME, FIELD.FIRST_NAME, FIELD.BIRTH_DATE])
-    
+
     // Check if fields are properly decrypted
     expect(result.name).toBe("Doe")
     expect(result.firstName).toBe("John")
     expect(result.birthDate instanceof Date).toBe(true)
-    
+
     // Unencrypted fields should remain unchanged
     expect(result.email).toBe(userData.email)
   })
-  
+
   // Test for handling decryption errors
   it("should handle decryption errors gracefully", () => {
     // Create user with invalid encrypted field
@@ -343,16 +374,17 @@ describe("decryptData", () => {
       name: "invalid-encrypted-value",
       email: "test@example.com"
     }
-    
+
     // Mock console.error to prevent test output clutter
     jest.spyOn(console, "error").mockImplementation(() => {})
-    
+
     const result = decryptData(userData, [FIELD.NAME])
-    
+
     // Should provide a placeholder for the failed field
     expect(result.name).toBe("[Encrypted name]")
-    
+
     // Unencrypted fields should remain unchanged
     expect(result.email).toBe(userData.email)
   })
 })
+```

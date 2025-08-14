@@ -7,10 +7,8 @@ import { VALIDATOR } from "@validator/schemas/refreshToken.validator.schema.ts"
  * @returns An array of validation rules for the 'refreshToken' field.
  */
 export const createRefreshTokenValidationRules = [
-	...VALIDATOR.REQUIRED.REFRESH_TOKEN(),
-	...VALIDATOR.REQUIRED.USER_ID(),
+  ...VALIDATOR.REQUIRED.REFRESH_TOKEN(),
+  ...VALIDATOR.REQUIRED.USER_ID()
 ]
 
-export const removeRefreshTokenValidationRules = [
-	...VALIDATOR.REQUIRED.REFRESH_TOKEN(), 
-]
+export const removeRefreshTokenValidationRules = [...VALIDATOR.REQUIRED.REFRESH_TOKEN()]

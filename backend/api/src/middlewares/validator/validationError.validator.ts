@@ -17,12 +17,12 @@ import { validationResult } from "express-validator"
  *          If no errors are found, it calls the next middleware or route handler.
  */
 export const validationErrorHandler = (req: Request, res: Response, next: NextFunction): void => {
-	const errors = validationResult(req)
+  const errors = validationResult(req)
 
-	if (!errors.isEmpty()) {
-		handleValidationErrors(res, errors.array())
-		return
-	}
+  if (!errors.isEmpty()) {
+    handleValidationErrors(res, errors.array())
+    return
+  }
 
-	next()
+  next()
 }

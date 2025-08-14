@@ -1,5 +1,4 @@
-
-import { getPublicInformations, getPublicInformationById } from "@controllers/index.ts"
+import { getPublicInformationById } from "@controllers/index.ts"
 import { Router } from "express"
 
 const getPublicInformationsByIdRouter = Router()
@@ -13,7 +12,7 @@ const getPublicInformationsByIdRouter = Router()
  *       Fetches a single information entry by its ID that has a PUBLISHED status only.
  *       This endpoint is publicly accessible without authentication and is intended for
  *       retrieving specific content that has been approved for public viewing.
- *       
+ *
  *       Returns no information found if the entry doesn't exist or is not published.
  *     tags: [Informations]
  *     parameters:

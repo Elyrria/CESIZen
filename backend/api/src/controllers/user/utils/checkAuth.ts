@@ -1,9 +1,9 @@
-import { ERROR_CODE, ERROR_MESSAGE } from "@errorHandler/configs.errorHandler.ts"
+import { ERROR_MESSAGE } from "@errorHandler/configs.errorHandler.ts"
 import type { IUserReqBodyRequest } from "@api/types/user.d.ts"
 import type { IAuthRequest } from "@api/types/request.d.ts"
 import { ROLE_HIERARCHY } from "@configs/role.configs.ts"
 import type { IUser } from "@api/types/user.d.ts"
-import type {Role} from "@api/types/roles.d.ts"
+import type { Role } from "@api/types/roles.d.ts"
 import { User } from "@models/index.ts"
 /**
  * Function to check the authentication of a request.
@@ -14,10 +14,10 @@ import { User } from "@models/index.ts"
  */
 
 export const checkAuthentification = async (req: IAuthRequest) => {
-	if (!req.auth || !req.auth.userId) throw new Error(ERROR_MESSAGE.UNAUTHORIZED)
+  if (!req.auth || !req.auth.userId) throw new Error(ERROR_MESSAGE.UNAUTHORIZED)
 
-	const user: IUser | null = await User.findById(req.auth.userId)
-	return user
+  const user: IUser | null = await User.findById(req.auth.userId)
+  return user
 }
 
 /**
@@ -29,11 +29,11 @@ export const checkAuthentification = async (req: IAuthRequest) => {
  */
 
 export const checkUserRole = (userRole: Role) => {
-    const userRoleIndex: number = ROLE_HIERARCHY.indexOf(userRole)
+  const userRoleIndex: number = ROLE_HIERARCHY.indexOf(userRole)
 
-    if (userRoleIndex === -1) throw new Error(ERROR_MESSAGE.ROLE_UNAVAILABLE)
+  if (userRoleIndex === -1) throw new Error(ERROR_MESSAGE.ROLE_UNAVAILABLE)
 
-    return userRoleIndex
+  return userRoleIndex
 }
 
 /**
@@ -45,11 +45,11 @@ export const checkUserRole = (userRole: Role) => {
  */
 
 export const checkUserParams = async (userParamsId: string) => {
-    const userParams: IUserReqBodyRequest | null = await User.findById(userParamsId)
+  const userParams: IUserReqBodyRequest | null = await User.findById(userParamsId)
 
-    if (!userParams || !userParams.role) throw new Error(ERROR_MESSAGE.MISSING_INFO)
+  if (!userParams || !userParams.role) throw new Error(ERROR_MESSAGE.MISSING_INFO)
 
-    const userParamsRoleIndex: number = ROLE_HIERARCHY.indexOf(userParams.role)
+  const userParamsRoleIndex: number = ROLE_HIERARCHY.indexOf(userParams.role)
 
-    return userParamsRoleIndex
+  return userParamsRoleIndex
 }

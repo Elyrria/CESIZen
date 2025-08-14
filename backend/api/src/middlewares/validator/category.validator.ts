@@ -16,6 +16,6 @@ export const createCategoryValidationRules = [...CATEGORY_VALIDATOR.REQUIRED.NAM
  * @returns An array of validation rules for the optional fields.
  */
 export const updateCategoryValidationRules = [
-	...CATEGORY_VALIDATOR.OPTIONAL.NAME(),
-	...CATEGORY_VALIDATOR.OPTIONAL.IS_ACTIVE(),
+  ...CATEGORY_VALIDATOR.OPTIONAL.NAME(),
+  ...CATEGORY_VALIDATOR.OPTIONAL.IS_ACTIVE()
 ]

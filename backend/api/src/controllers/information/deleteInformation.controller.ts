@@ -24,79 +24,79 @@ import chalk from "chalk"
  * @returns {Promise<void>} - A promise that resolves when the deletion is complete
  */
 export const deleteInformation = async (req: IAuthRequest, res: Response): Promise<void> => {
-	try {
-		// Authentication check
-		if (!req.auth?.userId) {
-			errorHandler(res, ERROR_CODE.NO_CONDITIONS)
-			return
-		}
-		const informationId = req.params.id
-		const userId = req.auth.userId
+  try {
+    // Authentication check
+    if (!req.auth?.userId) {
+      errorHandler(res, ERROR_CODE.NO_CONDITIONS)
+      return
+    }
+    const informationId = req.params.id
+    const userId = req.auth.userId
 
-		logger.info(
-			`Attempting to delete information ID: ${chalk.blue(informationId)} by user: ${chalk.blue(userId)}`
-		)
+    logger.info(
+      `Attempting to delete information ID: ${chalk.blue(informationId)} by user: ${chalk.blue(userId)}`
+    )
 
-		// Fetch user role to check if admin
-		const user = await User.findById(userId).select("role")
+    // Fetch user role to check if admin
+    const user = await User.findById(userId).select("role")
 
-		if (!user) {
-			logger.warn(`User with ID ${chalk.yellow(userId)} not found`)
-			errorHandler(res, ERROR_CODE.USER_NOT_FOUND)
-			return
-		}
+    if (!user) {
+      logger.warn(`User with ID ${chalk.yellow(userId)} not found`)
+      errorHandler(res, ERROR_CODE.USER_NOT_FOUND)
+      return
+    }
 
-		const isAdmin = user.role === ROLES.ADMIN
-		logger.info(`User has admin privileges: ${chalk.blue(isAdmin.toString())}`)
+    const isAdmin = user.role === ROLES.ADMIN
+    logger.info(`User has admin privileges: ${chalk.blue(isAdmin.toString())}`)
 
-		// Find the information to delete
-		const information = await Information.findById(informationId)
+    // Find the information to delete
+    const information = await Information.findById(informationId)
 
-		if (!information) {
-			logger.warn(`Information with ID ${chalk.yellow(informationId)} not found`)
-			errorHandler(res, ERROR_CODE.INFORMATION_NOT_FOUND)
-			return
-		}
+    if (!information) {
+      logger.warn(`Information with ID ${chalk.yellow(informationId)} not found`)
+      errorHandler(res, ERROR_CODE.INFORMATION_NOT_FOUND)
+      return
+    }
 
-		// Check permissions - only author or admin can delete
-		if (!isAdmin && information.authorId.toString() !== userId) {
-			logger.warn(`User ${chalk.yellow(userId)} attempted to delete information they don't own`)
-			errorHandler(res, ERROR_CODE.INSUFFICIENT_ACCESS)
-			return
-		}
+    // Check permissions - only author or admin can delete
+    if (!isAdmin && information.authorId.toString() !== userId) {
+      logger.warn(`User ${chalk.yellow(userId)} attempted to delete information they don't own`)
+      errorHandler(res, ERROR_CODE.INSUFFICIENT_ACCESS)
+      return
+    }
 
-		// Store fileId for deletion after the information is removed
-		const fileId = information.fileId
+    // Store fileId for deletion after the information is removed
+    const fileId = information.fileId
 
-		// Delete the information from database
-		const deletedInformation = await Information.findByIdAndDelete(informationId)
+    // Delete the information from database
+    const deletedInformation = await Information.findByIdAndDelete(informationId)
 
-		if (!deletedInformation) {
-			logger.error(`Failed to delete information: ${chalk.red(informationId)}`)
-			errorHandler(res, ERROR_CODE.UNABLE_MODIFY_INFORMATION)
-			return
-		}
+    if (!deletedInformation) {
+      logger.error(`Failed to delete information: ${chalk.red(informationId)}`)
+      errorHandler(res, ERROR_CODE.UNABLE_MODIFY_INFORMATION)
+      return
+    }
 
-		logger.info(`Successfully deleted information: ${chalk.green(informationId)}`)
+    logger.info(`Successfully deleted information: ${chalk.green(informationId)}`)
 
-		// If there was an associated file, delete it from GridFS
-		if (fileId) {
-			try {
-				await deleteFile(fileId)
-				logger.info(`Successfully deleted associated file: ${chalk.green(fileId.toString())}`)
-			} catch (deleteError) {
-				// Log error but continue (the information is already deleted)
-				logger.error(
-					`Failed to delete associated file: ${chalk.red(fileId.toString())}`,
-					deleteError
-				)
-			}
-		}
+    // If there was an associated file, delete it from GridFS
+    if (fileId) {
+      try {
+        await deleteFile(fileId)
+        logger.info(`Successfully deleted associated file: ${chalk.green(fileId.toString())}`)
+      } catch (deleteError) {
+        // Log error but continue (the information is already deleted)
+        logger.error(
+          `Failed to delete associated file: ${chalk.red(fileId.toString())}`,
+          deleteError
+        )
+      }
+    }
 
-		// Send successful response
-		successHandler(res, SUCCESS_CODE.INFORMATION_DELETED)
-	} catch (error: unknown) {
-		logger.error(`Error deleting information: ${(error as Error).message}`)
-		handleUnexpectedError(res, error as Error)
-	}
+    // Send successful response
+    successHandler(res, SUCCESS_CODE.INFORMATION_DELETED)
+  } catch (error: unknown) {
+    logger.error(`Error deleting information: ${(error as Error).message}`)
+    handleUnexpectedError(res, error as Error)
+  }
 }
