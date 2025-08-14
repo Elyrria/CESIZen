@@ -1,25 +1,27 @@
 /** @type {import('ts-jest').JestConfigWithTsJest} **/
-
 export default {
-  testEnvironment: "node", // Sets the test environment to Node.js
-  setupFilesAfterEnv: ["./api/tests/setupTest.ts"], // Files to run after Jest is initialized but before tests are run - contains test setup like database connection
+  testEnvironment: "node",
+  setupFilesAfterEnv: ["./api/tests/setupTest.ts"],
   setupFiles: ["./api/tests/mocks.ts"],
-  collectCoverageFrom: ["src/**/*.ts", "!src/server.ts"], // Specifies which files should be included in code coverage reports, excluding server.ts
+  collectCoverageFrom: ["src/**/*.ts", "!src/server.ts"],
   transform: {
     "^.+\\.tsx?$": [
       "ts-jest",
       {
-        useESM: true // Important pour ESM
-        // isolatedModules: true,
+        useESM: true,
+        tsconfig: {
+          module: "ESNext",
+          target: "ESNext"
+        }
       }
     ]
   },
   extensionsToTreatAsEsm: [".ts", ".tsx"],
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
-  roots: ["<rootDir>api/tests"], // Defines the root directories from where Jest should look for test files
-  testMatch: ["**/__tests__/**/*.ts", "**/?(*.)+(spec|test).ts"], // Glob patterns that match test files - either in __tests__ folders or files ending with .spec.ts or .test.ts
-  coverageDirectory: "coverage", // Directory where Jest should output coverage files
-  testTimeout: 10000, // Maximum time in milliseconds that a test can run before Jest aborts it (10 seconds in this case)
+  roots: ["<rootDir>/api/tests"],
+  testMatch: ["**/__tests__/**/*.ts", "**/?(*.)+(spec|test).ts"],
+  coverageDirectory: "coverage",
+  testTimeout: 10000,
   moduleNameMapper: {
     "^@mongoQueryBuilders/(.*)$": "<rootDir>/api/src/controllers/mongoQueryBuilders/$1",
     "^@successHandler/(.*)$": "<rootDir>/api/src/handlerResponse/successHandler/$1",
@@ -36,6 +38,9 @@ export default {
     "^@logs/(.*)$": "<rootDir>/api/src/logs/$1",
     "^@core/(.*)$": "<rootDir>/api/src/core/$1",
     "^@configs/(.*)$": "<rootDir>/configs/$1",
+    "^@types/(.*)$": "<rootDir>/api/types/$1", // AJOUT MANQUANT
+    "^@doc/(.*)$": "<rootDir>/api/doc/$1", // AJOUT MANQUANT
+    "^@src/(.*)$": "<rootDir>/api/src/$1", // AJOUT MANQUANT
     "^@api/(.*)$": "<rootDir>/api/$1",
     "^(\\.{1,2}/.*)\\.js$": "$1"
   },

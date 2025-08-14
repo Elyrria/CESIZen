@@ -21,7 +21,6 @@ describe("User Validation Rules", () => {
     for (const rule of createUserValidationRules) {
       await Promise.resolve(rule(req, res, next))
     }
-
     return validationResult(req)
   }
 
@@ -141,8 +140,8 @@ describe("User Validation Rules", () => {
 
   it("should fail validation for missing required fields", async () => {
     // Create an object without email
-    const { ...missingEmailData } = validUserData
-
+    const { email, ...missingEmailData } = validUserData
+    
     const result = await runValidation(missingEmailData)
 
     expect(result.isEmpty()).toBe(false)

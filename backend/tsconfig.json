@@ -12,6 +12,7 @@
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "allowImportingTsExtensions": true,
+    "isolatedModules": true,
     "paths": {
       "@mongoQueryBuilders/*": ["api/src/controllers/mongoQueryBuilders/*"],
       "@successHandler/*": ["api/src/handlerResponse/successHandler/*"],
@@ -29,11 +30,15 @@
       "@core/*": ["api/src/core/*"],
       "@configs/*": ["configs/*"],
       "@types/*": ["api/types/*"],
-      "@doc/*": ["api/doc//*"],
+      "@doc/*": ["api/doc/*"],
       "@src/*": ["api/src/*"],
       "@api/*": ["api/*"]
     }
   },
   "include": ["./**/*.ts"],
-  "exclude": ["node_modules", "dist"]
+  "exclude": ["node_modules", "dist"],
+  "ts-node": {
+    "esm": true,
+    "require": ["./aliases.mjs"]
+  }
 }
