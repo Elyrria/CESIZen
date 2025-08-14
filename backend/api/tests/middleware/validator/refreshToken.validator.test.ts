@@ -38,7 +38,7 @@ describe("RefreshToken Validation Rules", () => {
   })
 
   it("should fail validation with missing refreshToken", async () => {
-    const { ...missingRefreshTokenData } = validRefreshTokenData
+    const { refreshToken, ...missingRefreshTokenData } = validRefreshTokenData
     const result = await runValidation(missingRefreshTokenData)
 
     expect(result.isEmpty()).toBe(false)
@@ -62,7 +62,7 @@ describe("RefreshToken Validation Rules", () => {
   })
 
   it("should fail validation with missing userId", async () => {
-    const { ...missingUserIdData } = validRefreshTokenData
+    const { userId, ...missingUserIdData } = validRefreshTokenData
     const result = await runValidation(missingUserIdData)
 
     expect(result.isEmpty()).toBe(false)
