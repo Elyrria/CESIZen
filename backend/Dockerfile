@@ -1,7 +1,8 @@
 FROM node:23-alpine
 
 # Installer les dépendances système pour la compilation native (bcrypt, sharp, etc.)
-RUN apk add --no-cache python3=3.11.6-r0 make=4.3-r1 g++=12.2.1_git20220924-r4
+# hadolint ignore=DL3018
+RUN apk add --no-cache python3 make g++
 
 WORKDIR /app
 
