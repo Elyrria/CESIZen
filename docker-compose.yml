@@ -1,0 +1,31 @@
+version: '3.8'
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT_BACKEND=${PORT_BACKEND}
+      - MONGO_URI=${MONGO_URI}
+      - TOKEN_SECRET=${TOKEN_SECRET}
+      - ENCRYPTION_KEY=${ENCRYPTION_KEY}
+      - CRYPTO_DEV=${CRYPTO_DEV}
+      - CRYPTO_PROD=${CRYPTO_PROD}
+      - CRYPTO_TEST=${CRYPTO_TEST}
+      - IV_LENGTH=${IV_LENGTH}
+      - KEY_LENGTH_DEV=${KEY_LENGTH_DEV}
+      - KEY_LENGTH_PROD=${KEY_LENGTH_PROD}
+      - KEY_LENGTH_TEST=${KEY_LENGTH_TEST}
+      - ADMIN=${ADMIN}
+      - USER=${USER}
+  frontend:
+    build: ./frontend
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_URL=${VITE_API_URL}
+      - VITE_IDLE_TIME=${VITE_IDLE_TIME}
+      - VITE_IDLE_WARNING_TIME=${VITE_IDLE_WARNING_TIME}
+    depends_on:
+      - backend
+    restart: unless-stopped
