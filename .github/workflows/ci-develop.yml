@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Code Validation
     env:
-        MONGODB_URI: ${{ secrets.MONGODB_URI }}
+        MONGO_URI: ${{ secrets.MONGO_URI }}
         ADMIN: ${{ secrets.ADMIN }}
         USER: ${{ secrets.USER }}
         CRYPTO_DEV: ${{ secrets.CRYPTO_DEV }}
