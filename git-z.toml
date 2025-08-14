@@ -71,6 +71,7 @@ list = [
     "S:Category",
     "S:RefreshToken",
     "S:Middleware",
+    "S:CI-CD",
     "S:Logs",
     "S:HandleError",
     "S:HandlerResponse",
