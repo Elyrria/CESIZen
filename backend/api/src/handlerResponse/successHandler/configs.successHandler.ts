@@ -40,7 +40,9 @@ export const SUCCESS_CODE = {
   ACTIVITY_DELETED: "activityDeleted",
   ACTIVITY_FOUND: "activityFound",
   ACTIVITY_LIST: "activityList",
-  NO_ACTIVITY: "noActivity"
+  NO_ACTIVITY: "noActivity",
+  // Activity-related success codes
+  TICKET_CREATED: "ticketCreated"
 }
 
 /**

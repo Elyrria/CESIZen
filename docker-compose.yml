@@ -1,30 +1,34 @@
 services:
-  backend:
-    image: ghcr.io/elyrria/cesizen/backend:latest
-    ports:
-      - "3000:3000"
-    environment:
-      - PORT_BACKEND=${PORT_BACKEND}
-      - MONGO_URI=${MONGO_URI}
-      - TOKEN_SECRET=${TOKEN_SECRET}
-      - ENCRYPTION_KEY=${ENCRYPTION_KEY}
-      - CRYPTO_DEV=${CRYPTO_DEV}
-      - CRYPTO_PROD=${CRYPTO_PROD}
-      - CRYPTO_TEST=${CRYPTO_TEST}
-      - IV_LENGTH=${IV_LENGTH}
-      - KEY_LENGTH_DEV=${KEY_LENGTH_DEV}
-      - KEY_LENGTH_PROD=${KEY_LENGTH_PROD}
-      - KEY_LENGTH_TEST=${KEY_LENGTH_TEST}
-      - ADMIN=${ADMIN}
-      - USER=${USER}
-  frontend:
-    image: ghcr.io/elyrria/cesizen/frontend:latest
-    ports:
-      - "5173:5173"
-    environment:
-      - VITE_API_URL=${VITE_API_URL}
-      - VITE_IDLE_TIME=${VITE_IDLE_TIME}
-      - VITE_IDLE_WARNING_TIME=${VITE_IDLE_WARNING_TIME}
-    depends_on:
-      - backend
-    restart: unless-stopped
+        backend:
+                image: ghcr.io/elyrria/cesizen/backend:latest
+                ports:
+                        - "3000:3000"
+                environment:
+                        - PORT_BACKEND=${PORT_BACKEND}
+                        - MONGO_URI=${MONGO_URI}
+                        - TOKEN_SECRET=${TOKEN_SECRET}
+                        - ENCRYPTION_KEY=${ENCRYPTION_KEY}
+                        - CRYPTO_DEV=${CRYPTO_DEV}
+                        - CRYPTO_PROD=${CRYPTO_PROD}
+                        - CRYPTO_TEST=${CRYPTO_TEST}
+                        - IV_LENGTH=${IV_LENGTH}
+                        - KEY_LENGTH_DEV=${KEY_LENGTH_DEV}
+                        - KEY_LENGTH_PROD=${KEY_LENGTH_PROD}
+                        - KEY_LENGTH_TEST=${KEY_LENGTH_TEST}
+                        - ADMIN=${ADMIN}
+                        - USER=${USER}
+                        - BOT_ACCESS_TOKEN=${BOT_ACCESS_TOKEN}
+                        - PROJECT_OWNER=${PROJECT_OWNER}
+                        - REPO_NAME=${REPO_NAME}
+                        - BOT_NAME=${BOT_NAME}
+        frontend:
+                image: ghcr.io/elyrria/cesizen/frontend:latest
+                ports:
+                        - "5173:5173"
+                environment:
+                        - VITE_API_URL=${VITE_API_URL}
+                        - VITE_IDLE_TIME=${VITE_IDLE_TIME}
+                        - VITE_IDLE_WARNING_TIME=${VITE_IDLE_WARNING_TIME}
+                depends_on:
+                        - backend
+                restart: unless-stopped

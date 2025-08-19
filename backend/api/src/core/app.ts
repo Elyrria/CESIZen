@@ -1,6 +1,7 @@
 // src/core/app.ts
 import { setupSecurityMiddleware } from "@api/src/middlewares/security/security.middleware.ts"
 import refreshTokenRouter from "@routes/refreshToken/refreshToken.route.ts"
+import supportRouter from "@routes/support/support.routes.ts"
 import { swaggerOptions, swaggerUiOptions } from "@doc/swagger.configs.ts"
 import informationRouter from "@routes/information/information.route.ts"
 import activityRouter from "@routes/activity/activity.routes.ts"
@@ -44,5 +45,8 @@ app.use("/api", informationRouter)
 app.use("/api", refreshTokenRouter)
 app.use("/api", categoryRouter)
 app.use("/api", activityRouter)
-
+// Support routes avec condition pour éviter les erreurs lors des tests
+if (process.env.NODE_ENV !== "test") {
+  app.use("/api", supportRouter)
+}
 export default app

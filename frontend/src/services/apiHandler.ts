@@ -80,6 +80,22 @@ export interface IUsersListResponse {
 
 export type ApiResponse<T> = IApiSuccessResponse<T> | IApiErrorResponse
 
+// Interfaces pour le support
+export interface ICreateTicketRequest {
+  title: string
+  description: string
+  priority: "P1-Critical" | "P2-High" | "P3-Medium" | "P4-Low"
+  userEmail?: string
+}
+
+export interface ICreateTicketResponse {
+  success: boolean
+  message: string
+  ticketId: string
+  issueNumber: string
+  githubIssueUrl: string
+}
+
 /**
  * Main class to handle API calls.
  *
@@ -488,6 +504,17 @@ class ApiService {
 
   public async deleteActivity(id: string): Promise<ApiResponse<void>> {
     return this.delete<void>(`v1/activities/delete/${id}`)
+  }
+  /**
+   * SUPPORT - Créer un ticket de support/bug
+   */
+  public async createSupportTicket(
+    ticketData: ICreateTicketRequest
+  ): Promise<ApiResponse<ICreateTicketResponse>> {
+    return this.post<ICreateTicketResponse>("v1/support/create-ticket", {
+      type: "bug", // Fixé à "bug" comme spécifié
+      ...ticketData
+    })
   }
 }
 

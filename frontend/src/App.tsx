@@ -23,6 +23,9 @@ const InformationDetailPage = lazy(() => import("@/pages/information/Information
 const ActivitiesPage = lazy(() => import("@/pages/activity/ActivitiesPage"))
 const ActivityDetailPage = lazy(() => import("@/pages/activity/ActivityDetailPage"))
 
+// Support page
+const SupportPage = lazy(() => import("@/pages/support/SupportPage"))
+
 // Admin pages
 const AdminDashboard = lazy(() => import("@/pages/admin/AdminDashboard"))
 
@@ -81,6 +84,9 @@ const AppRoutes: React.FC = () => {
         {/* Activity routes */}
         <Route path="/activities" element={<ActivitiesPage />} />
         <Route path="/activities/:id" element={<ActivityDetailPage />} />
+
+        {/* Support route */}
+        <Route path="/support" element={<SupportPage />} />
 
         {/* Protected routes */}
         <Route

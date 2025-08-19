@@ -17,6 +17,20 @@ export const CONFIGS = {
     KEY: getEnv("TOKEN_SECRET")
   }
 }
+export const GITHUB_CONFIG = {
+  GITHUB_TOKEN: {
+    KEY: getEnv("BOT_ACCESS_TOKEN")
+  },
+  PROJECT_OWNER: {
+    KEY: getEnv("PROJECT_OWNER")
+  },
+  REPO_NAME: {
+    KEY: getEnv("REPO_NAME")
+  },
+  BOT_NAME: {
+    KEY: getEnv("BOT_NAME")
+  }
+}
 
 const CRYPTO_CONFIG = {
   development: {
