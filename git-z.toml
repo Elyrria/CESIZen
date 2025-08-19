@@ -66,6 +66,7 @@ list = [
     "S:Controllers",
     "S:Responsive",
     "S:User",
+    "S:Support",
     "S:Information",
     "S:Activity",
     "S:Category",
