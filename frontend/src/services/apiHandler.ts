@@ -88,6 +88,14 @@ export interface ICreateTicketRequest {
   userEmail?: string
 }
 
+export interface ICreateTicketResponse {
+  success: boolean
+  message: string
+  ticketId: string
+  issueNumber: string
+  githubIssueUrl: string
+}
+
 /**
  * Main class to handle API calls.
  *

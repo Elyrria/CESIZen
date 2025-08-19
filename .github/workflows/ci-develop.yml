@@ -29,6 +29,10 @@ jobs:
         VITE_API_URL: ${{ secrets.VITE_API_URL }}
         VITE_IDLE_TIME: ${{ secrets.VITE_IDLE_TIME }}
         VITE_IDLE_WARNING_TIME: ${{ secrets.VITE_IDLE_WARNING_TIME }}  
+        BOT_ACCESS_TOKEN: ${{ secrets.BOT_ACCESS_TOKEN }}
+        BOT_NAME: ${{ secrets.BOT_NAME }}
+        PROJECT_OWNER: ${{ secrets.PROJECT_OWNER }}
+        REPO_NAME: ${{ secrets.REPO_NAME }}
     steps:
     - name: Checkout code
       uses: actions/checkout@v4

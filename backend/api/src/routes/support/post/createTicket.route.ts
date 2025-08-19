@@ -232,7 +232,7 @@ const createTicketRouter = Router()
  *                   error:
  *                     code: "ticketCreationFailed"
  *                     message: "Impossible de créer le ticket de support"
- *                     details: "Configuration GitHub manquante. Vérifiez GITHUB_TOKEN, GITHUB_OWNER et GITHUB_REPO"
+ *                     details: "Configuration GitHub manquante. Vérifiez GITHUB_TOKEN, PROJECT_OWNER et REPO_NAME"
  *               githubApiError:
  *                 summary: GitHub API error
  *                 value:

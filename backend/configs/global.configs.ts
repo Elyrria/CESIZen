@@ -19,16 +19,16 @@ export const CONFIGS = {
 }
 export const GITHUB_CONFIG = {
   GITHUB_TOKEN: {
-    KEY: getEnv("GITHUB_BOT_ACCES_TOKEN")
+    KEY: getEnv("BOT_ACCESS_TOKEN")
   },
-  GITHUB_OWNER: {
-    KEY: getEnv("GITHUB_OWNER")
+  PROJECT_OWNER: {
+    KEY: getEnv("PROJECT_OWNER")
   },
-  GITHUB_REPO: {
-    KEY: getEnv("GITHUB_REPO")
+  REPO_NAME: {
+    KEY: getEnv("REPO_NAME")
   },
-  GITHUB_BOT_NAME: {
-    KEY: getEnv("GITHUB_BOT_NAME")
+  BOT_NAME: {
+    KEY: getEnv("BOT_NAME")
   }
 }
 
