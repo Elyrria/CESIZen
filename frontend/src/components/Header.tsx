@@ -60,6 +60,9 @@ const Header: React.FC = () => {
             <Link to="/activities" className="fr-text hover:text-fr-blue transition-colors">
               Activités
             </Link>
+            <Link to="/support" className="fr-text hover:text-fr-blue transition-colors">
+              Support
+            </Link>
 
             {isAuthenticated ? (
               <>
@@ -138,11 +141,14 @@ const Header: React.FC = () => {
               Informations
             </Link>
             <Link
-              to="/activites"
+              to="/activities"
               className="block py-fr-2v"
               onClick={() => setMobileMenuOpen(false)}
             >
               Activités
+            </Link>
+            <Link to="/support" className="block py-fr-2v" onClick={() => setMobileMenuOpen(false)}>
+              Support
             </Link>
 
             {isAuthenticated ? (
@@ -214,7 +220,7 @@ const Header: React.FC = () => {
           </svg>
           <span className="text-xs">Infos</span>
         </Link>
-        <Link to="/activites" className="fr-bottom-nav__item">
+        <Link to="/activities" className="fr-bottom-nav__item">
           <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path
               strokeLinecap="round"
@@ -226,49 +232,18 @@ const Header: React.FC = () => {
           <span className="text-xs">Activités</span>
         </Link>
 
-        {isAuthenticated ? (
-          // Conditional for the last mobile button
-          isAdmin ? (
-            // For admins, display a link to the dashboard
-            <Link to="/admin" className="fr-bottom-nav__item">
-              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
-                />
-              </svg>
-              <span className="text-xs">Admin</span>
-            </Link>
-          ) : (
-            // For regular users, display a link to the profile
-            <Link to="/profile" className="fr-bottom-nav__item">
-              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                />
-              </svg>
-              <span className="text-xs">Profil</span>
-            </Link>
-          )
-        ) : (
-          // For non-logged-in visitors, display a link to login
-          <Link to="/login" className="fr-bottom-nav__item">
-            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
-              />
-            </svg>
-            <span className="text-xs">Connexion</span>
-          </Link>
-        )}
+        {/* Support button for mobile bottom nav */}
+        <Link to="/support" className="fr-bottom-nav__item">
+          <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192L5.636 18.364M12 2.25a9.75 9.75 0 109.75 9.75c0-1.171-.207-2.297-.582-3.344M12 8.25a3.75 3.75 0 013.75 3.75M8.25 12a3.75 3.75 0 007.5 0"
+            />
+          </svg>
+          <span className="text-xs">Support</span>
+        </Link>
       </div>
     </header>
   )
