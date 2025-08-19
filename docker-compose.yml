@@ -1,7 +1,6 @@
-version: '3.8'
 services:
   backend:
-    build: ./backend
+    image: ghcr.io/elyrria/cesizen/backend:latest
     ports:
       - "3000:3000"
     environment:
@@ -19,7 +18,7 @@ services:
       - ADMIN=${ADMIN}
       - USER=${USER}
   frontend:
-    build: ./frontend
+    image: ghcr.io/elyrria/cesizen/frontend:latest
     ports:
       - "5173:5173"
     environment:
