@@ -15,6 +15,7 @@ RUN npm ci
 
 # Copie le code source
 COPY api ./api
+COPY public ./public
 COPY configs ./configs
 COPY aliases.mjs ./
 
