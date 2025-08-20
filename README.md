@@ -190,7 +190,7 @@ test(S:Back): implement comprehensive test suite for user endpoints
 ✅ **Collaboration structurée** : Méthodologie reproductible pour le travail en équipe
 
 Cette méthodologie de gestion de projet, couplée à la co-construction avec l'IA, a permis de maintenir une vision claire de l'avancement tout en développant efficacement les fonctionnalités dans l'ordre de priorité défini par le cahier des charges.
-
+Ajout pour démo
 ## ✨ Fonctionnalités Implémentées
 
 ### 🔐 Authentification et Sécurité
