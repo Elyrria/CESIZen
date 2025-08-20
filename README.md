@@ -141,6 +141,10 @@ Les tests couvrent les modules obligatoires (Comptes utilisateurs et Information
 Le projet est entièrement géré via **GitHub Projects** avec un dashboard interactif disponible à l'adresse :
 **[🔗 Dashboard CESIZen](https://github.com/users/Elyrria/projects/2)**
 
+### Webhook GITHUB
+
+Le projet et lié à un Webhook github via Discord permettant de logger les modififcations apportées au Repo.
+
 ### Méthodologie de Découpage
 
 #### 🎯 **Structure Hiérarchique**
