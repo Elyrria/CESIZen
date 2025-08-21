@@ -145,6 +145,8 @@ Le projet est entièrement géré via **GitHub Projects** avec un dashboard inte
 
 Le projet et lié à un Webhook github via Discord permettant de logger les modififcations apportées au Repo.
 
+### Commit pour la démo
+
 ### Méthodologie de Découpage
 
 #### 🎯 **Structure Hiérarchique**
